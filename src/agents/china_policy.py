@@ -1,0 +1,285 @@
+"""
+China policy interpretation agent.
+
+A-shares are fundamentally a "policy market" (政策市). A single policy
+announcement from the State Council, PBOC, CSRC, or NDRC can override
+all technical and fundamental signals overnight.
+
+This agent:
+1. Scans recent news for policy-related keywords
+2. Uses LLM to classify policy impact on specific stocks
+3. Assesses whether policy is structural (long-lasting) or cyclical (one-time)
+4. Maps policy to affected sectors and individual stocks
+
+Key policy sources to monitor:
+  - 国务院常务会议 (State Council executive meetings)
+  - 央行 PBOC (monetary policy, RRR, interest rates, MLF/LPR)
+  - 证监会 CSRC (market regulation, IPO pace, trading rules)
+  - 发改委 NDRC (industrial policy, pricing, investment approval)
+  - 工信部 MIIT (tech/industry regulation)
+  - 财政部 MOF (tax policy, fiscal stimulus)
+"""
+
+from __future__ import annotations
+
+import json
+from langchain_core.messages import HumanMessage
+from pydantic import BaseModel, Field, model_validator
+from typing import Literal
+
+from src.graph.state import AgentState, show_agent_reasoning
+from src.tools.api_china import get_public_opinion, get_company_news
+from src.utils.llm import call_llm
+from src.utils.progress import progress
+
+
+# ─────────────────────────────────────────────
+# Policy classification models
+# ─────────────────────────────────────────────
+
+class PolicyImpact(BaseModel):
+    """LLM-assessed impact of recent policies on a specific stock."""
+    has_relevant_policy: bool = Field(
+        description="Whether any recent policy is relevant to this stock"
+    )
+    policy_type: Literal[
+        "monetary", "fiscal", "regulatory", "industry",
+        "trade", "geopolitical", "none"
+    ] = "none"
+    impact_direction: Literal["positive", "negative", "neutral"] = "neutral"
+    impact_duration: Literal["short_term", "medium_term", "long_term"] = "short_term"
+    impact_magnitude: Literal["minor", "moderate", "major", "transformative"] = "minor"
+    affected_sectors: list[str] = Field(default_factory=list)
+    signal: Literal["bullish", "bearish", "neutral"] = "neutral"
+    confidence: int = Field(ge=0, le=100, default=30)
+    reasoning: str = Field(default="")
+
+    @model_validator(mode="before")
+    @classmethod
+    def _coerce(cls, data):
+        """容错：DeepSeek 常返回 {signals, overall_impact, reasoning} 而漏 has_relevant_policy
+        及 signal，这里映射 + 补默认，使其解析成真实信号而非退中性。"""
+        if not isinstance(data, dict):
+            return data
+        d = dict(data)
+        if d.get("signal") not in ("bullish", "bearish", "neutral"):
+            src = str(d.get("overall_impact") or d.get("impact_direction")
+                      or d.get("signal") or "").lower()
+            if any(k in src for k in ("利空", "负", "空", "bear", "negative")):
+                d["signal"] = "bearish"
+            elif any(k in src for k in ("利好", "正", "多", "bull", "positive")):
+                d["signal"] = "bullish"
+            else:
+                d["signal"] = "neutral"
+        if d.get("impact_direction") not in ("positive", "negative", "neutral"):
+            d["impact_direction"] = {"bullish": "positive", "bearish": "negative"}.get(d["signal"], "neutral")
+        if not isinstance(d.get("has_relevant_policy"), bool):
+            sigs = d.get("signals") or d.get("policies") or []
+            d["has_relevant_policy"] = bool(sigs) or d["signal"] != "neutral"
+        if not d.get("reasoning"):
+            sigs = d.get("signals")
+            if isinstance(sigs, list) and sigs:
+                d["reasoning"] = "; ".join(
+                    str(s.get("content") or s.get("impact") or s) if isinstance(s, dict) else str(s)
+                    for s in sigs[:3])
+            else:
+                d["reasoning"] = str(d.get("summary") or d.get("overall_impact") or "")
+        if not isinstance(d.get("confidence"), (int, float)) or d.get("confidence") == 0:
+            d["confidence"] = 55 if (d["signal"] != "neutral" and d.get("has_relevant_policy")) else 30
+        return d
+
+
+# ─────────────────────────────────────────────
+# Policy keywords for pre-filtering
+# ─────────────────────────────────────────────
+
+POLICY_KEYWORDS = [
+    # Monetary policy
+    "央行", "降准", "降息", "加息", "LPR", "MLF", "逆回购", "公开市场操作",
+    "货币政策", "流动性", "信贷", "社融", "M2",
+    # Fiscal policy
+    "财政部", "减税", "降费", "专项债", "国债", "财政赤字", "财政刺激",
+    # Regulatory
+    "证监会", "监管", "整顿", "规范", "反垄断", "罚款", "退市",
+    "注册制", "IPO", "再融资", "减持新规", "印花税",
+    # Industrial policy
+    "发改委", "工信部", "产业政策", "补贴", "新能源", "芯片", "半导体",
+    "人工智能", "数字经济", "新基建", "碳中和", "双碳",
+    # State Council
+    "国务院", "常务会议", "国常会", "总理",
+    # Geopolitical
+    "中美", "关税", "制裁", "实体清单", "出口管制", "脱钩",
+    # Market events
+    "熔断", "暴跌", "大涨", "涨停潮", "跌停潮", "成交额突破",
+]
+
+SYSTEM_PROMPT = """你是一名资深的中国宏观政策分析师，专注于政策对A股和港股的影响分析。
+
+你的分析框架：
+1. 政策分类：货币政策(monetary)/财政政策(fiscal)/监管政策(regulatory)/产业政策(industry)/贸易政策(trade)/地缘政治(geopolitical)
+2. 影响方向：利好(positive)/利空(negative)/中性(neutral)
+3. 持续时间：短期脉冲(short_term, <1月)/中期影响(medium_term, 1-6月)/长期结构性(long_term, >6月)
+4. 影响幅度：轻微(minor)/中等(moderate)/重大(major)/变革性(transformative)
+
+分析要点：
+- A股对政策极度敏感，"政策底"往往先于"市场底"
+- 区分已被市场消化的预期内政策 vs 超预期政策
+- 央行降准降息的信号意义往往大于实际流动性释放
+- 产业政策的"点名"效应：被政策文件明确提及的行业会获得额外关注
+- 监管收紧初期恐慌 → 中期消化 → 长期利好（行业出清）
+
+输出要求（强制，违反即解析失败）：
+只输出一个 JSON 对象。禁止 Markdown 代码块、禁止任何解释文字、禁止自创或省略字段。
+必须包含且仅包含以下字段：
+{
+  "has_relevant_policy": true或false,
+  "policy_type": "monetary/fiscal/regulatory/industry/trade/geopolitical/none 之一",
+  "impact_direction": "positive/negative/neutral 之一",
+  "impact_duration": "short_term/medium_term/long_term 之一",
+  "impact_magnitude": "minor/moderate/major/transformative 之一",
+  "affected_sectors": ["受影响板块"],
+  "signal": "bullish/bearish/neutral 之一",
+  "confidence": 0到100的整数,
+  "reasoning": "简明分析依据"
+}"""
+
+
+# ─────────────────────────────────────────────
+# Agent function
+# ─────────────────────────────────────────────
+
+def china_policy_agent(
+    state: AgentState,
+    agent_id: str = "china_policy_agent",
+):
+    """
+    Analyzes recent policy signals and their impact on target stocks.
+    """
+    data = state.get("data", {})
+    end_date = data.get("end_date")
+    tickers = data.get("tickers", [])
+
+    policy_analysis = {}
+
+    # Step 1: Fetch broad market news and filter for policy relevance
+    progress.update_status(agent_id, None, "Scanning for policy signals")
+    market_opinion = get_public_opinion(ticker=None, limit=50)
+
+    # Pre-filter: find policy-related items
+    policy_items = []
+    for item in market_opinion:
+        text = f"{item.title} {item.content or ''}"
+        if any(kw in text for kw in POLICY_KEYWORDS):
+            policy_items.append(item)
+
+    policy_headlines = [
+        f"[{item.source} | {item.date}] {item.title}"
+        for item in policy_items[:20]
+    ]
+
+    for ticker in tickers:
+        progress.update_status(agent_id, ticker, "Fetching stock-specific news")
+
+        # Also check stock-specific news for policy mentions
+        stock_news = get_company_news(ticker=ticker, end_date=end_date, limit=30)
+        stock_policy_items = []
+        for n in stock_news:
+            if any(kw in n.title for kw in POLICY_KEYWORDS):
+                stock_policy_items.append(n)
+
+        stock_policy_headlines = [
+            f"[{n.source} | {n.date}] {n.title}"
+            for n in stock_policy_items[:10]
+        ]
+
+        # Combine all policy signals
+        all_policy_text = []
+        if policy_headlines:
+            all_policy_text.append("=== 近期宏观政策信号 ===")
+            all_policy_text.extend(policy_headlines)
+        if stock_policy_headlines:
+            all_policy_text.append(f"\n=== {ticker} 相关政策新闻 ===")
+            all_policy_text.extend(stock_policy_headlines)
+
+        if not all_policy_text:
+            policy_analysis[ticker] = {
+                "signal": "neutral",
+                "confidence": 30,
+                "reasoning": {
+                    "summary": "No significant policy signals detected.",
+                    "policy_items_scanned": len(market_opinion),
+                    "policy_items_relevant": 0,
+                },
+            }
+            progress.update_status(agent_id, ticker, "Done (no policy signals)")
+            continue
+
+        # LLM analysis
+        progress.update_status(agent_id, ticker, "Analyzing policy impact")
+
+        prompt = (
+            f"请分析以下政策信号对股票 {ticker} 的影响。\n\n"
+            f"分析日期: {end_date}\n\n"
+            + "\n".join(all_policy_text)
+            + "\n\n请严格按 system 中定义的 JSON schema 输出单个 JSON 对象，所有字段必填，禁止自创字段。"
+        )
+
+        impact = call_llm(
+            prompt=prompt,
+            pydantic_model=PolicyImpact,
+            agent_name=agent_id,
+            state=state,
+            default_factory=lambda: PolicyImpact(
+                has_relevant_policy=False,
+                reasoning="LLM analysis failed.",
+            ),
+        )
+
+        reasoning = {
+            "has_relevant_policy": impact.has_relevant_policy,
+            "policy_type": impact.policy_type,
+            "impact_direction": impact.impact_direction,
+            "impact_duration": impact.impact_duration,
+            "impact_magnitude": impact.impact_magnitude,
+            "affected_sectors": impact.affected_sectors,
+            "llm_reasoning": impact.reasoning,
+            "policy_items_scanned": len(market_opinion),
+            "policy_items_relevant": len(policy_items) + len(stock_policy_items),
+        }
+
+        # If no relevant policy, lower confidence
+        if not impact.has_relevant_policy:
+            final_confidence = min(impact.confidence, 30)
+        else:
+            final_confidence = impact.confidence
+
+        policy_analysis[ticker] = {
+            "signal": impact.signal,
+            "confidence": final_confidence,
+            "reasoning": reasoning,
+        }
+
+        progress.update_status(
+            agent_id, ticker, "Done",
+            analysis=json.dumps(reasoning, indent=4, ensure_ascii=False),
+        )
+
+    # Build message
+    message = HumanMessage(
+        content=json.dumps(policy_analysis, ensure_ascii=False),
+        name=agent_id,
+    )
+
+    if state.get("metadata", {}).get("show_reasoning"):
+        show_agent_reasoning(policy_analysis, "China Policy Agent (政策解读)")
+
+    if "analyst_signals" not in state["data"]:
+        state["data"]["analyst_signals"] = {}
+    state["data"]["analyst_signals"][agent_id] = policy_analysis
+
+    progress.update_status(agent_id, None, "Done")
+
+    return {
+        "messages": [message],
+        "data": state["data"],
+    }

@@ -1,0 +1,336 @@
+{
+  "probe_version": "2026-06-21",
+  "time": "2026-06-21T22:23:52.930007",
+  "python": "3.13.14",
+  "baostock_login": {
+    "error_code": "0",
+    "error_msg": "success"
+  },
+  "prices": {
+    "sh.600519": {
+      "label": "贵州茅台-沪市主流",
+      "ok": true,
+      "fields": [
+        "date",
+        "open",
+        "high",
+        "low",
+        "close",
+        "preclose",
+        "volume",
+        "amount",
+        "turn",
+        "pctChg",
+        "peTTM",
+        "pbMRQ",
+        "psTTM",
+        "pcfNcfTTM"
+      ],
+      "row_count": 31,
+      "first_row": [
+        "2026-05-07",
+        "1375.0000000000",
+        "1388.0000000000",
+        "1370.0100000000",
+        "1371.0500000000",
+        "1375.0000000000",
+        "4046147",
+        "5573286314.8600",
+        "0.323100",
+        "-0.287300",
+        "20.757092",
+        "6.337995",
+        "9.793449",
+        "1209.255396"
+      ],
+      "last_row": [
+        "2026-06-18",
+        "1235.0000000000",
+        "1238.8700000000",
+        "1211.2200000000",
+        "1215.0000000000",
+        "1240.0000000000",
+        "5747173",
+        "7016713941.4000",
+        "0.459700",
+        "-2.016100",
+        "18.362416",
+        "5.606802",
+        "8.663611",
+        "1069.747625"
+      ],
+      "valuation_sample": {
+        "peTTM": "18.362416",
+        "pbMRQ": "5.606802",
+        "psTTM": "8.663611"
+      }
+    },
+    "sz.000333": {
+      "label": "美的集团-深市",
+      "ok": true,
+      "fields": [
+        "date",
+        "open",
+        "high",
+        "low",
+        "close",
+        "preclose",
+        "volume",
+        "amount",
+        "turn",
+        "pctChg",
+        "peTTM",
+        "pbMRQ",
+        "psTTM",
+        "pcfNcfTTM"
+      ],
+      "row_count": 31,
+      "first_row": [
+        "2026-05-07",
+        "80.0000000000",
+        "80.9800000000",
+        "79.7700000000",
+        "79.8100000000",
+        "80.4400000000",
+        "37217647",
+        "2988466108.9400",
+        "0.542900",
+        "-0.783200",
+        "13.736017",
+        "2.613348",
+        "1.315053",
+        "26.860800"
+      ],
+      "last_row": [
+        "2026-06-18",
+        "79.2300000000",
+        "79.4900000000",
+        "77.8000000000",
+        "78.0000000000",
+        "79.2200000000",
+        "36366779",
+        "2850857596.0600",
+        "0.530000",
+        "-1.540000",
+        "13.436169",
+        "2.556300",
+        "1.286347",
+        "26.274448"
+      ],
+      "valuation_sample": {
+        "peTTM": "13.436169",
+        "pbMRQ": "2.556300",
+        "psTTM": "1.286347"
+      }
+    },
+    "sh.605788": {
+      "label": "次新股(之前出问题的)",
+      "ok": false,
+      "fields": [
+        "date",
+        "open",
+        "high",
+        "low",
+        "close",
+        "preclose",
+        "volume",
+        "amount",
+        "turn",
+        "pctChg",
+        "peTTM",
+        "pbMRQ",
+        "psTTM",
+        "pcfNcfTTM"
+      ],
+      "row_count": 0,
+      "first_row": null,
+      "last_row": null
+    }
+  },
+  "financials": {
+    "chosen_quarter": [
+      2026,
+      1
+    ],
+    "profit": {
+      "desc": "利润(ROE/净利率/毛利率/净利润)",
+      "ok": true,
+      "year": 2026,
+      "quarter": 1,
+      "fields": [
+        "code",
+        "pubDate",
+        "statDate",
+        "roeAvg",
+        "npMargin",
+        "gpMargin",
+        "netProfit",
+        "epsTTM",
+        "MBRevenue",
+        "totalShare",
+        "liqaShare"
+      ],
+      "first_row": [
+        "sh.600519",
+        "2026-04-25",
+        "2026-03-31",
+        "0.105687",
+        "0.522245",
+        "0.897592",
+        "28153831489.890000",
+        "66.052123",
+        "",
+        "1252270215.00",
+        "1252270215.00"
+      ]
+    },
+    "balance": {
+      "desc": "资产负债(流动比/资产负债率)",
+      "ok": true,
+      "year": 2026,
+      "quarter": 1,
+      "fields": [
+        "code",
+        "pubDate",
+        "statDate",
+        "currentRatio",
+        "quickRatio",
+        "cashRatio",
+        "YOYLiability",
+        "liabilityToAsset",
+        "assetToEquity"
+      ],
+      "first_row": [
+        "sh.600519",
+        "2026-04-25",
+        "2026-03-31",
+        "7.060729",
+        "5.482485",
+        "1.268650",
+        "-0.122128",
+        "0.121227",
+        "1.137951"
+      ]
+    },
+    "cash_flow": {
+      "desc": "现金流",
+      "ok": true,
+      "year": 2026,
+      "quarter": 1,
+      "fields": [
+        "code",
+        "pubDate",
+        "statDate",
+        "CAToAsset",
+        "NCAToAsset",
+        "tangibleAssetToAsset",
+        "ebitToInterest",
+        "CFOToOR",
+        "CFOToNP",
+        "CFOToGr"
+      ],
+      "first_row": [
+        "sh.600519",
+        "2026-04-25",
+        "2026-03-31",
+        "0.848729",
+        "0.151271",
+        "0.801239",
+        "",
+        "0.499170",
+        "0.955816",
+        "0.491928"
+      ]
+    },
+    "growth": {
+      "desc": "成长(净利同比等)",
+      "ok": true,
+      "year": 2026,
+      "quarter": 1,
+      "fields": [
+        "code",
+        "pubDate",
+        "statDate",
+        "YOYEquity",
+        "YOYAsset",
+        "YOYNI",
+        "YOYEPSBasic",
+        "YOYPNI"
+      ],
+      "first_row": [
+        "sh.600519",
+        "2026-04-25",
+        "2026-03-31",
+        "0.048523",
+        "0.024171",
+        "0.013653",
+        "0.017774",
+        "0.014714"
+      ]
+    },
+    "operation": {
+      "desc": "运营(周转率)",
+      "ok": true,
+      "year": 2026,
+      "quarter": 1,
+      "fields": [
+        "code",
+        "pubDate",
+        "statDate",
+        "NRTurnRatio",
+        "NRTurnDays",
+        "INVTurnRatio",
+        "INVTurnDays",
+        "CATurnRatio",
+        "AssetTurnRatio"
+      ],
+      "first_row": [
+        "sh.600519",
+        "2026-04-25",
+        "2026-03-31",
+        "3084.614768",
+        "0.029177",
+        "0.090415",
+        "995.575221",
+        "0.208773",
+        "0.175399"
+      ]
+    },
+    "dupont": {
+      "desc": "杜邦(ROE分解)",
+      "ok": true,
+      "year": 2026,
+      "quarter": 1,
+      "fields": [
+        "code",
+        "pubDate",
+        "statDate",
+        "dupontROE",
+        "dupontAssetStoEquity",
+        "dupontAssetTurn",
+        "dupontPnitoni",
+        "dupontNitogr",
+        "dupontTaxBurden",
+        "dupontIntburden",
+        "dupontEbittogr"
+      ],
+      "first_row": [
+        "sh.600519",
+        "2026-04-25",
+        "2026-03-31",
+        "0.105687",
+        "1.209923",
+        "0.175399",
+        "0.967631",
+        "0.514668",
+        "0.749904",
+        "1.003166",
+        "0.684145"
+      ]
+    }
+  },
+  "notes": [
+    "Baostock 仅支持 A 股；港股(00700/09880等)需继续用新浪/腾讯。",
+    "实时报价继续用腾讯 qt.gtimg.cn；新闻继续用 stock_news_em。"
+  ]
+}
