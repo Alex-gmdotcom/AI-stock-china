@@ -338,11 +338,18 @@ def metrics_from_block(block: dict) -> dict:
     nr_days = _f(o.get("NRTurnDays"))
     inv_days = _f(o.get("INVTurnDays"))
 
+    # ROE 改 TTM 口径:单季 roeAvg 会被 buffett 的 15% 年度阈值误判为"weak"。
+    # 复用 line_items 的权益反推(单一真相源,不重复),roe_ttm = TTM净利 / 权益。
+    _li = line_items_from_block(block)
+    _roe_ttm = ((_li["net_income"] / _li["shareholders_equity"])
+                if (_li.get("net_income") and _li.get("shareholders_equity"))
+                else _f(p.get("roeAvg")))
+
     rec = {
         "gross_margin": _f(p.get("gpMargin")),
         "net_margin": npm,
         "operating_margin": _f(du.get("dupontEbittogr")),       # EBIT/GR 近似
-        "return_on_equity": _f(p.get("roeAvg")),                # 单季 ROE
+        "return_on_equity": _roe_ttm,                           # TTM 口径(原单季 roeAvg 会误判)
         "return_on_assets": (dupont_roe / dupont_a2e
                              if dupont_roe is not None and dupont_a2e else None),
         "asset_turnover": _f(o.get("AssetTurnRatio")),
@@ -389,10 +396,11 @@ def line_items_from_block(block: dict) -> dict:
     c = block.get("cash", {})
     du = block.get("dupont", {})
 
-    net_income = _f(p.get("netProfit"))
+    net_income_q = _f(p.get("netProfit"))   # 单季累计:仅用于平衡表链反推(已离线校验,勿动)
     npm = _f(p.get("npMargin"))
     gpm = _f(p.get("gpMargin"))
     total_share = _f(p.get("totalShare"))
+    eps_ttm = _f(p.get("epsTTM"))
     ebit_to_gr = _f(du.get("dupontEbittogr"))
     asset_turn = _f(du.get("dupontAssetTurn"))
     a2e = _f(b.get("assetToEquity"))
@@ -401,15 +409,23 @@ def line_items_from_block(block: dict) -> dict:
     current_ratio = _f(b.get("currentRatio"))
     cash_ratio = _f(b.get("cashRatio"))
 
-    revenue = (net_income / npm) if (net_income is not None and npm) else None
-    gross_profit = (revenue * gpm) if (revenue is not None and gpm is not None) else None
-    operating_income = (revenue * ebit_to_gr) if (revenue is not None and ebit_to_gr is not None) else None
-    total_assets = (revenue / asset_turn) if (revenue is not None and asset_turn) else None
+    # ── 平衡表链(资产/权益/流动科目):用单季营收反推,口径自洽,已离线校验,勿动 ──
+    revenue_q = (net_income_q / npm) if (net_income_q is not None and npm) else None
+    total_assets = (revenue_q / asset_turn) if (revenue_q is not None and asset_turn) else None
     shareholders_equity = (total_assets / a2e) if (total_assets is not None and a2e) else None
     total_liabilities = (total_assets * liab_to_asset) if (total_assets is not None and liab_to_asset is not None) else None
     current_assets = (total_assets * ca_to_asset) if (total_assets is not None and ca_to_asset is not None) else None
     current_liabilities = (current_assets / current_ratio) if (current_assets is not None and current_ratio) else None
     cash_and_equiv = (cash_ratio * current_liabilities) if (cash_ratio is not None and current_liabilities is not None) else None
+
+    # ── 流量科目(净利/营收/毛利/营业利润):输出 TTM,而非单季累计 ──
+    # buffett/valuation 等 agent 按年度/TTM 口径消费流量科目;单季累计会让增长率
+    # (如把 Q1 单季当全年去比 FY)、residual income 内在价值等口径全错。
+    # baostock 现成提供 epsTTM → TTM 净利 = epsTTM × totalShare。
+    net_income = (eps_ttm * total_share) if (eps_ttm is not None and total_share is not None) else None
+    revenue = (net_income / npm) if (net_income is not None and npm) else None
+    gross_profit = (revenue * gpm) if (revenue is not None and gpm is not None) else None
+    operating_income = (revenue * ebit_to_gr) if (revenue is not None and ebit_to_gr is not None) else None
 
     return {
         "revenue": revenue,
