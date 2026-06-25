@@ -103,7 +103,7 @@ poetry run python src/web_app.py
 
 按 docs/openclaw_task.md 在 openclaw 侧配置 taskflow 定时任务
 （agent-reach 跨平台搜索 → 写 `~/.ai-hedge-fund/external_brief.md`），
-早晚报快照会自动多出【外部信源简报】段；飞书推送给郑超也在该文档（任务三）。
+早晚报快照会自动多出【外部信源简报】段；飞书推送给同事也在该文档（任务三）。
 openclaw 不在线时系统照常运行，安全降级。
 
 ## 六、开源发布提醒

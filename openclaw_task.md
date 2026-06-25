@@ -7,7 +7,7 @@
 | **agent-reach** | 微博/雪球/微信文章/Twitter/Reddit 跨平台搜索——补齐社交舆情与海外视角（openclaw 早报里 NYT 报道、SemiAnalysis 这类信源就来自这里） | 核心 |
 | **web-tools-guide** | search→fetch 拿宏观要闻、隔夜大宗（油/铜/多晶硅夜盘） | 核心 |
 | **taskflow** | 定时编排下面两个简报任务 | 核心 |
-| **feishu 插件** | 把生成好的早晚报直接推给郑超——待办清单里的"飞书推送脚本"不用再写 Python 了，openclaw 顺手做 | 推荐 |
+| **feishu 插件** | 把生成好的早晚报直接推给同事——待办清单里的"飞书推送脚本"不用再写 Python 了，openclaw 顺手做 | 推荐 |
 | browser-automation | 需要登录的信源（雪球深度帖等）兜底 | 可选 |
 
 不需要：meme-maker / video-frames / canvas / diagram-maker 等媒体类。
@@ -51,4 +51,4 @@ openclaw 定时写文件，Python 侧读文件（v3.3 已接入）：
 
 早晚报生成后（08:10 / 18:30），让 openclaw 读取
 `%USERPROFILE%\.ai-hedge-fund\briefings\` 下当日最新的
-`YYYY-MM-DD-morning.md` / `-evening.md`，用 feishu 插件发给郑超。
+`YYYY-MM-DD-morning.md` / `-evening.md`，用 feishu 插件发给同事。

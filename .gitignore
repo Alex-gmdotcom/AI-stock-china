@@ -67,3 +67,16 @@ outputs/
 
 # Alembic (keep migration files, but ignore generated/cache files)
 app/backend/alembic/versions/__pycache__/
+
+# === 过程产物(cleanup_repo.py 追加) ===
+deploy_*.py
+apply_*.py
+*.bak
+*.bak[0-9]
+*.tar.gz
+_aihf_backup_*/
+deploy_backup/
+phase1_backup/
+phase2_backup/
+phase2_hotfix_backup/
+baostock_probe*
