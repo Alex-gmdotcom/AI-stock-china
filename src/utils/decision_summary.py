@@ -141,9 +141,10 @@ def summarize_ticker(ticker: str, decision: dict | None, analyst_signals: dict) 
         if ticker.upper().endswith(".HK"):
             out.append(f"  → 港股数据覆盖弱属正常，建议改用: --analysts {HK_SUGGESTED_ANALYSTS}")
         else:
-            out.append("  → 注: 估值/资金/板块类 agent 依赖东财/同花顺财报·板块数据，"
-                       "海外 IP 直连受限，需国内 VPS/代理通道；"
-                       "趋势(technical)与叙事(舆情/政策)数据可达，应为有效信号。")
+            out.append("  → 注: 数据缺口与 IP 无关 —— 估值/巴菲特类缺现金流绝对科目"
+                       "(FCF/capex/折旧),待激活 Tushare;资金流/板块类为东财接口反爬"
+                       "间歇 drop,已自动降级(可重试)。趋势(technical)与叙事(舆情/政策)"
+                       "数据可达,为有效信号。")
 
     # 实时价格锚点（腾讯源，失败静默跳过，不影响结论输出）
     try:

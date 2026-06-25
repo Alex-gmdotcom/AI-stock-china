@@ -1909,6 +1909,31 @@ def get_margin_trading(limit: int = 30) -> list:
 
 
 # ---------------------------------------------------------------------------
+# 东财类接口的间歇性连接 drop 重试(病根#1:TLS 反爬偶发 RemoteDisconnected,
+# 与 IP 无关、非确定性)。仅对连接级错误有限重试+指数退避;数据级错误/空结果不碰。
+# 最坏情况:重试耗尽仍由各调用方 except → 返回 [](与改前一致,不回归)。
+# ---------------------------------------------------------------------------
+def _retry_conn(fn, *, tries: int = 3, base_delay: float = 0.6):
+    last = None
+    for attempt in range(tries):
+        try:
+            return fn()
+        except Exception as exc:  # noqa: BLE001
+            s = str(exc)
+            transient = (
+                "Connection aborted" in s or "RemoteDisconnected" in s
+                or "Connection reset" in s or "timed out" in s.lower()
+                or "ConnectionError" in type(exc).__name__
+            )
+            if not transient or attempt == tries - 1:
+                raise
+            last = exc
+            time.sleep(base_delay * (2 ** attempt))
+    if last:
+        raise last
+
+
+# ---------------------------------------------------------------------------
 # 3. get_main_capital_flow — 个股主力资金
 # ---------------------------------------------------------------------------
 
@@ -1930,9 +1955,9 @@ def get_main_capital_flow(ticker: str, limit: int = 20) -> list:
     ensure_no_proxy()
     market_arg = market.lower()  # 'sh' / 'sz' / 'bj'
     try:
-        df = _ak.stock_individual_fund_flow(
+        df = _retry_conn(lambda: _ak.stock_individual_fund_flow(
             stock=_ak_a_symbol(norm), market=market_arg,
-        )
+        ))
     except Exception as exc:
         _logger.warning("stock_individual_fund_flow(%s) 失败: %s", ticker, exc)
         return []
@@ -2064,7 +2089,7 @@ def get_sector_performance(limit: int = 50) -> list:
         return []
     ensure_no_proxy()
     try:
-        df = _ak.stock_board_industry_name_em()
+        df = _retry_conn(lambda: _ak.stock_board_industry_name_em())
     except Exception as exc:
         _logger.warning("stock_board_industry_name_em 失败: %s", exc)
         return []
