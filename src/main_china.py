@@ -293,6 +293,15 @@ Available analysts:
 
 def main():
     """Main entry point."""
+    # Windows 下重定向到文件时 stdout 默认走 GBK,编不出 ✓/emoji/部分中文 → UnicodeEncodeError。
+    # 入口处强制 UTF-8,避免任何运行方式(管道/重定向/控制台)被本地编码噎住。
+    import sys as _sys
+    for _stream in (_sys.stdout, _sys.stderr):
+        try:
+            _stream.reconfigure(encoding="utf-8")
+        except Exception:
+            pass
+
     print(f"\n{Fore.CYAN}{'='*60}{Style.RESET_ALL}")
     print(f"{Fore.CYAN}  AI Hedge Fund — China / Hong Kong Market Edition{Style.RESET_ALL}")
     print(f"{Fore.CYAN}{'='*60}{Style.RESET_ALL}\n")
