@@ -1,0 +1,1707 @@
+C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\langgraph\checkpoint\base\__init__.py:18: LangChainPendingDeprecationWarning: The default value of `allowed_objects` will change in a future version. Pass an explicit value (e.g., allowed_objects='messages' or allowed_objects='core') to suppress this warning.
+  from langgraph.checkpoint.serde.jsonplus import JsonPlusSerializer
+
+============================================================
+  AI Hedge Fund — China / Hong Kong Market Edition
+============================================================
+
+  ✓ 09880.HK (HKEX (港股))
+  ✓ 09660.HK (HKEX (港股))
+
+Market mode: HK
+Date range: 2026-04-01 → 2026-07-01
+检测到纯港股标的，自动切换港股分析师组合: china_public_opinion, china_policy, china_capital_flow, technical_analyst, fundamentals_analyst, valuation_analyst, growth_analyst, nassim_taleb, warren_buffett, peter_lynch
+模型自动选择: DeepSeek / deepseek-v4-flash
+
+--- 09880.HK ---
+  Market: HKEX (港股)
+  No daily price limit.
+  Settlement: T+2
+  Short selling: available. 可沽空指定证券名单内的股票
+  Minimum lot size: 100 shares
+  Currency: HKD
+
+--- 09660.HK ---
+  Market: HKEX (港股)
+  No daily price limit.
+  Settlement: T+2
+  Short selling: available. 可沽空指定证券名单内的股票
+  Minimum lot size: 100 shares
+  Currency: HKD
+
+Running analysis...
+
+[boot] NO_PROXY injected: 30 hosts total (26 from AKShare whitelist)
+  0%|          | 0/3 [00:00<?, ?it/s] 33%|███▎      | 1/3 [00:01<00:03,  1.97s/it]
+  0%|          | 0/46 [00:00<?, ?it/s]
+
+  0%|          | 0/46 [00:00<?, ?it/s]
+
+
+  0%|          | 0/46 [00:00<?, ?it/s]
+
+
+
+  0%|          | 0/46 [00:00<?, ?it/s] 67%|██████▋   | 2/3 [00:03<00:01,  1.79s/it]
+
+
+
+
+  0%|          | 0/46 [00:00<?, ?it/s]100%|██████████| 3/3 [00:05<00:00,  1.82s/it]                                             
+  2%|▏         | 1/46 [00:02<01:57,  2.62s/it]
+
+
+  2%|▏         | 1/46 [00:02<01:55,  2.56s/it]
+
+
+
+  2%|▏         | 1/46 [00:02<01:46,  2.37s/it]
+
+  2%|▏         | 1/46 [00:02<02:01,  2.71s/it]  0%|          | 0/7 [00:00<?, ?it/s]
+
+
+
+
+  2%|▏         | 1/46 [00:02<02:08,  2.85s/it] 14%|█▍        | 1/7 [00:01<00:08,  1.39s/it]
+
+
+  4%|▍         | 2/46 [00:04<01:43,  2.35s/it]
+  4%|▍         | 2/46 [00:05<01:53,  2.59s/it]
+
+
+
+  4%|▍         | 2/46 [00:04<01:48,  2.48s/it]
+
+
+
+
+
+  0%|          | 0/46 [00:00<?, ?it/s]
+
+  4%|▍         | 2/46 [00:05<02:02,  2.79s/it] 29%|██▊       | 2/7 [00:02<00:06,  1.30s/it] 43%|████▎     | 3/7 [00:03<00:05,  1.29s/it] 57%|█████▋    | 4/7 [00:04<00:03,  1.21s/it]
+
+
+  7%|▋         | 3/46 [00:09<02:27,  3.43s/it] 71%|███████▏  | 5/7 [00:06<00:02,  1.22s/it]
+
+
+
+
+  4%|▍         | 2/46 [00:08<03:16,  4.47s/it]
+
+
+
+  7%|▋         | 3/46 [00:10<02:42,  3.79s/it] 86%|████████▌ | 6/7 [00:07<00:01,  1.29s/it]100%|██████████| 7/7 [00:08<00:00,  1.25s/it]                                             
+
+
+  9%|▊         | 4/46 [00:14<02:54,  4.16s/it]
+
+  7%|▋         | 3/46 [00:14<04:09,  5.80s/it]
+
+
+
+
+  7%|▋         | 3/46 [00:13<03:24,  4.76s/it]
+  7%|▋         | 3/46 [00:15<04:26,  6.20s/it]
+
+
+
+
+
+  2%|▏         | 1/46 [00:10<07:46, 10.38s/it]
+
+
+
+  9%|▊         | 4/46 [00:16<03:18,  4.72s/it]
+
+
+
+
+  9%|▊         | 4/46 [00:15<02:31,  3.62s/it]
+
+
+ 11%|█         | 5/46 [00:16<02:19,  3.41s/it]
+
+  9%|▊         | 4/46 [00:17<03:10,  4.54s/it]
+  9%|▊         | 4/46 [00:17<03:15,  4.66s/it]
+
+
+
+
+
+  4%|▍         | 2/46 [00:13<04:17,  5.85s/it]
+
+
+
+
+ 11%|█         | 5/46 [00:17<02:10,  3.18s/it]
+
+
+ 13%|█▎        | 6/46 [00:19<02:02,  3.06s/it]
+
+
+
+ 11%|█         | 5/46 [00:19<02:45,  4.05s/it]
+
+ 11%|█         | 5/46 [00:19<02:30,  3.68s/it]
+ 11%|█         | 5/46 [00:20<02:37,  3.85s/it]
+
+
+
+
+
+  7%|▋         | 3/46 [00:15<02:59,  4.18s/it]
+
+
+
+
+ 13%|█▎        | 6/46 [00:19<01:48,  2.70s/it]
+
+
+ 15%|█▌        | 7/46 [00:21<01:48,  2.77s/it]
+
+
+
+ 13%|█▎        | 6/46 [00:21<02:20,  3.52s/it]
+ 13%|█▎        | 6/46 [00:22<02:11,  3.29s/it]
+
+
+
+
+
+  9%|▊         | 4/46 [00:17<02:18,  3.29s/it]
+
+ 13%|█▎        | 6/46 [00:22<02:14,  3.37s/it]
+
+
+ 17%|█▋        | 8/46 [00:23<01:38,  2.60s/it]
+
+
+
+ 15%|█▌        | 7/46 [00:23<01:59,  3.05s/it]
+ 15%|█▌        | 7/46 [00:24<01:51,  2.85s/it]
+
+ 15%|█▌        | 7/46 [00:24<01:54,  2.95s/it]
+
+
+
+
+
+ 11%|█         | 5/46 [00:19<02:03,  3.01s/it]
+
+
+ 20%|█▉        | 9/46 [00:28<02:05,  3.38s/it]
+
+
+
+ 17%|█▋        | 8/46 [00:28<02:20,  3.69s/it]
+ 17%|█▋        | 8/46 [00:30<02:20,  3.71s/it]
+
+
+
+
+                                              
+
+
+
+ 20%|█▉        | 9/46 [00:33<02:30,  4.08s/it]
+
+ 17%|█▋        | 8/46 [00:34<03:15,  5.15s/it]
+ 20%|█▉        | 9/46 [00:34<02:29,  4.04s/it]
+
+
+
+
+
+ 13%|█▎        | 6/46 [00:29<03:35,  5.38s/it]
+
+
+ 22%|██▏       | 10/46 [00:34<02:32,  4.24s/it]
+
+
+ 24%|██▍       | 11/46 [00:36<02:03,  3.54s/it]
+
+
+
+ 22%|██▏       | 10/46 [00:36<02:12,  3.69s/it]
+
+ 20%|█▉        | 9/46 [00:36<02:40,  4.34s/it]
+ 22%|██▏       | 10/46 [00:37<02:07,  3.54s/it]
+
+
+
+
+
+ 15%|█▌        | 7/46 [00:32<02:51,  4.39s/it]  0%|          | 0/46 [00:00<?, ?it/s]
+
+
+ 26%|██▌       | 12/46 [00:38<01:42,  3.00s/it]
+
+ 22%|██▏       | 10/46 [00:38<02:10,  3.62s/it]  2%|▏         | 1/46 [00:02<01:53,  2.53s/it]
+
+
+ 28%|██▊       | 13/46 [00:40<01:31,  2.79s/it]
+
+ 24%|██▍       | 11/46 [00:43<02:18,  3.97s/it]
+
+
+
+
+
+ 17%|█▋        | 8/46 [00:40<03:32,  5.59s/it]
+
+ 26%|██▌       | 12/46 [00:45<01:54,  3.38s/it]  4%|▍         | 2/46 [00:07<03:02,  4.15s/it]
+
+
+ 30%|███       | 14/46 [00:46<01:56,  3.65s/it]
+
+
+
+ 24%|██▍       | 11/46 [00:46<03:14,  5.55s/it]
+ 24%|██▍       | 11/46 [00:46<03:10,  5.43s/it]
+
+
+
+
+
+ 20%|█▉        | 9/46 [00:42<02:45,  4.47s/it]  7%|▋         | 3/46 [00:09<02:15,  3.14s/it]
+
+ 28%|██▊       | 13/46 [00:47<01:38,  3.00s/it]
+
+
+ 33%|███▎      | 15/46 [00:48<01:35,  3.09s/it]
+
+
+
+ 26%|██▌       | 12/46 [00:56<03:52,  6.83s/it]
+ 26%|██▌       | 12/46 [00:56<03:50,  6.78s/it]
+
+
+
+
+
+ 22%|██▏       | 10/46 [00:51<03:40,  6.12s/it]
+
+
+ 35%|███▍      | 16/46 [00:57<02:26,  4.87s/it]
+
+ 30%|███       | 14/46 [00:57<02:38,  4.96s/it]  9%|▊         | 4/46 [00:19<03:59,  5.71s/it]
+
+
+
+ 28%|██▊       | 13/46 [00:58<02:55,  5.32s/it]
+ 28%|██▊       | 13/46 [00:59<03:02,  5.54s/it]
+
+
+ 37%|███▋      | 17/46 [00:59<01:56,  4.03s/it]
+
+
+
+
+
+ 24%|██▍       | 11/46 [00:54<02:55,  5.01s/it]
+
+ 33%|███▎      | 15/46 [00:59<02:10,  4.22s/it] 11%|█         | 5/46 [00:21<03:06,  4.56s/it]
+ 30%|███       | 14/46 [01:04<02:49,  5.31s/it] 13%|█▎        | 6/46 [00:26<03:05,  4.64s/it]
+
+
+ 39%|███▉      | 18/46 [01:04<02:04,  4.45s/it]
+
+ 35%|███▍      | 16/46 [01:04<02:14,  4.47s/it]
+
+
+
+                                               
+
+
+
+
+
+                                               
+
+
+ 41%|████▏     | 19/46 [01:10<02:08,  4.75s/it]
+
+
+
+  0%|          | 0/46 [00:00<?, ?it/s]
+
+ 37%|███▋      | 17/46 [01:10<02:17,  4.75s/it] 15%|█▌        | 7/46 [00:32<03:17,  5.07s/it]
+
+
+ 43%|████▎     | 20/46 [01:12<01:41,  3.92s/it]
+
+
+
+  2%|▏         | 1/46 [00:02<01:57,  2.61s/it]
+
+ 39%|███▉      | 18/46 [01:13<01:55,  4.12s/it] 17%|█▋        | 8/46 [00:34<02:39,  4.19s/it]
+ 33%|███▎      | 15/46 [01:13<03:18,  6.41s/it]
+
+
+ 46%|████▌     | 21/46 [01:14<01:21,  3.28s/it]
+
+
+
+  4%|▍         | 2/46 [00:04<01:30,  2.06s/it] 20%|█▉        | 9/46 [00:37<02:15,  3.65s/it]
+
+ 41%|████▏     | 19/46 [01:15<01:39,  3.69s/it]
+ 35%|███▍      | 16/46 [01:16<02:39,  5.32s/it]
+
+
+ 48%|████▊     | 22/46 [01:16<01:11,  2.96s/it]
+
+
+
+  7%|▋         | 3/46 [00:07<01:41,  2.37s/it] 22%|██▏       | 10/46 [00:39<01:53,  3.15s/it]
+
+ 43%|████▎     | 20/46 [01:18<01:26,  3.32s/it]
+
+
+ 50%|█████     | 23/46 [01:18<01:01,  2.69s/it]
+ 37%|███▋      | 17/46 [01:18<02:11,  4.55s/it]
+
+
+
+  9%|▊         | 4/46 [00:08<01:29,  2.14s/it]
+
+ 46%|████▌     | 21/46 [01:20<01:14,  2.96s/it] 24%|██▍       | 11/46 [00:42<01:46,  3.03s/it]
+ 39%|███▉      | 18/46 [01:20<01:46,  3.79s/it]
+
+
+ 52%|█████▏    | 24/46 [01:20<00:56,  2.59s/it] 26%|██▌       | 12/46 [00:44<01:31,  2.69s/it]
+
+ 48%|████▊     | 22/46 [01:22<01:03,  2.66s/it]
+
+
+
+
+  0%|          | 0/46 [00:00<?, ?it/s]
+ 41%|████▏     | 19/46 [01:22<01:27,  3.24s/it]
+
+
+
+ 11%|█         | 5/46 [00:18<03:23,  4.95s/it]
+
+
+ 54%|█████▍    | 25/46 [01:30<01:38,  4.71s/it]
+
+
+
+ 13%|█▎        | 6/46 [00:21<02:44,  4.12s/it]
+ 43%|████▎     | 20/46 [01:32<02:11,  5.05s/it] 28%|██▊       | 13/46 [00:54<02:41,  4.90s/it]
+
+
+
+
+  2%|▏         | 1/46 [00:09<07:21,  9.81s/it]
+
+ 50%|█████     | 23/46 [01:32<01:55,  5.01s/it]
+
+
+ 57%|█████▋    | 26/46 [01:32<01:20,  4.05s/it]
+
+
+
+ 15%|█▌        | 7/46 [00:23<02:21,  3.62s/it]
+ 46%|████▌     | 21/46 [01:34<01:46,  4.27s/it] 30%|███       | 14/46 [00:56<02:14,  4.20s/it]
+
+
+
+
+  4%|▍         | 2/46 [00:12<04:04,  5.56s/it]
+
+ 52%|█████▏    | 24/46 [01:35<01:34,  4.28s/it]
+
+
+ 59%|█████▊    | 27/46 [01:35<01:07,  3.57s/it]
+ 48%|████▊     | 22/46 [01:36<01:28,  3.67s/it]
+
+
+
+ 17%|█▋        | 8/46 [00:26<02:06,  3.32s/it] 33%|███▎      | 15/46 [00:58<01:51,  3.61s/it]
+
+
+
+
+  7%|▋         | 3/46 [00:14<02:52,  4.01s/it]
+
+ 54%|█████▍    | 25/46 [01:37<01:15,  3.61s/it]
+
+
+ 61%|██████    | 28/46 [01:37<00:56,  3.14s/it]
+ 50%|█████     | 23/46 [01:39<01:15,  3.27s/it]
+
+
+
+ 20%|█▉        | 9/46 [00:28<01:50,  2.99s/it]
+
+
+
+
+  9%|▊         | 4/46 [00:16<02:18,  3.29s/it]
+
+
+ 63%|██████▎   | 29/46 [01:39<00:47,  2.78s/it] 35%|███▍      | 16/46 [01:01<01:40,  3.35s/it]
+
+ 57%|█████▋    | 26/46 [01:40<01:06,  3.33s/it]
+ 52%|█████▏    | 24/46 [01:41<01:05,  2.97s/it]
+
+
+
+ 22%|██▏       | 10/46 [00:31<01:41,  2.81s/it]
+
+
+ 65%|██████▌   | 30/46 [01:42<00:43,  2.72s/it]
+
+ 59%|█████▊    | 27/46 [01:42<00:55,  2.93s/it]
+
+
+
+
+ 11%|█         | 5/46 [00:19<02:06,  3.08s/it] 37%|███▋      | 17/46 [01:04<01:29,  3.10s/it]
+ 54%|█████▍    | 25/46 [01:43<00:58,  2.77s/it]
+
+
+
+ 24%|██▍       | 11/46 [00:33<01:35,  2.74s/it] 39%|███▉      | 18/46 [01:06<01:17,  2.75s/it]
+
+ 61%|██████    | 28/46 [01:44<00:49,  2.77s/it]
+
+
+ 67%|██████▋   | 31/46 [01:44<00:39,  2.65s/it]
+
+
+
+
+ 13%|█▎        | 6/46 [00:22<01:57,  2.94s/it]
+ 57%|█████▋    | 26/46 [01:45<00:49,  2.46s/it] 41%|████▏     | 19/46 [01:08<01:08,  2.53s/it]
+
+
+ 70%|██████▉   | 32/46 [01:46<00:33,  2.43s/it]
+
+
+
+ 26%|██▌       | 12/46 [00:36<01:29,  2.64s/it]
+
+ 63%|██████▎   | 29/46 [01:46<00:45,  2.67s/it]
+
+
+
+
+ 15%|█▌        | 7/46 [00:24<01:45,  2.72s/it]
+ 59%|█████▊    | 27/46 [01:47<00:44,  2.35s/it] 43%|████▎     | 20/46 [01:10<01:06,  2.54s/it]
+
+
+ 72%|███████▏  | 33/46 [01:55<00:56,  4.37s/it]
+
+
+
+
+ 17%|█▋        | 8/46 [00:33<03:01,  4.78s/it]
+
+
+
+ 28%|██▊       | 13/46 [00:46<02:39,  4.82s/it]
+
+ 65%|██████▌   | 30/46 [01:56<01:16,  4.75s/it] 46%|████▌     | 21/46 [01:18<01:45,  4.23s/it]
+ 61%|██████    | 28/46 [01:57<01:21,  4.52s/it]
+
+
+ 74%|███████▍  | 34/46 [01:57<00:44,  3.67s/it]
+
+
+
+
+ 20%|█▉        | 9/46 [00:36<02:29,  4.05s/it]
+
+
+
+ 30%|███       | 14/46 [00:48<02:11,  4.10s/it] 48%|████▊     | 22/46 [01:20<01:25,  3.55s/it]
+
+ 67%|██████▋   | 31/46 [01:59<01:02,  4.18s/it]
+ 63%|██████▎   | 29/46 [01:59<01:07,  3.95s/it]
+
+
+ 76%|███████▌  | 35/46 [01:59<00:35,  3.25s/it] 50%|█████     | 23/46 [01:22<01:10,  3.05s/it]
+
+
+
+ 33%|███▎      | 15/46 [00:51<01:52,  3.64s/it]
+
+
+
+
+ 22%|██▏       | 10/46 [00:38<02:13,  3.70s/it]
+
+ 70%|██████▉   | 32/46 [02:01<00:50,  3.61s/it]
+
+
+ 78%|███████▊  | 36/46 [02:01<00:28,  2.87s/it]
+ 65%|██████▌   | 30/46 [02:02<00:55,  3.47s/it] 52%|█████▏    | 24/46 [01:24<01:01,  2.80s/it]
+
+
+
+ 35%|███▍      | 16/46 [00:53<01:35,  3.20s/it]
+
+
+
+
+ 24%|██▍       | 11/46 [00:41<01:53,  3.24s/it]
+
+
+ 80%|████████  | 37/46 [02:04<00:25,  2.80s/it]
+
+ 72%|███████▏  | 33/46 [02:04<00:43,  3.32s/it]
+ 67%|██████▋   | 31/46 [02:04<00:48,  3.22s/it] 54%|█████▍    | 25/46 [01:27<00:55,  2.65s/it]
+
+ 74%|███████▍  | 34/46 [02:06<00:34,  2.91s/it]
+
+
+
+ 37%|███▋      | 17/46 [00:55<01:28,  3.04s/it]
+
+
+
+
+ 26%|██▌       | 12/46 [00:43<01:42,  3.01s/it]
+ 70%|██████▉   | 32/46 [02:06<00:40,  2.90s/it]
+
+
+ 83%|████████▎ | 38/46 [02:06<00:22,  2.76s/it] 57%|█████▋    | 26/46 [01:29<00:51,  2.56s/it]
+
+
+
+ 39%|███▉      | 18/46 [00:57<01:15,  2.70s/it]
+
+
+
+
+ 28%|██▊       | 13/46 [00:45<01:31,  2.76s/it]
+
+
+ 85%|████████▍ | 39/46 [02:08<00:17,  2.52s/it]
+ 72%|███████▏  | 33/46 [02:09<00:36,  2.77s/it]
+
+
+
+ 41%|████▏     | 19/46 [00:59<01:08,  2.52s/it] 59%|█████▊    | 27/46 [01:32<00:48,  2.57s/it]
+
+
+
+
+ 30%|███       | 14/46 [00:48<01:23,  2.60s/it]
+ 74%|███████▍  | 34/46 [02:11<00:30,  2.55s/it]
+
+
+ 87%|████████▋ | 40/46 [02:11<00:15,  2.55s/it]
+
+ 76%|███████▌  | 35/46 [02:11<00:40,  3.68s/it] 61%|██████    | 28/46 [01:34<00:45,  2.52s/it]
+
+
+
+
+ 33%|███▎      | 15/46 [00:50<01:15,  2.43s/it]
+
+
+
+ 43%|████▎     | 20/46 [01:02<01:06,  2.58s/it]
+
+
+ 89%|████████▉ | 41/46 [02:13<00:11,  2.34s/it]
+ 76%|███████▌  | 35/46 [02:14<00:28,  2.59s/it]
+
+ 78%|███████▊  | 36/46 [02:13<00:32,  3.26s/it]
+
+
+
+
+ 35%|███▍      | 16/46 [00:51<01:07,  2.25s/it] 63%|██████▎   | 29/46 [01:36<00:39,  2.34s/it]
+
+
+ 91%|█████████▏| 42/46 [02:15<00:08,  2.21s/it]
+
+
+
+ 46%|████▌     | 21/46 [01:04<01:02,  2.51s/it]
+ 78%|███████▊  | 36/46 [02:15<00:23,  2.34s/it] 65%|██████▌   | 30/46 [01:38<00:35,  2.19s/it]
+
+ 80%|████████  | 37/46 [02:16<00:28,  3.11s/it]
+
+
+
+
+ 37%|███▋      | 17/46 [00:54<01:05,  2.27s/it]
+
+
+ 93%|█████████▎| 43/46 [02:17<00:06,  2.25s/it]
+ 80%|████████  | 37/46 [02:17<00:20,  2.29s/it]
+
+
+
+ 48%|████▊     | 22/46 [01:07<01:02,  2.59s/it] 67%|██████▋   | 31/46 [01:40<00:31,  2.08s/it]
+
+
+
+
+ 39%|███▉      | 18/46 [00:56<01:04,  2.30s/it]
+
+ 83%|████████▎ | 38/46 [02:19<00:23,  2.95s/it]
+
+
+ 96%|█████████▌| 44/46 [02:19<00:04,  2.17s/it]
+
+
+
+ 50%|█████     | 23/46 [01:09<00:54,  2.37s/it] 70%|██████▉   | 32/46 [01:42<00:28,  2.04s/it]
+ 83%|████████▎ | 38/46 [02:20<00:19,  2.40s/it]
+
+ 85%|████████▍ | 39/46 [02:21<00:19,  2.73s/it]
+
+
+ 98%|█████████▊| 45/46 [02:21<00:02,  2.20s/it]
+ 85%|████████▍ | 39/46 [02:22<00:15,  2.26s/it]
+
+
+
+ 52%|█████▏    | 24/46 [01:12<00:53,  2.41s/it] 72%|███████▏  | 33/46 [01:44<00:27,  2.12s/it]
+
+ 87%|████████▋ | 40/46 [02:23<00:15,  2.54s/it]
+ 87%|████████▋ | 40/46 [02:24<00:12,  2.10s/it]
+
+
+100%|██████████| 46/46 [02:24<00:00,  2.32s/it]
+
+
+                                               C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\akshare\stock_feature\stock_hist_em.py:1297: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  temp_df["序号"] = pd.to_numeric(temp_df["序号"], errors="coerce")
+C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\akshare\stock_feature\stock_hist_em.py:1298: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  temp_df["最新价"] = pd.to_numeric(temp_df["最新价"], errors="coerce")
+C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\akshare\stock_feature\stock_hist_em.py:1299: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  temp_df["涨跌额"] = pd.to_numeric(temp_df["涨跌额"], errors="coerce")
+C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\akshare\stock_feature\stock_hist_em.py:1300: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  temp_df["涨跌幅"] = pd.to_numeric(temp_df["涨跌幅"], errors="coerce")
+C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\akshare\stock_feature\stock_hist_em.py:1301: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  temp_df["今开"] = pd.to_numeric(temp_df["今开"], errors="coerce")
+C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\akshare\stock_feature\stock_hist_em.py:1302: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  temp_df["最高"] = pd.to_numeric(temp_df["最高"], errors="coerce")
+C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\akshare\stock_feature\stock_hist_em.py:1303: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  temp_df["最低"] = pd.to_numeric(temp_df["最低"], errors="coerce")
+C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\akshare\stock_feature\stock_hist_em.py:1304: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  temp_df["昨收"] = pd.to_numeric(temp_df["昨收"], errors="coerce")
+C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\akshare\stock_feature\stock_hist_em.py:1305: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  temp_df["成交量"] = pd.to_numeric(temp_df["成交量"], errors="coerce")
+C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\akshare\stock_feature\stock_hist_em.py:1306: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  temp_df["成交额"] = pd.to_numeric(temp_df["成交额"], errors="coerce")
+
+
+
+
+ 54%|█████▍    | 25/46 [01:14<00:51,  2.46s/it]
+
+
+
+
+ 41%|████▏     | 19/46 [01:02<01:31,  3.39s/it] 74%|███████▍  | 34/46 [01:47<00:27,  2.28s/it]
+
+ 89%|████████▉ | 41/46 [02:26<00:12,  2.55s/it]
+ 89%|████████▉ | 41/46 [02:26<00:10,  2.09s/it] 76%|███████▌  | 35/46 [01:48<00:23,  2.16s/it]
+
+
+
+ 57%|█████▋    | 26/46 [01:17<00:49,  2.48s/it]
+
+
+
+
+ 43%|████▎     | 20/46 [01:05<01:22,  3.19s/it]
+
+
+  0%|          | 0/46 [00:00<?, ?it/s]
+
+ 91%|█████████▏| 42/46 [02:28<00:09,  2.45s/it]
+ 91%|█████████▏| 42/46 [02:29<00:09,  2.25s/it] 78%|███████▊  | 36/46 [01:51<00:21,  2.15s/it]
+
+
+
+ 59%|█████▊    | 27/46 [01:19<00:46,  2.47s/it]
+
+
+  2%|▏         | 1/46 [00:02<01:46,  2.37s/it]
+
+
+
+
+ 46%|████▌     | 21/46 [01:08<01:16,  3.08s/it]
+
+ 93%|█████████▎| 43/46 [02:30<00:07,  2.43s/it]
+ 93%|█████████▎| 43/46 [02:31<00:06,  2.30s/it] 80%|████████  | 37/46 [01:53<00:20,  2.26s/it]
+
+
+
+ 61%|██████    | 28/46 [01:22<00:44,  2.45s/it]
+
+
+
+
+ 48%|████▊     | 22/46 [01:10<01:06,  2.78s/it]
+ 96%|█████████▌| 44/46 [02:33<00:04,  2.17s/it]
+
+ 96%|█████████▌| 44/46 [02:33<00:04,  2.41s/it]
+
+
+  4%|▍         | 2/46 [00:05<01:51,  2.54s/it] 83%|████████▎ | 38/46 [01:56<00:18,  2.32s/it]
+
+
+
+ 63%|██████▎   | 29/46 [01:24<00:42,  2.51s/it]
+
+
+
+
+ 50%|█████     | 23/46 [01:12<01:01,  2.67s/it]
+
+ 98%|█████████▊| 45/46 [02:35<00:02,  2.44s/it]
+ 98%|█████████▊| 45/46 [02:35<00:02,  2.31s/it]
+
+
+  7%|▋         | 3/46 [00:07<01:53,  2.63s/it] 85%|████████▍ | 39/46 [01:58<00:15,  2.25s/it]
+
+
+
+
+ 52%|█████▏    | 24/46 [01:14<00:52,  2.39s/it]
+
+
+
+ 65%|██████▌   | 30/46 [01:27<00:41,  2.57s/it]
+
+100%|██████████| 46/46 [02:37<00:00,  2.37s/it]
+
+                                               C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\akshare\stock_feature\stock_hist_em.py:1297: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  temp_df["序号"] = pd.to_numeric(temp_df["序号"], errors="coerce")
+C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\akshare\stock_feature\stock_hist_em.py:1298: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  temp_df["最新价"] = pd.to_numeric(temp_df["最新价"], errors="coerce")
+C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\akshare\stock_feature\stock_hist_em.py:1299: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  temp_df["涨跌额"] = pd.to_numeric(temp_df["涨跌额"], errors="coerce")
+C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\akshare\stock_feature\stock_hist_em.py:1300: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  temp_df["涨跌幅"] = pd.to_numeric(temp_df["涨跌幅"], errors="coerce")
+C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\akshare\stock_feature\stock_hist_em.py:1301: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  temp_df["今开"] = pd.to_numeric(temp_df["今开"], errors="coerce")
+C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\akshare\stock_feature\stock_hist_em.py:1302: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  temp_df["最高"] = pd.to_numeric(temp_df["最高"], errors="coerce")
+C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\akshare\stock_feature\stock_hist_em.py:1303: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  temp_df["最低"] = pd.to_numeric(temp_df["最低"], errors="coerce")
+C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\akshare\stock_feature\stock_hist_em.py:1304: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  temp_df["昨收"] = pd.to_numeric(temp_df["昨收"], errors="coerce")
+C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\akshare\stock_feature\stock_hist_em.py:1305: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  temp_df["成交量"] = pd.to_numeric(temp_df["成交量"], errors="coerce")
+C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\akshare\stock_feature\stock_hist_em.py:1306: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  temp_df["成交额"] = pd.to_numeric(temp_df["成交额"], errors="coerce")
+
+100%|██████████| 46/46 [02:38<00:00,  2.36s/it]
+                                               C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\akshare\stock_feature\stock_hist_em.py:1297: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  temp_df["序号"] = pd.to_numeric(temp_df["序号"], errors="coerce")
+C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\akshare\stock_feature\stock_hist_em.py:1298: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  temp_df["最新价"] = pd.to_numeric(temp_df["最新价"], errors="coerce")
+C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\akshare\stock_feature\stock_hist_em.py:1299: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  temp_df["涨跌额"] = pd.to_numeric(temp_df["涨跌额"], errors="coerce")
+C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\akshare\stock_feature\stock_hist_em.py:1300: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  temp_df["涨跌幅"] = pd.to_numeric(temp_df["涨跌幅"], errors="coerce")
+C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\akshare\stock_feature\stock_hist_em.py:1301: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  temp_df["今开"] = pd.to_numeric(temp_df["今开"], errors="coerce")
+C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\akshare\stock_feature\stock_hist_em.py:1302: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  temp_df["最高"] = pd.to_numeric(temp_df["最高"], errors="coerce")
+C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\akshare\stock_feature\stock_hist_em.py:1303: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  temp_df["最低"] = pd.to_numeric(temp_df["最低"], errors="coerce")
+C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\akshare\stock_feature\stock_hist_em.py:1304: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  temp_df["昨收"] = pd.to_numeric(temp_df["昨收"], errors="coerce")
+C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\akshare\stock_feature\stock_hist_em.py:1305: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  temp_df["成交量"] = pd.to_numeric(temp_df["成交量"], errors="coerce")
+C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\akshare\stock_feature\stock_hist_em.py:1306: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  temp_df["成交额"] = pd.to_numeric(temp_df["成交额"], errors="coerce")
+
+
+
+
+
+ 54%|█████▍    | 25/46 [01:17<00:52,  2.50s/it]
+
+
+
+ 67%|██████▋   | 31/46 [01:29<00:35,  2.40s/it]
+
+
+  9%|▊         | 4/46 [00:12<02:29,  3.56s/it] 87%|████████▋ | 40/46 [02:03<00:18,  3.14s/it]
+  0%|          | 0/46 [00:00<?, ?it/s]
+
+
+
+ 70%|██████▉   | 32/46 [01:31<00:33,  2.37s/it]
+
+
+
+
+ 57%|█████▋    | 26/46 [01:19<00:49,  2.48s/it]
+
+
+ 11%|█         | 5/46 [00:15<02:07,  3.11s/it]
+  2%|▏         | 1/46 [00:01<01:28,  1.98s/it] 89%|████████▉ | 41/46 [02:05<00:14,  2.82s/it]
+
+
+
+ 72%|███████▏  | 33/46 [01:33<00:29,  2.26s/it]
+
+
+
+
+ 59%|█████▊    | 27/46 [01:22<00:48,  2.53s/it]
+
+
+ 13%|█▎        | 6/46 [00:17<01:51,  2.78s/it]
+
+
+
+ 74%|███████▍  | 34/46 [01:35<00:26,  2.18s/it] 91%|█████████▏| 42/46 [02:08<00:11,  2.76s/it]
+  4%|▍         | 2/46 [00:04<01:48,  2.46s/it]
+
+  0%|          | 0/46 [00:00<?, ?it/s]
+
+
+
+
+ 61%|██████    | 28/46 [01:24<00:42,  2.33s/it]
+
+
+ 15%|█▌        | 7/46 [00:19<01:43,  2.66s/it]
+
+
+
+ 76%|███████▌  | 35/46 [01:38<00:24,  2.26s/it]
+  7%|▋         | 3/46 [00:07<01:45,  2.46s/it]
+
+  2%|▏         | 1/46 [00:02<01:55,  2.56s/it] 93%|█████████▎| 43/46 [02:10<00:08,  2.77s/it]
+
+
+
+
+ 63%|██████▎   | 29/46 [01:26<00:41,  2.44s/it]
+
+
+ 17%|█▋        | 8/46 [00:21<01:33,  2.47s/it]
+
+
+
+ 78%|███████▊  | 36/46 [01:39<00:21,  2.11s/it]
+  9%|▊         | 4/46 [00:09<01:44,  2.50s/it]
+
+  4%|▍         | 2/46 [00:05<01:53,  2.57s/it]
+
+
+
+
+ 65%|██████▌   | 30/46 [01:28<00:37,  2.33s/it] 96%|█████████▌| 44/46 [02:13<00:05,  2.74s/it]
+
+
+
+ 80%|████████  | 37/46 [01:41<00:18,  2.10s/it]
+
+
+
+
+ 67%|██████▋   | 31/46 [01:31<00:35,  2.33s/it] 98%|█████████▊| 45/46 [02:15<00:02,  2.64s/it]
+
+  7%|▋         | 3/46 [00:07<01:53,  2.63s/it]
+
+
+
+ 83%|████████▎ | 38/46 [01:44<00:17,  2.16s/it]
+
+
+
+
+ 70%|██████▉   | 32/46 [01:33<00:31,  2.24s/it]
+
+
+ 20%|█▉        | 9/46 [00:27<02:11,  3.55s/it]
+                                              
+
+                                                                                             
+
+
+
+                                               
+
+
+
+
+ 72%|███████▏  | 33/46 [01:42<00:55,  4.24s/it]
+
+
+ 22%|██▏       | 10/46 [00:37<03:18,  5.53s/it]
+
+
+
+
+ 74%|███████▍  | 34/46 [01:44<00:44,  3.68s/it]
+
+
+ 24%|██▍       | 11/46 [00:40<02:41,  4.60s/it]
+
+
+
+
+ 76%|███████▌  | 35/46 [01:46<00:35,  3.24s/it]
+
+
+ 26%|██▌       | 12/46 [00:42<02:14,  3.95s/it]
+
+
+
+
+ 78%|███████▊  | 36/46 [01:48<00:28,  2.84s/it]  0%|          | 0/46 [00:00<?, ?it/s]
+
+
+ 28%|██▊       | 13/46 [00:45<01:56,  3.53s/it]
+
+
+
+
+ 80%|████████  | 37/46 [01:50<00:24,  2.69s/it]
+
+
+ 30%|███       | 14/46 [00:46<01:34,  2.96s/it]  2%|▏         | 1/46 [00:02<01:54,  2.55s/it]
+
+
+
+
+ 83%|████████▎ | 38/46 [01:53<00:20,  2.61s/it]
+  0%|          | 0/46 [00:00<?, ?it/s]
+
+
+ 33%|███▎      | 15/46 [00:48<01:22,  2.66s/it]  4%|▍         | 2/46 [00:05<01:57,  2.66s/it]
+
+
+
+
+ 85%|████████▍ | 39/46 [01:55<00:18,  2.60s/it]
+
+
+ 35%|███▍      | 16/46 [00:50<01:12,  2.42s/it]
+  2%|▏         | 1/46 [00:02<01:54,  2.55s/it]
+
+
+
+
+ 87%|████████▋ | 40/46 [01:57<00:14,  2.42s/it]  7%|▋         | 3/46 [00:07<01:47,  2.50s/it]
+  4%|▍         | 2/46 [00:04<01:45,  2.41s/it]
+
+
+ 37%|███▋      | 17/46 [00:53<01:12,  2.50s/it]
+
+
+
+
+ 89%|████████▉ | 41/46 [01:59<00:11,  2.22s/it]  9%|▊         | 4/46 [00:10<01:44,  2.50s/it]
+  7%|▋         | 3/46 [00:06<01:36,  2.24s/it]
+
+
+ 39%|███▉      | 18/46 [00:55<01:06,  2.36s/it]
+
+
+
+
+ 91%|█████████▏| 42/46 [02:02<00:09,  2.29s/it] 11%|█         | 5/46 [00:12<01:35,  2.32s/it]
+
+
+ 41%|████▏     | 19/46 [00:57<01:00,  2.26s/it]
+  9%|▊         | 4/46 [00:09<01:36,  2.29s/it]
+
+
+
+
+ 93%|█████████▎| 43/46 [02:04<00:06,  2.28s/it] 13%|█▎        | 6/46 [00:14<01:29,  2.24s/it]
+
+
+ 43%|████▎     | 20/46 [00:59<00:57,  2.21s/it]
+ 11%|█         | 5/46 [00:11<01:33,  2.28s/it] 15%|█▌        | 7/46 [00:16<01:26,  2.21s/it]
+
+
+
+
+ 96%|█████████▌| 44/46 [02:06<00:04,  2.39s/it]
+
+
+ 46%|████▌     | 21/46 [01:02<00:58,  2.36s/it]
+ 13%|█▎        | 6/46 [00:14<01:34,  2.36s/it]
+
+
+
+
+ 98%|█████████▊| 45/46 [02:09<00:02,  2.37s/it] 17%|█▋        | 8/46 [00:19<01:31,  2.41s/it]
+ 15%|█▌        | 7/46 [00:16<01:27,  2.25s/it]
+
+
+ 48%|████▊     | 22/46 [01:04<00:56,  2.35s/it]
+
+
+
+
+100%|██████████| 46/46 [02:11<00:00,  2.24s/it]
+
+
+
+
+                                               C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\akshare\stock_feature\stock_hist_em.py:1297: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  temp_df["序号"] = pd.to_numeric(temp_df["序号"], errors="coerce")
+C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\akshare\stock_feature\stock_hist_em.py:1298: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  temp_df["最新价"] = pd.to_numeric(temp_df["最新价"], errors="coerce")
+C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\akshare\stock_feature\stock_hist_em.py:1299: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  temp_df["涨跌额"] = pd.to_numeric(temp_df["涨跌额"], errors="coerce")
+C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\akshare\stock_feature\stock_hist_em.py:1300: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  temp_df["涨跌幅"] = pd.to_numeric(temp_df["涨跌幅"], errors="coerce")
+C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\akshare\stock_feature\stock_hist_em.py:1301: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  temp_df["今开"] = pd.to_numeric(temp_df["今开"], errors="coerce")
+C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\akshare\stock_feature\stock_hist_em.py:1302: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  temp_df["最高"] = pd.to_numeric(temp_df["最高"], errors="coerce")
+C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\akshare\stock_feature\stock_hist_em.py:1303: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  temp_df["最低"] = pd.to_numeric(temp_df["最低"], errors="coerce")
+C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\akshare\stock_feature\stock_hist_em.py:1304: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  temp_df["昨收"] = pd.to_numeric(temp_df["昨收"], errors="coerce")
+C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\akshare\stock_feature\stock_hist_em.py:1305: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  temp_df["成交量"] = pd.to_numeric(temp_df["成交量"], errors="coerce")
+C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\akshare\stock_feature\stock_hist_em.py:1306: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  temp_df["成交额"] = pd.to_numeric(temp_df["成交额"], errors="coerce")
+ 20%|█▉        | 9/46 [00:21<01:25,  2.31s/it]
+
+
+ 50%|█████     | 23/46 [01:06<00:53,  2.33s/it]
+ 17%|█▋        | 8/46 [00:18<01:29,  2.35s/it]
+
+
+ 52%|█████▏    | 24/46 [01:08<00:49,  2.27s/it] 22%|██▏       | 10/46 [00:23<01:26,  2.40s/it]
+ 20%|█▉        | 9/46 [00:20<01:24,  2.28s/it] 24%|██▍       | 11/46 [00:25<01:17,  2.21s/it]
+
+
+ 54%|█████▍    | 25/46 [01:11<00:48,  2.33s/it]
+ 22%|██▏       | 10/46 [00:23<01:23,  2.33s/it] 26%|██▌       | 12/46 [00:28<01:18,  2.32s/it]
+ 24%|██▍       | 11/46 [00:25<01:22,  2.36s/it]
+
+
+ 57%|█████▋    | 26/46 [01:13<00:48,  2.42s/it]
+ 26%|██▌       | 12/46 [00:27<01:13,  2.17s/it] 28%|██▊       | 13/46 [00:30<01:19,  2.42s/it]
+
+
+ 59%|█████▊    | 27/46 [01:16<00:46,  2.45s/it]
+ 28%|██▊       | 13/46 [00:29<01:09,  2.11s/it] 30%|███       | 14/46 [00:32<01:13,  2.29s/it]
+
+
+ 61%|██████    | 28/46 [01:18<00:44,  2.48s/it]
+ 30%|███       | 14/46 [00:31<01:05,  2.06s/it] 33%|███▎      | 15/46 [00:34<01:06,  2.16s/it]
+
+
+ 63%|██████▎   | 29/46 [01:21<00:40,  2.39s/it]
+ 33%|███▎      | 15/46 [00:33<01:06,  2.14s/it] 35%|███▍      | 16/46 [00:37<01:08,  2.30s/it]
+
+
+ 65%|██████▌   | 30/46 [01:23<00:39,  2.45s/it]
+ 35%|███▍      | 16/46 [00:35<01:05,  2.19s/it] 37%|███▋      | 17/46 [00:39<01:03,  2.19s/it]
+
+
+ 67%|██████▋   | 31/46 [01:25<00:35,  2.35s/it]
+ 37%|███▋      | 17/46 [00:37<01:00,  2.10s/it] 39%|███▉      | 18/46 [00:41<01:00,  2.15s/it]
+
+
+ 70%|██████▉   | 32/46 [01:28<00:32,  2.33s/it] 41%|████▏     | 19/46 [00:43<00:57,  2.13s/it]
+ 39%|███▉      | 18/46 [00:40<01:03,  2.25s/it] 43%|████▎     | 20/46 [00:45<00:53,  2.05s/it]
+
+
+ 72%|███████▏  | 33/46 [01:30<00:29,  2.29s/it]
+ 41%|████▏     | 19/46 [00:42<00:57,  2.12s/it] 46%|████▌     | 21/46 [00:47<00:51,  2.05s/it]
+ 43%|████▎     | 20/46 [00:44<00:53,  2.05s/it]
+
+
+ 74%|███████▍  | 34/46 [01:32<00:26,  2.21s/it]
+
+
+ 76%|███████▌  | 35/46 [01:34<00:24,  2.23s/it] 48%|████▊     | 22/46 [00:49<00:51,  2.15s/it]
+ 46%|████▌     | 21/46 [00:46<00:53,  2.15s/it] 50%|█████     | 23/46 [00:51<00:48,  2.11s/it]
+
+
+ 78%|███████▊  | 36/46 [01:36<00:22,  2.24s/it]
+ 48%|████▊     | 22/46 [00:48<00:53,  2.23s/it] 52%|█████▏    | 24/46 [00:53<00:46,  2.13s/it]
+
+
+ 80%|████████  | 37/46 [01:38<00:19,  2.17s/it]
+ 50%|█████     | 23/46 [00:51<00:53,  2.34s/it]
+
+
+ 83%|████████▎ | 38/46 [01:40<00:16,  2.12s/it] 54%|█████▍    | 25/46 [00:56<00:46,  2.23s/it]
+ 52%|█████▏    | 24/46 [00:53<00:49,  2.23s/it] 57%|█████▋    | 26/46 [00:58<00:41,  2.07s/it]
+
+
+ 85%|████████▍ | 39/46 [01:43<00:15,  2.25s/it]
+ 54%|█████▍    | 25/46 [00:55<00:44,  2.12s/it] 59%|█████▊    | 27/46 [00:59<00:37,  2.00s/it]
+ 57%|█████▋    | 26/46 [00:57<00:41,  2.09s/it]
+
+
+ 87%|████████▋ | 40/46 [01:45<00:13,  2.23s/it] 61%|██████    | 28/46 [01:01<00:33,  1.88s/it]
+
+
+ 89%|████████▉ | 41/46 [01:47<00:10,  2.13s/it]
+ 59%|█████▊    | 27/46 [00:59<00:42,  2.24s/it] 63%|██████▎   | 29/46 [01:03<00:31,  1.87s/it]
+
+
+ 91%|█████████▏| 42/46 [01:49<00:08,  2.04s/it]
+ 61%|██████    | 28/46 [01:02<00:42,  2.35s/it] 65%|██████▌   | 30/46 [01:06<00:33,  2.11s/it]
+
+
+ 93%|█████████▎| 43/46 [01:51<00:06,  2.20s/it]
+ 63%|██████▎   | 29/46 [01:04<00:39,  2.30s/it] 67%|██████▋   | 31/46 [01:08<00:32,  2.17s/it]
+
+
+ 96%|█████████▌| 44/46 [01:54<00:04,  2.22s/it] 70%|██████▉   | 32/46 [01:10<00:30,  2.16s/it]
+ 65%|██████▌   | 30/46 [01:07<00:37,  2.36s/it]
+
+
+ 98%|█████████▊| 45/46 [01:56<00:02,  2.32s/it]
+ 67%|██████▋   | 31/46 [01:09<00:34,  2.32s/it]
+
+
+100%|██████████| 46/46 [01:58<00:00,  2.14s/it]
+
+
+                                               C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\akshare\stock_feature\stock_hist_em.py:1297: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  temp_df["序号"] = pd.to_numeric(temp_df["序号"], errors="coerce")
+C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\akshare\stock_feature\stock_hist_em.py:1298: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  temp_df["最新价"] = pd.to_numeric(temp_df["最新价"], errors="coerce")
+C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\akshare\stock_feature\stock_hist_em.py:1299: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  temp_df["涨跌额"] = pd.to_numeric(temp_df["涨跌额"], errors="coerce")
+C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\akshare\stock_feature\stock_hist_em.py:1300: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  temp_df["涨跌幅"] = pd.to_numeric(temp_df["涨跌幅"], errors="coerce")
+C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\akshare\stock_feature\stock_hist_em.py:1301: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  temp_df["今开"] = pd.to_numeric(temp_df["今开"], errors="coerce")
+C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\akshare\stock_feature\stock_hist_em.py:1302: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  temp_df["最高"] = pd.to_numeric(temp_df["最高"], errors="coerce")
+C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\akshare\stock_feature\stock_hist_em.py:1303: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  temp_df["最低"] = pd.to_numeric(temp_df["最低"], errors="coerce")
+C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\akshare\stock_feature\stock_hist_em.py:1304: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  temp_df["昨收"] = pd.to_numeric(temp_df["昨收"], errors="coerce")
+C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\akshare\stock_feature\stock_hist_em.py:1305: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  temp_df["成交量"] = pd.to_numeric(temp_df["成交量"], errors="coerce")
+C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\akshare\stock_feature\stock_hist_em.py:1306: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  temp_df["成交额"] = pd.to_numeric(temp_df["成交额"], errors="coerce")
+ 72%|███████▏  | 33/46 [01:15<00:39,  3.06s/it] 74%|███████▍  | 34/46 [01:17<00:32,  2.74s/it]
+ 70%|██████▉   | 32/46 [01:14<00:44,  3.20s/it] 76%|███████▌  | 35/46 [01:19<00:26,  2.43s/it]
+ 72%|███████▏  | 33/46 [01:17<00:38,  2.96s/it] 78%|███████▊  | 36/46 [01:21<00:22,  2.22s/it]
+ 74%|███████▍  | 34/46 [01:18<00:31,  2.62s/it] 80%|████████  | 37/46 [01:23<00:19,  2.15s/it]
+ 76%|███████▌  | 35/46 [01:21<00:28,  2.59s/it] 83%|████████▎ | 38/46 [01:24<00:16,  2.05s/it]
+ 78%|███████▊  | 36/46 [01:23<00:25,  2.52s/it] 85%|████████▍ | 39/46 [01:27<00:15,  2.21s/it]
+ 80%|████████  | 37/46 [01:25<00:21,  2.40s/it] 87%|████████▋ | 40/46 [01:36<00:24,  4.16s/it]
+                                                89%|████████▉ | 41/46 [01:41<00:23,  4.61s/it]
+  0%|          | 0/46 [00:00<?, ?it/s] 91%|█████████▏| 42/46 [01:44<00:15,  3.93s/it]
+  2%|▏         | 1/46 [00:02<01:47,  2.38s/it] 93%|█████████▎| 43/46 [01:46<00:10,  3.50s/it]
+  4%|▍         | 2/46 [00:07<02:55,  3.98s/it] 96%|█████████▌| 44/46 [01:56<00:10,  5.34s/it]
+  7%|▋         | 3/46 [00:12<03:06,  4.33s/it] 98%|█████████▊| 45/46 [02:00<00:05,  5.14s/it]
+  9%|▊         | 4/46 [00:17<03:18,  4.72s/it]100%|██████████| 46/46 [02:03<00:00,  4.32s/it]                                               C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\akshare\stock_feature\stock_hist_em.py:1297: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  temp_df["序号"] = pd.to_numeric(temp_df["序号"], errors="coerce")
+C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\akshare\stock_feature\stock_hist_em.py:1298: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  temp_df["最新价"] = pd.to_numeric(temp_df["最新价"], errors="coerce")
+C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\akshare\stock_feature\stock_hist_em.py:1299: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  temp_df["涨跌额"] = pd.to_numeric(temp_df["涨跌额"], errors="coerce")
+C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\akshare\stock_feature\stock_hist_em.py:1300: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  temp_df["涨跌幅"] = pd.to_numeric(temp_df["涨跌幅"], errors="coerce")
+C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\akshare\stock_feature\stock_hist_em.py:1301: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  temp_df["今开"] = pd.to_numeric(temp_df["今开"], errors="coerce")
+C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\akshare\stock_feature\stock_hist_em.py:1302: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  temp_df["最高"] = pd.to_numeric(temp_df["最高"], errors="coerce")
+C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\akshare\stock_feature\stock_hist_em.py:1303: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  temp_df["最低"] = pd.to_numeric(temp_df["最低"], errors="coerce")
+C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\akshare\stock_feature\stock_hist_em.py:1304: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  temp_df["昨收"] = pd.to_numeric(temp_df["昨收"], errors="coerce")
+C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\akshare\stock_feature\stock_hist_em.py:1305: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  temp_df["成交量"] = pd.to_numeric(temp_df["成交量"], errors="coerce")
+C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\akshare\stock_feature\stock_hist_em.py:1306: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  temp_df["成交额"] = pd.to_numeric(temp_df["成交额"], errors="coerce")
+
+ 11%|█         | 5/46 [00:19<02:37,  3.84s/it]
+ 13%|█▎        | 6/46 [00:22<02:12,  3.32s/it]
+ 15%|█▌        | 7/46 [00:23<01:50,  2.84s/it]
+ 17%|█▋        | 8/46 [00:25<01:34,  2.50s/it]  0%|          | 0/46 [00:00<?, ?it/s]
+ 20%|█▉        | 9/46 [00:28<01:30,  2.43s/it]  2%|▏         | 1/46 [00:02<01:51,  2.47s/it]
+ 22%|██▏       | 10/46 [00:30<01:23,  2.31s/it]  4%|▍         | 2/46 [00:04<01:46,  2.41s/it]
+ 24%|██▍       | 11/46 [00:31<01:15,  2.15s/it]  7%|▋         | 3/46 [00:06<01:29,  2.08s/it]
+ 26%|██▌       | 12/46 [00:34<01:16,  2.24s/it]  9%|▊         | 4/46 [00:08<01:23,  1.98s/it]
+ 28%|██▊       | 13/46 [00:36<01:17,  2.35s/it] 11%|█         | 5/46 [00:10<01:30,  2.20s/it] 13%|█▎        | 6/46 [00:12<01:25,  2.14s/it]
+ 30%|███       | 14/46 [00:39<01:14,  2.32s/it] 15%|█▌        | 7/46 [00:15<01:26,  2.21s/it] 17%|█▋        | 8/46 [00:17<01:19,  2.09s/it]
+ 33%|███▎      | 15/46 [00:44<01:36,  3.11s/it] 20%|█▉        | 9/46 [00:19<01:16,  2.07s/it]
+ 35%|███▍      | 16/46 [00:46<01:25,  2.85s/it] 22%|██▏       | 10/46 [00:21<01:14,  2.08s/it]
+ 37%|███▋      | 17/46 [00:48<01:16,  2.64s/it] 24%|██▍       | 11/46 [00:23<01:14,  2.13s/it]
+ 39%|███▉      | 18/46 [00:50<01:09,  2.50s/it] 26%|██▌       | 12/46 [00:25<01:07,  1.98s/it]
+ 41%|████▏     | 19/46 [00:52<01:04,  2.38s/it] 28%|██▊       | 13/46 [00:27<01:09,  2.12s/it]
+ 43%|████▎     | 20/46 [00:57<01:22,  3.19s/it]
+ 46%|████▌     | 21/46 [01:02<01:27,  3.50s/it] 30%|███       | 14/46 [00:36<02:12,  4.14s/it]
+ 48%|████▊     | 22/46 [01:03<01:11,  2.99s/it] 33%|███▎      | 15/46 [00:38<01:50,  3.56s/it]
+ 50%|█████     | 23/46 [01:05<01:00,  2.61s/it] 35%|███▍      | 16/46 [00:40<01:32,  3.09s/it]
+ 52%|█████▏    | 24/46 [01:07<00:52,  2.37s/it] 37%|███▋      | 17/46 [00:42<01:20,  2.77s/it]
+ 54%|█████▍    | 25/46 [01:09<00:46,  2.24s/it] 39%|███▉      | 18/46 [00:44<01:08,  2.46s/it]
+ 57%|█████▋    | 26/46 [01:11<00:42,  2.12s/it] 41%|████▏     | 19/46 [00:46<01:00,  2.23s/it] 43%|████▎     | 20/46 [00:50<01:14,  2.86s/it]
+ 59%|█████▊    | 27/46 [01:16<01:01,  3.21s/it] 46%|████▌     | 21/46 [00:52<01:06,  2.65s/it]
+ 61%|██████    | 28/46 [01:19<00:51,  2.89s/it] 48%|████▊     | 22/46 [00:54<00:58,  2.43s/it]
+ 63%|██████▎   | 29/46 [01:21<00:44,  2.61s/it] 50%|█████     | 23/46 [00:56<00:55,  2.39s/it]
+ 65%|██████▌   | 30/46 [01:23<00:39,  2.47s/it] 52%|█████▏    | 24/46 [00:58<00:50,  2.31s/it]
+ 67%|██████▋   | 31/46 [01:25<00:37,  2.47s/it] 54%|█████▍    | 25/46 [01:01<00:49,  2.35s/it]
+ 70%|██████▉   | 32/46 [01:28<00:34,  2.45s/it] 57%|█████▋    | 26/46 [01:03<00:44,  2.25s/it]
+ 72%|███████▏  | 33/46 [01:29<00:28,  2.21s/it]
+ 74%|███████▍  | 34/46 [01:31<00:26,  2.22s/it] 59%|█████▊    | 27/46 [01:05<00:44,  2.33s/it] 61%|██████    | 28/46 [01:07<00:40,  2.25s/it]
+ 76%|███████▌  | 35/46 [01:34<00:24,  2.27s/it]
+ 78%|███████▊  | 36/46 [01:36<00:21,  2.17s/it] 63%|██████▎   | 29/46 [01:10<00:38,  2.29s/it] 65%|██████▌   | 30/46 [01:12<00:34,  2.15s/it]
+ 80%|████████  | 37/46 [01:38<00:19,  2.17s/it] 67%|██████▋   | 31/46 [01:14<00:31,  2.09s/it]
+ 83%|████████▎ | 38/46 [01:40<00:17,  2.22s/it] 70%|██████▉   | 32/46 [01:16<00:29,  2.11s/it]
+ 85%|████████▍ | 39/46 [01:43<00:15,  2.23s/it] 72%|███████▏  | 33/46 [01:18<00:27,  2.12s/it]
+ 87%|████████▋ | 40/46 [01:45<00:14,  2.38s/it] 74%|███████▍  | 34/46 [01:20<00:25,  2.11s/it]
+ 89%|████████▉ | 41/46 [01:48<00:12,  2.41s/it] 76%|███████▌  | 35/46 [01:22<00:23,  2.10s/it]
+ 91%|█████████▏| 42/46 [01:50<00:09,  2.32s/it] 78%|███████▊  | 36/46 [01:24<00:19,  1.99s/it] 80%|████████  | 37/46 [01:26<00:18,  2.02s/it]
+ 93%|█████████▎| 43/46 [01:52<00:07,  2.40s/it]
+ 96%|█████████▌| 44/46 [01:54<00:04,  2.22s/it] 83%|████████▎ | 38/46 [01:28<00:17,  2.16s/it]
+ 98%|█████████▊| 45/46 [01:56<00:02,  2.08s/it] 85%|████████▍ | 39/46 [01:31<00:15,  2.26s/it]
+100%|██████████| 46/46 [01:59<00:00,  2.21s/it]
+                                                87%|████████▋ | 40/46 [01:33<00:13,  2.30s/it] 89%|████████▉ | 41/46 [01:36<00:11,  2.31s/it] 91%|█████████▏| 42/46 [01:37<00:08,  2.18s/it] 93%|█████████▎| 43/46 [01:42<00:08,  2.92s/it] 96%|█████████▌| 44/46 [01:44<00:05,  2.56s/it] 98%|█████████▊| 45/46 [01:46<00:02,  2.44s/it]100%|██████████| 46/46 [01:48<00:00,  2.24s/it]                                                ✓ China Capital Flow  [09660.HK] Done                                         
+ ✓ China Policy        [09660.HK] Done                                         
+ ✓ China Public Opinion[09660.HK] Done                                         
+ ✓ Fundamentals Analyst[09660.HK] Done                                         
+ ✓ Growth Analyst      [09660.HK] Done                                         
+ ✓ Nassim Taleb        [09660.HK] Done                                         
+ ✓ Peter Lynch         [09660.HK] Done                                         
+ ✓ Portfolio Manager   [09660.HK] Done                                         
+ ✓ Technical Analyst   [09660.HK] Done                                         
+ ✓ Valuation Analyst   [09660.HK] Done                                         
+ ✓ Warren Buffett      [09660.HK] Done                                         
+ ✓ Risk Management     [09660.HK] Done                                         
+Analysis for 09880.HK
+==================================================
+
+AGENT ANALYSIS: [09880.HK]
++----------------------+----------+--------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Agent                |  Signal  |   Confidence | Reasoning                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
++======================+==========+==============+==================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================+
+| Technical Analyst    | NEUTRAL  |          19% | { "trend_following": { "signal": "bearish", "confidence":                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+|                      |          |              | 34, "metrics": { "adx": 34.47033825977173, "trend_strength":                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+|                      |          |              | 0.34470338259771727 } }, "mean_reversion": { "signal":                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+|                      |          |              | "neutral", "confidence": 50, "metrics": { "z_score":                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+|                      |          |              | -0.8617010671255632, "price_vs_bb": 0.39427992753745883,                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+|                      |          |              | "rsi_14": 38.180272108843525, "rsi_28": 46.65271966527197 }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+|                      |          |              | }, "momentum": { "signal": "neutral", "confidence": 50,                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+|                      |          |              | "metrics": { "momentum_1m": 0.02719101462964557,                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+|                      |          |              | "momentum_3m": 0.0, "momentum_6m": 0.0, "volume_momentum":                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+|                      |          |              | 2.5757846136378864 } }, "volatility": { "signal": "neutral",                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+|                      |          |              | "confidence": 50, "metrics": { "historical_volatility":                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+|                      |          |              | 0.7361736757878451, "volatility_regime": 0.0,                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+|                      |          |              | "volatility_z_score": 0.0, "atr_ratio": 0.07236659255141747                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+|                      |          |              | } }, "statistical_arbitrage": { "signal": "neutral",                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+|                      |          |              | "confidence": 50, "metrics": { "hurst_exponent":                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+|                      |          |              | 4.686994974318529e-16, "skewness": 0.0, "kurtosis": 0.0 } }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+|                      |          |              | }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
++----------------------+----------+--------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| China Public Opinion | NEUTRAL  |          50% | { "market_temperature": "neutral", "key_narratives": [],                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+|                      |          |              | "black_swan": { "detected": false, "severity": "none",                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+|                      |          |              | "description": "", "affected_sectors": [],                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+|                      |          |              | "recommended_caution": "" }, "data_sources": {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+|                      |          |              | "stock_news_count": 10, "opinion_count": 10,                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+|                      |          |              | "market_news_count": 20 }, "llm_reasoning":                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+|                      |          |              | "\uff08\u6a21\u578b\u672a\u8fd4\u56de                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+|                      |          |              | reasoning\uff0c\u5df2\u56de\u586b\uff09" }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
++----------------------+----------+--------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| China Capital Flow   | NEUTRAL  |          52% | { "northbound_flow": { "signal": "neutral", "confidence":                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+|                      |          |              | 20, "details": { "error": "No valid northbound data points"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+|                      |          |              | }, "weight": 0.35 }, "margin_trading": { "signal":                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+|                      |          |              | "bullish", "confidence": 55, "details": {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+|                      |          |              | "recent_avg_balance": 29940.44, "change_pct": 3.83, "trend":                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+|                      |          |              | "rising" }, "weight": 0.25 }, "stock_capital_flow": {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+|                      |          |              | "signal": "neutral", "confidence": 20, "details": { "error":                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+|                      |          |              | "Insufficient stock flow data" }, "weight": 0.4 },                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+|                      |          |              | "combined": { "scores": { "bullish": 13.75, "bearish": 0.0,                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+|                      |          |              | "neutral": 15.0 } } }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
++----------------------+----------+--------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| China Policy         | NEUTRAL  |          30% | { "has_relevant_policy": false, "policy_type": "none",                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+|                      |          |              | "impact_direction": "neutral", "impact_duration":                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+|                      |          |              | "short_term", "impact_magnitude": "minor",                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+|                      |          |              | "affected_sectors": [], "llm_reasoning":                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+|                      |          |              | "\u97e9\u56fd\u51fa\u53e3\u5f3a\u52b2\u53ca\u82af\u7247\u4ea7\u4e1a\u8ba1\u5212\u663e\u793a\u5168\u7403AI/\u82af\u7247\u9700\u6c42\u666f\u6c14\uff0c\u5229\u597d\u82af\u7247\u76f8\u5173\u516c\u53f8\uff1b\u4f18\u5fc5\u9009\u4e0e\u6c90\u66e6\u80a1\u4efd\u5408\u8d44\u7814\u53d1\u7aef\u4fa7\u82af\u7247\uff0c\u76f4\u63a5\u53d7\u76ca\u4e8e\u56fd\u4ea7\u82af\u7247\u7a81\u7834\u548cAI\u786c\u4ef6\u53d1\u5c55\uff1b\u5b58\u50a8\u82af\u7247\u4ef7\u683c\u4e0a\u6da8\u53cd\u6620\u884c\u4e1a\u9ad8\u666f\u6c14\uff0c\u95f4\u63a5\u5229\u597d\u673a\u5668\u4eba\u96f6\u90e8\u4ef6\u6210\u672c\uff1b\u4f46\u82af\u7247\u80a1\u629b\u552e\u663e\u793a\u5e02\u573a\u6ce2\u52a8\u98ce\u9669\uff0c\u9700\u6ce8\u610f\u60c5\u7eea\u5f71\u54cd\u3002\u7efc\u5408\u6765\u770b\uff0c\u6b63\u9762\u56e0\u7d20\u5360\u4e3b\u5bfc\u3002", |
+|                      |          |              | "policy_items_scanned": 50, "policy_items_relevant": 10 }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
++----------------------+----------+--------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Peter Lynch          | BEARISH  |        70.0% | I don't see enough to go on here. No growth data, no debt or                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+|                      |          |              | margin info — can't even calculate a PEG ratio. Sure, the                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+|                      |          |              | headlines sound nice, but I can't invest in what I don't                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+|                      |          |              | understand. Without earnings or revenue history, this is                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+|                      |          |              | just a story without numbers. Pass.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
++----------------------+----------+--------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Nassim Taleb         | BEARISH  |          40% | Severe drawdown (-45.8%) indicates fragility; limited data                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+|                      |          |              | on cash/debt and insider trades, but downside tail risk                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+|                      |          |              | dominates.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
++----------------------+----------+--------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Warren Buffett       | NEUTRAL  |          30% | Insufficient data on fundamentals, moat, and valuation;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+|                      |          |              | cannot assess business quality or margin of safety.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
++----------------------+----------+--------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+TRADING DECISION: [09880.HK]
++------------+----------------------------------------------------+
+| Action     | SHORT                                              |
++------------+----------------------------------------------------+
+| Quantity   | 972                                                |
++------------+----------------------------------------------------+
+| Confidence | 70.0%                                              |
++------------+----------------------------------------------------+
+| Reasoning  | Strong bearish signals from Peter Lynch and Taleb. |
++------------+----------------------------------------------------+
+
+Analysis for 09660.HK
+==================================================
+
+AGENT ANALYSIS: [09660.HK]
++----------------------+----------+--------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Agent                |  Signal  |   Confidence | Reasoning                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
++======================+==========+==============+================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================+
+| Technical Analyst    | BEARISH  |          27% | { "trend_following": { "signal": "bearish", "confidence":                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+|                      |          |              | 57, "metrics": { "adx": 56.66421620735514, "trend_strength":                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+|                      |          |              | 0.5666421620735513 } }, "mean_reversion": { "signal":                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+|                      |          |              | "neutral", "confidence": 50, "metrics": { "z_score":                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+|                      |          |              | -1.3843947906566572, "price_vs_bb": 0.2862006661860992,                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+|                      |          |              | "rsi_14": 32.110091743119256, "rsi_28": 30.26584867075664 }                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+|                      |          |              | }, "momentum": { "signal": "neutral", "confidence": 50,                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+|                      |          |              | "metrics": { "momentum_1m": -0.23993606909386145,                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+|                      |          |              | "momentum_3m": 0.0, "momentum_6m": 0.0, "volume_momentum":                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+|                      |          |              | 2.3242108731624476 } }, "volatility": { "signal": "neutral",                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+|                      |          |              | "confidence": 50, "metrics": { "historical_volatility":                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+|                      |          |              | 0.6942144049340159, "volatility_regime": 0.0,                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+|                      |          |              | "volatility_z_score": 0.0, "atr_ratio": 0.07020308123249303                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+|                      |          |              | } }, "statistical_arbitrage": { "signal": "neutral",                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+|                      |          |              | "confidence": 50, "metrics": { "hurst_exponent":                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+|                      |          |              | 4.686994974318529e-16, "skewness": 0.0, "kurtosis": 0.0 } }                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+|                      |          |              | }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
++----------------------+----------+--------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| China Public Opinion | BULLISH  |          50% | { "market_temperature": "greed", "key_narratives": [],                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+|                      |          |              | "black_swan": { "detected": false, "severity": "none",                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+|                      |          |              | "description": "", "affected_sectors": [],                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+|                      |          |              | "recommended_caution": "" }, "data_sources": {                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+|                      |          |              | "stock_news_count": 10, "opinion_count": 10,                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+|                      |          |              | "market_news_count": 20 }, "llm_reasoning":                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+|                      |          |              | "\uff08\u6a21\u578b\u672a\u8fd4\u56de                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+|                      |          |              | reasoning\uff0c\u5df2\u56de\u586b\uff09" }                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
++----------------------+----------+--------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| China Capital Flow   | NEUTRAL  |          52% | { "northbound_flow": { "signal": "neutral", "confidence":                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+|                      |          |              | 20, "details": { "error": "No valid northbound data points"                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+|                      |          |              | }, "weight": 0.35 }, "margin_trading": { "signal":                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+|                      |          |              | "bullish", "confidence": 55, "details": {                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+|                      |          |              | "recent_avg_balance": 29940.44, "change_pct": 3.83, "trend":                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+|                      |          |              | "rising" }, "weight": 0.25 }, "stock_capital_flow": {                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+|                      |          |              | "signal": "neutral", "confidence": 20, "details": { "error":                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+|                      |          |              | "Insufficient stock flow data" }, "weight": 0.4 },                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+|                      |          |              | "combined": { "scores": { "bullish": 13.75, "bearish": 0.0,                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+|                      |          |              | "neutral": 15.0 } } }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
++----------------------+----------+--------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| China Policy         | NEUTRAL  |          30% | { "has_relevant_policy": false, "policy_type": "none",                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+|                      |          |              | "impact_direction": "neutral", "impact_duration":                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+|                      |          |              | "short_term", "impact_magnitude": "minor",                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+|                      |          |              | "affected_sectors": [], "llm_reasoning":                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+|                      |          |              | "\u97e9\u56fd\u82af\u7247\u4ea7\u4e1a\u666f\u6c14\u53caAI\u70ed\u6f6e\u5bf9\u81ea\u52a8\u9a7e\u9a76\u6709\u95f4\u63a5\u63d0\u632f\uff0c\u4f46Momenta\u81ea\u8eab\u7f3a\u4e4f\u8bae\u4ef7\u80fd\u529b\u7684\u8d1f\u9762\u65b0\u95fb\u66f4\u4e3a\u76f4\u63a5\uff1b\u6b64\u5916\uff0c\u82af\u7247\u80a1\u629b\u552e\u663e\u793aAI\u5e02\u573a\u6ce2\u52a8\uff0c\u53ef\u80fd\u6ce2\u53ca\u81ea\u52a8\u9a7e\u9a76\u677f\u5757\u3002\u6574\u4f53\u5f71\u54cd\u504f\u4e2d\u6027\u4f46\u7565\u504f\u8d1f\u9762\u3002", |
+|                      |          |              | "policy_items_scanned": 50, "policy_items_relevant": 8 }                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
++----------------------+----------+--------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Peter Lynch          | BEARISH  |        70.0% | I can't get a read on this stock. There's no earnings                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+|                      |          |              | growth, no PEG ratio, no debt or margin data. It's like                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+|                      |          |              | trying to pick a ten-bagger in the dark. Sure, the headlines                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+|                      |          |              | are positive, but that's not enough for me. Without a clear                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+|                      |          |              | story and numbers to back it up, I'd rather sit this one                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+|                      |          |              | out.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
++----------------------+----------+--------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Nassim Taleb         | BEARISH  |          30% | Severe drawdown (-66.6%) signals fragility; low overall                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+|                      |          |              | score (13/50) despite positive skew and elevated vol.                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
++----------------------+----------+--------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Warren Buffett       | NEUTRAL  |          30% | Insufficient fundamental data to assess business quality,                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+|                      |          |              | moat, or valuation; outside circle of competence.                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
++----------------------+----------+--------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+TRADING DECISION: [09660.HK]
++------------+------------------------------------------------+
+| Action     | SHORT                                          |
++------------+------------------------------------------------+
+| Quantity   | 24509                                          |
++------------+------------------------------------------------+
+| Confidence | 70.0%                                          |
++------------+------------------------------------------------+
+| Reasoning  | Peter Lynch bearish outweighs neutral/bullish. |
++------------+------------------------------------------------+
+
+PORTFOLIO SUMMARY:
++----------+----------+------------+--------------+-----------+-----------+-----------+
+| Ticker   |  Action  |   Quantity |   Confidence |  Bullish  |  Bearish  |  Neutral  |
++==========+==========+============+==============+===========+===========+===========+
+| 09880.HK |  SHORT   |        972 |        70.0% |     0     |     2     |     5     |
++----------+----------+------------+--------------+-----------+-----------+-----------+
+| 09660.HK |  SHORT   |      24509 |        70.0% |     1     |     3     |     3     |
++----------+----------+------------+--------------+-----------+-----------+-----------+
+
+Portfolio Strategy:
+Strong bearish signals from Peter Lynch and Taleb.
+
+═══ 【09880.HK】结论 ═══
+评级: 回避   信号构成: 0多 / 2空 / 4有效中性 / 2数据不足
+核心依据:
+  · 彼得·林奇视角（空,70%）: I don't see enough to go on here. No growth data, no debt or margin info — can't even calculate a PEG ratio. S…
+  · 塔勒布尾部风险（空,40%）: Severe drawdown (-45.8%) indicates 脆弱性; limited data on cash/debt and insider trades, but downside tail …
+数据缺口（低置信中性，已剔除出评级计算）:
+  · 资金流向(52%), 巴菲特视角(30%)
+  → 港股数据覆盖弱属正常，建议改用: --analysts technical_analyst,valuation_analyst,fundamentals_analyst,warren_buffett,nassim_taleb,china_public_opinion
+价格锚点: 优必选 现价102.80（当日+7.48%）
+决策引擎: short 972股 (置信度70%)
+
+═══ 【09660.HK】结论 ═══
+评级: 偏空减持   信号构成: 1多 / 3空 / 2有效中性 / 2数据不足
+核心依据:
+  · 彼得·林奇视角（空,70%）: I can't get a read on this stock. There's no earnings growth, no PEG ratio, no debt or margin data. It's like …
+  · 舆情+黑天鹅（多,50%）: market_temperature:贪婪; key_narratives:[]; black_swan:{'detected': False, 'severity': 'none', 'description':…
+数据缺口（低置信中性，已剔除出评级计算）:
+  · 资金流向(52%), 巴菲特视角(30%)
+  → 港股数据覆盖弱属正常，建议改用: --analysts technical_analyst,valuation_analyst,fundamentals_analyst,warren_buffett,nassim_taleb,china_public_opinion
+价格锚点: 地平线机器人-W 现价4.08（当日-1.45%）
+决策引擎: short 24509股 (置信度70%)
+

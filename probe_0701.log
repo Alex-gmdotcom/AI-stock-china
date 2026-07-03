@@ -1,0 +1,186 @@
+C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\langgraph\checkpoint\base\__init__.py:18: LangChainPendingDeprecationWarning: The default value of `allowed_objects` will change in a future version. Pass an explicit value (e.g., allowed_objects='messages' or allowed_objects='core') to suppress this warning.
+  from langgraph.checkpoint.serde.jsonplus import JsonPlusSerializer
+
+============================================================
+  AI Hedge Fund — China / Hong Kong Market Edition
+============================================================
+
+  ✓ 300308.SZ (ChiNext (创业板))
+
+Market mode: CN
+Date range: 2026-04-01 → 2026-07-01
+模型自动选择: DeepSeek / deepseek-v4-flash
+
+--- 300308.SZ ---
+  Market: ChiNext (创业板)
+  Daily price limit: ±20% (ST stocks: ±20%)
+  Settlement: T+1
+  Cannot sell same-day purchases (T+1 constraint).
+  Short selling: restricted. 创业板注册制股票上市前5日不设涨跌幅限制
+  Minimum lot size: 100 shares
+  Currency: CNY
+  ST mechanism: stocks with financial risk are marked ST/*ST with tighter price limits.
+  Registration-based IPO system (注册制) — higher new-listing volatility.
+
+Running analysis...
+
+login success!
+
+==========      Technical Analyst       ==========
+{
+  "300308.SZ": {
+    "signal": "neutral",
+    "confidence": 13,
+    "reasoning": {
+      "trend_following": {
+        "signal": "bullish",
+        "confidence": 23,
+        "metrics": {
+          "adx": 22.582864653909848,
+          "trend_strength": 0.22582864653909848
+        }
+      },
+      "mean_reversion": {
+        "signal": "neutral",
+        "confidence": 50,
+        "metrics": {
+          "z_score": 0.814553177255424,
+          "price_vs_bb": 0.4224146469910103,
+          "rsi_14": 56.713734200645206,
+          "rsi_28": 59.79725985352919
+        }
+      },
+      "momentum": {
+        "signal": "neutral",
+        "confidence": 50,
+        "metrics": {
+          "momentum_1m": 0.09838846173954319,
+          "momentum_3m": 0.0,
+          "momentum_6m": 0.0,
+          "volume_momentum": 0.8791468051495278
+        }
+      },
+      "volatility": {
+        "signal": "neutral",
+        "confidence": 50,
+        "metrics": {
+          "historical_volatility": 0.6940968859467211,
+          "volatility_regime": 0.0,
+          "volatility_z_score": 0.0,
+          "atr_ratio": 0.06602983582471306
+        }
+      },
+      "statistical_arbitrage": {
+        "signal": "neutral",
+        "confidence": 50,
+        "metrics": {
+          "hurst_exponent": 4.686994974318529e-16,
+          "skewness": 0.0,
+          "kurtosis": 0.0
+        }
+      }
+    }
+  }
+}
+================================================
+
+========== Volatility-Adjusted Risk Management Agent ==========
+{
+  "300308.SZ": {
+    "remaining_position_limit": 100000.0,
+    "current_price": 1223.17,
+    "volatility_metrics": {
+      "daily_volatility": 0.03858443434143225,
+      "annualized_volatility": 0.61250890647318,
+      "volatility_percentile": 48.38709677419355,
+      "data_points": 60
+    },
+    "correlation_metrics": {
+      "avg_correlation_with_active": "None",
+      "max_correlation_with_active": "None",
+      "top_correlated_tickers": []
+    },
+    "reasoning": {
+      "portfolio_value": 1000000.0,
+      "current_position_value": 0.0,
+      "base_position_limit_pct": 0.1,
+      "correlation_multiplier": 1.0,
+      "combined_position_limit_pct": 0.1,
+      "position_limit": 100000.0,
+      "remaining_limit": 100000.0,
+      "available_cash": 1000000.0,
+      "risk_adjustment": "Volatility x Correlation adjusted: 10.0% (base 10.0%)"
+    }
+  }
+}
+================================================
+
+==========      Portfolio Manager       ==========
+{
+  "300308.SZ": {
+    "action": "hold",
+    "quantity": 0,
+    "confidence": 13,
+    "reasoning": "Neutral signal; best to hold."
+  }
+}
+================================================
+ ✓ Portfolio Manager   [300308.SZ] Done                                        
+ ✓ Technical Analyst   [300308.SZ] Done                                        
+ ✓ Risk Management     [300308.SZ] Done                                        
+Analysis for 300308.SZ
+==================================================
+
+AGENT ANALYSIS: [300308.SZ]
++-------------------+----------+--------------+--------------------------------------------------------------+
+| Agent             |  Signal  |   Confidence | Reasoning                                                    |
++===================+==========+==============+==============================================================+
+| Technical Analyst | NEUTRAL  |          13% | { "trend_following": { "signal": "bullish", "confidence":    |
+|                   |          |              | 23, "metrics": { "adx": 22.582864653909848,                  |
+|                   |          |              | "trend_strength": 0.22582864653909848 } }, "mean_reversion": |
+|                   |          |              | { "signal": "neutral", "confidence": 50, "metrics": {        |
+|                   |          |              | "z_score": 0.814553177255424, "price_vs_bb":                 |
+|                   |          |              | 0.4224146469910103, "rsi_14": 56.713734200645206, "rsi_28":  |
+|                   |          |              | 59.79725985352919 } }, "momentum": { "signal": "neutral",    |
+|                   |          |              | "confidence": 50, "metrics": { "momentum_1m":                |
+|                   |          |              | 0.09838846173954319, "momentum_3m": 0.0, "momentum_6m": 0.0, |
+|                   |          |              | "volume_momentum": 0.8791468051495278 } }, "volatility": {   |
+|                   |          |              | "signal": "neutral", "confidence": 50, "metrics": {          |
+|                   |          |              | "historical_volatility": 0.6940968859467211,                 |
+|                   |          |              | "volatility_regime": 0.0, "volatility_z_score": 0.0,         |
+|                   |          |              | "atr_ratio": 0.06602983582471306 } },                        |
+|                   |          |              | "statistical_arbitrage": { "signal": "neutral",              |
+|                   |          |              | "confidence": 50, "metrics": { "hurst_exponent":             |
+|                   |          |              | 4.686994974318529e-16, "skewness": 0.0, "kurtosis": 0.0 } }  |
+|                   |          |              | }                                                            |
++-------------------+----------+--------------+--------------------------------------------------------------+
+
+TRADING DECISION: [300308.SZ]
++------------+-------------------------------+
+| Action     | HOLD                          |
++------------+-------------------------------+
+| Quantity   | 0                             |
++------------+-------------------------------+
+| Confidence | 13.0%                         |
++------------+-------------------------------+
+| Reasoning  | Neutral signal; best to hold. |
++------------+-------------------------------+
+
+PORTFOLIO SUMMARY:
++-----------+----------+------------+--------------+-----------+-----------+-----------+
+| Ticker    |  Action  |   Quantity |   Confidence |  Bullish  |  Bearish  |  Neutral  |
++===========+==========+============+==============+===========+===========+===========+
+| 300308.SZ |   HOLD   |          0 |        13.0% |     0     |     0     |     1     |
++-----------+----------+------------+--------------+-----------+-----------+-----------+
+
+Portfolio Strategy:
+Neutral signal; best to hold.
+
+═══ 【300308.SZ】结论 ═══
+评级: 持有观察（多空平衡型中性）   信号构成: 0多 / 0空 / 2有效中性 / 0数据不足
+核心依据:
+  · 技术分析（中性,13%）: 趋势_following:{'signal': '看多', 'confidence': 23, 'metrics': {'adx': 22.582864653909848, '趋势_strength…
+  · 风险管理（中性,0%）: portfolio_value:1000000.0; current_position_value:0.0; base_position_limit_pct:0.1
+价格锚点: 中际旭创 现价1223.17（当日-3.69% 量比0.84）
+决策引擎: hold 0股 (置信度13%)
+

@@ -25,7 +25,10 @@ import logging
 from typing import Optional
 
 logger = logging.getLogger(__name__)
-__version__ = "3.0.0"
+# v3.1.0: 修 tushare 叠加口径 — 流量科目 YTD→TTM(_ttm_from_ytd),利润表 4 项
+#         baostock TTM 优先不被覆盖(消除 Tushare 激活后的 TTM 回退),平衡表
+#         点时科目仍原样覆盖。修复 valuation 的 fcf_history 混口径失真。
+__version__ = "3.1.0"
 
 # ── 软导入 ──────────────────────────────────────────────────────────────
 try:
@@ -276,12 +279,62 @@ def _parse_hk_three_tables(norm: str) -> dict:
 
 # ── A 股:Baostock 比率反推 ────────────────────────────────────────────
 
+# 流量科目(利润表+现金流量表):tushare get_abs_periods 给的是单年 YTD 累计,
+# 必须转 TTM,才能与 baostock 的 TTM 口径一致、且让 valuation 的 fcf_history
+# 成为可比序列(否则单季/半年/9月/全年混在一起喂 DCF → base_fcf 失真)。
+_FLOW_FIELDS_TS: frozenset = frozenset({
+    "net_income", "revenue", "gross_profit", "operating_income",
+    "free_cash_flow", "capital_expenditure",
+    "depreciation_and_amortization", "dividends_and_other_cash_distributions",
+})
+# 这 4 项 baostock 已用 epsTTM 等做成 TTM(已离线验证,茅台口径),tushare 不得
+# 覆盖,仅在 baostock 缺该期时用 tushare 的 TTM 值补缺。
+_BAOSTOCK_TTM_OWNED: frozenset = frozenset({
+    "net_income", "revenue", "gross_profit", "operating_income",
+})
+
+
+def _ttm_from_ytd(ts_by: dict, fields: frozenset) -> dict:
+    """单年 YTD 累计流量科目 → TTM:返回 {report_period: {field: ttm_value}}。
+
+    TTM(P) = YTD(P) + 上年FY(YYYY-1 的 12-31) − 上年同期(YYYY-1 的 同 MM-DD)。
+    - MM-DD == 12-31:YTD 即全年即 TTM,原样返回。
+    - 缺回溯期(上年 FY 或上年同期任一缺失)→ fail-soft,保留原 YTD 值。
+    不修改入参;仅返回 fields 指定科目。平衡表点时科目不在此函数处理。
+    """
+    out: dict[str, dict] = {}
+    for rep, slot in ts_by.items():
+        if len(rep) < 10 or rep[4] != "-":
+            continue
+        year, mmdd = rep[:4], rep[5:]
+        try:
+            prior_year = str(int(year) - 1)
+        except ValueError:
+            continue
+        prior_fy_slot = ts_by.get(f"{prior_year}-12-31", {})
+        prior_same_slot = ts_by.get(f"{prior_year}-{mmdd}", {})
+        dst = out.setdefault(rep, {})
+        for f in fields:
+            cur = slot.get(f)
+            if cur is None:
+                continue
+            if mmdd == "12-31":
+                dst[f] = cur
+                continue
+            pfy = prior_fy_slot.get(f)
+            psame = prior_same_slot.get(f)
+            dst[f] = (cur + pfy - psame) if (pfy is not None and psame is not None) else cur
+    return out
+
+
 def _a_share_by_period(norm: str, end_date: str, limit: int) -> dict:
     """A 股 → {report_period: {line_item_field: value}}。
 
     底:Baostock 比率反推(revenue/net_income/assets/equity/liab/current_*/shares)。
-    叠加:Tushare 真值(若配 token)——覆盖反推值并补上现金流绝对科目
-          (capital_expenditure / depreciation / free_cash_flow / dividends)。
+    叠加:Tushare 真值(若配 token)。流量科目先 YTD→TTM(见 _ttm_from_ytd);
+          利润表 4 项 baostock 已 TTM 不覆盖、仅缺时补;现金流绝对科目
+          (capital_expenditure/depreciation/free_cash_flow/dividends)转 TTM 后
+          补入;平衡表点时科目原样覆盖(反推链不动)。
     """
     asof = end_date or "9999-12-31"
     by_period: dict[str, dict] = {}
@@ -293,18 +346,28 @@ def _a_share_by_period(norm: str, end_date: str, limit: int) -> dict:
             if rep:
                 by_period[rep] = _bsd.line_items_from_block(blk)
 
-    # 叠加:tushare 真值(真值优先,补全 FCF/capex/折旧/分红)
+    # 叠加:tushare 真值。
+    #  - 流量科目(_FLOW_FIELDS_TS):先 YTD→TTM(多取 4 期供回溯)。
+    #  - 利润表 4 项(_BAOSTOCK_TTM_OWNED):baostock 已 TTM,不覆盖,仅缺时补。
+    #  - 平衡表点时科目(现金/资产/负债/权益等):原样覆盖(反推链不动)。
     if _tsd is not None and _tsd.available():
         try:
-            ts_by = _tsd.get_abs_periods(norm, asof, limit=limit)
+            ts_by = _tsd.get_abs_periods(norm, asof, limit=limit + 4)
         except Exception as exc:
             logger.warning("tushare 叠加失败,退回 baostock: %s", str(exc)[:120])
             ts_by = {}
+        ts_ttm = _ttm_from_ytd(ts_by, _FLOW_FIELDS_TS)
         for rep, fields in ts_by.items():
             slot = by_period.setdefault(rep, {})
             for k, v in fields.items():
-                if v is not None:
-                    slot[k] = v   # tushare 真值覆盖/补全
+                if v is None:
+                    continue
+                if k in _FLOW_FIELDS_TS:
+                    if k in _BAOSTOCK_TTM_OWNED and slot.get(k) is not None:
+                        continue  # baostock TTM 优先,不被 tushare 覆盖
+                    slot[k] = ts_ttm.get(rep, {}).get(k, v)  # 用 TTM 值
+                else:
+                    slot[k] = v   # 平衡表点时科目:原样覆盖
 
     return by_period
 

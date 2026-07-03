@@ -18,6 +18,9 @@ from src.tools.api import (
     search_line_items,
 )
 
+from src.markets.market_config import for_ticker as _market_config
+
+
 def valuation_analyst_agent(state: AgentState, agent_id: str = "valuation_analyst_agent"):
     """Run valuation across tickers and write signals back to `state`."""
 
@@ -29,6 +32,9 @@ def valuation_analyst_agent(state: AgentState, agent_id: str = "valuation_analys
 
     for ticker in tickers:
         progress.update_status(agent_id, ticker, "Fetching financial data")
+
+        # 按市场路由资本成本(CN/HK/US),取代写死的美股贴现率(坑:US 4.5% 无风险等)
+        mc = _market_config(ticker)
 
         # --- Historical financial metrics ---
         financial_metrics = get_financial_metrics(
@@ -87,6 +93,7 @@ def valuation_analyst_agent(state: AgentState, agent_id: str = "valuation_analys
             capex=li_curr.capital_expenditure,
             working_capital_change=wc_change,
             growth_rate=most_recent_metrics.earnings_growth or 0.05,
+            required_return=mc.required_return,
         )
 
         # Enhanced Discounted Cash Flow with WACC and scenarios
@@ -99,6 +106,8 @@ def valuation_analyst_agent(state: AgentState, agent_id: str = "valuation_analys
             cash=getattr(li_curr, 'cash_and_equivalents', None),
             interest_coverage=most_recent_metrics.interest_coverage,
             debt_to_equity=most_recent_metrics.debt_to_equity,
+            risk_free_rate=mc.risk_free_rate,
+            market_risk_premium=mc.equity_risk_premium,
         )
         
         # Prepare FCF history for enhanced DCF
@@ -131,6 +140,7 @@ def valuation_analyst_agent(state: AgentState, agent_id: str = "valuation_analys
             net_income=li_curr.net_income,
             price_to_book_ratio=most_recent_metrics.price_to_book_ratio,
             book_value_growth=most_recent_metrics.book_value_growth or 0.03,
+            cost_of_equity=mc.cost_of_equity,
         )
 
         # ------------------------------------------------------------------

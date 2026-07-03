@@ -1,0 +1,147 @@
+C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\langgraph\checkpoint\base\__init__.py:18: LangChainPendingDeprecationWarning: The default value of `allowed_objects` will change in a future version. Pass an explicit value (e.g., allowed_objects='messages' or allowed_objects='core') to suppress this warning.
+  from langgraph.checkpoint.serde.jsonplus import JsonPlusSerializer
+
+============================================================
+  AI Hedge Fund — China / Hong Kong Market Edition
+============================================================
+
+  ✓ 300308.SZ (ChiNext (创业板))
+
+Market mode: CN
+Date range: 2026-04-01 → 2026-07-01
+模型自动选择: DeepSeek / deepseek-v4-flash
+
+--- 300308.SZ ---
+  Market: ChiNext (创业板)
+  Daily price limit: ±20% (ST stocks: ±20%)
+  Settlement: T+1
+  Cannot sell same-day purchases (T+1 constraint).
+  Short selling: restricted. 创业板注册制股票上市前5日不设涨跌幅限制
+  Minimum lot size: 100 shares
+  Currency: CNY
+  ST mechanism: stocks with financial risk are marked ST/*ST with tighter price limits.
+  Registration-based IPO system (注册制) — higher new-listing volatility.
+
+Running analysis...
+
+login success!
+[boot] NO_PROXY injected: 30 hosts total (26 from AKShare whitelist)
+
+==========   Valuation Analysis Agent   ==========
+{
+  "300308.SZ": {
+    "signal": "bearish",
+    "confidence": 78,
+    "reasoning": {
+      "dcf_analysis": {
+        "signal": "bearish",
+        "details": "Value: $139,729,153,157.26, Market Cap: $1,359,086,612,598.78, Gap: -89.7%, Weight: 35%\n  WACC: 7.3%, Bear: $80,989,439,454.68, Bull: $191,225,656,090.51, Range: $110,236,216,635.83"
+      },
+      "residual_income_analysis": {
+        "signal": "bullish",
+        "details": "Value: $4,188,571,096,863.78, Market Cap: $1,359,086,612,598.78, Gap: 208.2%, Weight: 10%"
+      },
+      "dcf_scenario_analysis": {
+        "bear_case": "$80,989,439,454.68",
+        "base_case": "$142,143,556,747.04",
+        "bull_case": "$191,225,656,090.51",
+        "wacc_used": "7.3%",
+        "fcf_periods_analyzed": 8
+      }
+    }
+  }
+}
+================================================
+
+========== Volatility-Adjusted Risk Management Agent ==========
+{
+  "300308.SZ": {
+    "remaining_position_limit": 100000.0,
+    "current_price": 1223.17,
+    "volatility_metrics": {
+      "daily_volatility": 0.03858443434143225,
+      "annualized_volatility": 0.61250890647318,
+      "volatility_percentile": 48.38709677419355,
+      "data_points": 60
+    },
+    "correlation_metrics": {
+      "avg_correlation_with_active": "None",
+      "max_correlation_with_active": "None",
+      "top_correlated_tickers": []
+    },
+    "reasoning": {
+      "portfolio_value": 1000000.0,
+      "current_position_value": 0.0,
+      "base_position_limit_pct": 0.1,
+      "correlation_multiplier": 1.0,
+      "combined_position_limit_pct": 0.1,
+      "position_limit": 100000.0,
+      "remaining_limit": 100000.0,
+      "available_cash": 1000000.0,
+      "risk_adjustment": "Volatility x Correlation adjusted: 10.0% (base 10.0%)"
+    }
+  }
+}
+================================================
+
+==========      Portfolio Manager       ==========
+{
+  "300308.SZ": {
+    "action": "short",
+    "quantity": 81,
+    "confidence": 78,
+    "reasoning": "Bearish signal, short max quantity."
+  }
+}
+================================================
+ ✓ Portfolio Manager   [300308.SZ] Done                                        
+ ✓ Valuation Analyst   [300308.SZ] Done                                        
+ ✓ Risk Management     [300308.SZ] Done                                        
+Analysis for 300308.SZ
+==================================================
+
+AGENT ANALYSIS: [300308.SZ]
++-------------------+----------+--------------+--------------------------------------------------------------+
+| Agent             |  Signal  |   Confidence | Reasoning                                                    |
++===================+==========+==============+==============================================================+
+| Valuation Analyst | BEARISH  |          78% | { "dcf_analysis": { "signal": "bearish", "details": "Value:  |
+|                   |          |              | $139,729,153,157.26, Market Cap: $1,359,086,612,598.78, Gap: |
+|                   |          |              | -89.7%, Weight: 35%\n WACC: 7.3%, Bear: $80,989,439,454.68,  |
+|                   |          |              | Bull: $191,225,656,090.51, Range: $110,236,216,635.83" },    |
+|                   |          |              | "residual_income_analysis": { "signal": "bullish",           |
+|                   |          |              | "details": "Value: $4,188,571,096,863.78, Market Cap:        |
+|                   |          |              | $1,359,086,612,598.78, Gap: 208.2%, Weight: 10%" },          |
+|                   |          |              | "dcf_scenario_analysis": { "bear_case":                      |
+|                   |          |              | "$80,989,439,454.68", "base_case": "$142,143,556,747.04",    |
+|                   |          |              | "bull_case": "$191,225,656,090.51", "wacc_used": "7.3%",     |
+|                   |          |              | "fcf_periods_analyzed": 8 } }                                |
++-------------------+----------+--------------+--------------------------------------------------------------+
+
+TRADING DECISION: [300308.SZ]
++------------+-------------------------------------+
+| Action     | SHORT                               |
++------------+-------------------------------------+
+| Quantity   | 81                                  |
++------------+-------------------------------------+
+| Confidence | 78.0%                               |
++------------+-------------------------------------+
+| Reasoning  | Bearish signal, short max quantity. |
++------------+-------------------------------------+
+
+PORTFOLIO SUMMARY:
++-----------+----------+------------+--------------+-----------+-----------+-----------+
+| Ticker    |  Action  |   Quantity |   Confidence |  Bullish  |  Bearish  |  Neutral  |
++===========+==========+============+==============+===========+===========+===========+
+| 300308.SZ |  SHORT   |         81 |        78.0% |     0     |     1     |     0     |
++-----------+----------+------------+--------------+-----------+-----------+-----------+
+
+Portfolio Strategy:
+Bearish signal, short max quantity.
+
+═══ 【300308.SZ】结论 ═══
+评级: 回避   信号构成: 0多 / 1空 / 1有效中性 / 0数据不足
+核心依据:
+  · 估值分析（空,78%）: dcf_analysis:{'signal': '看空', 'details': 'Value: $139,729,153,157.26, Market Cap: $1,359,086,612,598.78, …
+价格锚点: 中际旭创 现价1223.17（当日-3.69% 量比0.84）
+决策引擎: short 81股 (置信度78%)
+
