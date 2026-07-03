@@ -1,0 +1,69 @@
+C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\langgraph\checkpoint\base\__init__.py:18: LangChainPendingDeprecationWarning: The default value of `allowed_objects` will change in a future version. Pass an explicit value (e.g., allowed_objects='messages' or allowed_objects='core') to suppress this warning.
+  from langgraph.checkpoint.serde.jsonplus import JsonPlusSerializer
+
+============================================================
+  AI Hedge Fund — China / Hong Kong Market Edition
+============================================================
+
+  ✓ 09880.HK (HKEX (港股))
+  ✓ 09660.HK (HKEX (港股))
+
+Market mode: HK
+Date range: 2026-04-03 → 2026-07-03
+检测到纯港股标的，自动切换港股分析师组合: china_public_opinion, china_policy, china_capital_flow, technical_analyst, fundamentals_analyst, valuation_analyst, growth_analyst, nassim_taleb, warren_buffett, peter_lynch
+模型自动选择: DeepSeek / deepseek-v4-flash
+
+--- 09880.HK ---
+  Market: HKEX (港股)
+  No daily price limit.
+  Settlement: T+2
+  Short selling: available. 可沽空指定证券名单内的股票
+  Minimum lot size: 100 shares
+  Currency: HKD
+
+--- 09660.HK ---
+  Market: HKEX (港股)
+  No daily price limit.
+  Settlement: T+2
+  Short selling: available. 可沽空指定证券名单内的股票
+  Minimum lot size: 100 shares
+  Currency: HKD
+
+Running analysis...
+
+[boot] NO_PROXY injected: 30 hosts total (26 from AKShare whitelist)
+get_prices source=eastmoney 失败: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+get_prices source=eastmoney 失败: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+  0%|          | 0/3 [00:00<?, ?it/s][FATAL:partition_address_space.cc(243)] Check failed: !IsConfigurablePoolInitialized(). 
+#16 0x7fff60215cce (C:\Users\35366\AppData\Local\Programs\Python\Python313\python313.dll+0x55cce)
+#17 0x7fff60215449 (C:\Users\35366\AppData\Local\Programs\Python\Python313\python313.dll+0x55449)
+#18 0x7fff6024963f (C:\Users\35366\AppData\Local\Programs\Python\Python313\python313.dll+0x8963f)
+#19 0x7fff601f54f9 (C:\Users\35366\AppData\Local\Programs\Python\Python313\python313.dll+0x354f9)
+#20 0x7fff601e63db (C:\Users\35366\AppData\Local\Programs\Python\Python313\python313.dll+0x263db)
+#21 0x7fff60249a68 (C:\Users\35366\AppData\Local\Programs\Python\Python313\python313.dll+0x89a68)
+#22 0x7fff60215c4f (C:\Users\35366\AppData\Local\Programs\Python\Python313\python313.dll+0x55c4f)
+#23 0x7fff60215449 (C:\Users\35366\AppData\Local\Programs\Python\Python313\python313.dll+0x55449)
+#24 0x7fff6024bbb6 (C:\Users\35366\AppData\Local\Programs\Python\Python313\python313.dll+0x8bbb6)
+#25 0x7fff60247627 (C:\Users\35366\AppData\Local\Programs\Python\Python313\python313.dll+0x87627)
+#26 0x7fff6045e14d (C:\Users\35366\AppData\Local\Programs\Python\Python313\python313.dll+0x29e14d)
+#27 0x7fff6045e458 (C:\Users\35366\AppData\Local\Programs\Python\Python313\python313.dll+0x29e458)
+#28 0x7fff6020eea3 (C:\Users\35366\AppData\Local\Programs\Python\Python313\python313.dll+0x4eea3)
+#29 0x7fff601eff56 (C:\Users\35366\AppData\Local\Programs\Python\Python313\python313.dll+0x2ff56)
+#30 0x7fff6024cff7 (C:\Users\35366\AppData\Local\Programs\Python\Python313\python313.dll+0x8cff7)
+#31 0x7fff601f3660 (C:\Users\35366\AppData\Local\Programs\Python\Python313\python313.dll+0x33660)
+#13 0x7fff77782da2 (C:\Users\35366\AppData\Local\Programs\Python\Python313\DLLs\_ctypes.pyd+0x2da2)
+#14 0x7fff777829e7 (C:\Users\35366\AppData\Local\Programs\Python\Python313\DLLs\_ctypes.pyd+0x29e7)
+#15 0x7fff777825d7 (C:\Users\35366\AppData\Local\Programs\Python\Python313\DLLs\_ctypes.pyd+0x25d7)
+#10 0x7fff82bd4771 (C:\Users\35366\AppData\Local\Programs\Python\Python313\DLLs\libffi-8.dll+0x4771)
+#11 0x7fff82bd4493 (C:\Users\35366\AppData\Local\Programs\Python\Python313\DLLs\libffi-8.dll+0x4493)
+#12 0x7fff82bd42c2 (C:\Users\35366\AppData\Local\Programs\Python\Python313\DLLs\libffi-8.dll+0x42c2)
+#0 0x7ffedd81ad32 (C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\py_mini_racer\mini_racer.dll+0x158ad32)
+#1 0x7ffedd78e5a7 (C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\py_mini_racer\mini_racer.dll+0x14fe5a7)
+#2 0x7ffedd6d827d (C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\py_mini_racer\mini_racer.dll+0x144827d)
+#3 0x7ffedc5de104 (C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\py_mini_racer\mini_racer.dll+0x34e104)
+#4 0x7ffedc5dc2b8 (C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\py_mini_racer\mini_racer.dll+0x34c2b8)
+#5 0x7ffedc2ef113 (C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\py_mini_racer\mini_racer.dll+0x5f113)
+#6 0x7ffedc29e9b3 (C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\py_mini_racer\mini_racer.dll+0xe9b3)
+#7 0x7ffedc29ea8a (C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\py_mini_racer\mini_racer.dll+0xea8a)
+#8 0x7ffedc296785 (C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\py_mini_racer\mini_racer.dll+0x6785)
+#9 0x7ffedc29cf23 (C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\py_mini_racer\mini_racer.dll+0xcf23)

@@ -1,0 +1,141 @@
+C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\langgraph\checkpoint\base\__init__.py:18: LangChainPendingDeprecationWarning: The default value of `allowed_objects` will change in a future version. Pass an explicit value (e.g., allowed_objects='messages' or allowed_objects='core') to suppress this warning.
+  from langgraph.checkpoint.serde.jsonplus import JsonPlusSerializer
+
+============================================================
+  AI Hedge Fund — China / Hong Kong Market Edition
+============================================================
+
+  ✓ 09880.HK (HKEX (港股))
+
+Market mode: HK
+Date range: 2026-04-03 → 2026-07-03
+模型自动选择: DeepSeek / deepseek-v4-flash
+
+--- 09880.HK ---
+  Market: HKEX (港股)
+  No daily price limit.
+  Settlement: T+2
+  Short selling: available. 可沽空指定证券名单内的股票
+  Minimum lot size: 100 shares
+  Currency: HKD
+
+Running analysis...
+
+[boot] NO_PROXY injected: 30 hosts total (26 from AKShare whitelist)
+
+========== China Public Opinion Agent (舆情分析) ==========
+{
+  "09880.HK": {
+    "signal": "bullish",
+    "confidence": 50,
+    "reasoning": {
+      "market_temperature": "greed",
+      "key_narratives": [],
+      "black_swan": {
+        "detected": false,
+        "severity": "none",
+        "description": "",
+        "affected_sectors": [],
+        "recommended_caution": ""
+      },
+      "data_sources": {
+        "stock_news_count": 10,
+        "opinion_count": 10,
+        "market_news_count": 20
+      },
+      "llm_reasoning": "\u4f18\u5fc5\u9009\u8fd1\u671f\u53d7\u4eff\u751f\u673a\u5668\u4eba\u53d1\u552e\u9884\u671f\u53caAI\u786c\u4ef6\u8d44\u91d1\u8ffd\u6367\uff0c\u80a1\u4ef7\u4e0a\u6da8\uff0c\u60c5\u7eea\u504f\u6b63\u9762\u3002\u4f46\u9700\u8b66\u60d5AI\u4ea7\u80fd\u8fc7\u5269\u8d28\u7591\u3001\u4e1a\u52a1\u96c6\u4e2d\u5ea6\u53ca\u5b8f\u89c2\u98ce\u9669\u3002"
+    }
+  }
+}
+================================================
+get_prices source=eastmoney 失败: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+
+========== Volatility-Adjusted Risk Management Agent ==========
+{
+  "09880.HK": {
+    "remaining_position_limit": 100000.0,
+    "current_price": 92.6,
+    "volatility_metrics": {
+      "daily_volatility": 0.040617659433446134,
+      "annualized_volatility": 0.6447853541904909,
+      "volatility_percentile": 50.0,
+      "data_points": 57
+    },
+    "correlation_metrics": {
+      "avg_correlation_with_active": "None",
+      "max_correlation_with_active": "None",
+      "top_correlated_tickers": []
+    },
+    "reasoning": {
+      "portfolio_value": 1000000.0,
+      "current_position_value": 0.0,
+      "base_position_limit_pct": 0.1,
+      "correlation_multiplier": 1.0,
+      "combined_position_limit_pct": 0.1,
+      "position_limit": 100000.0,
+      "remaining_limit": 100000.0,
+      "available_cash": 1000000.0,
+      "risk_adjustment": "Volatility x Correlation adjusted: 10.0% (base 10.0%)"
+    }
+  }
+}
+================================================
+
+==========      Portfolio Manager       ==========
+{
+  "09880.HK": {
+    "action": "buy",
+    "quantity": 500,
+    "confidence": 50,
+    "reasoning": "bullish signal moderate confidence"
+  }
+}
+================================================
+ ✓ China Public Opinion[09880.HK] Done                                         
+ ✓ Portfolio Manager   [09880.HK] Done                                         
+ ✓ Risk Management     [09880.HK] Done                                         
+Analysis for 09880.HK
+==================================================
+
+AGENT ANALYSIS: [09880.HK]
++----------------------+----------+--------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Agent                |  Signal  |   Confidence | Reasoning                                                                                                                                                                                                                                                                                                                                              |
++======================+==========+==============+========================================================================================================================================================================================================================================================================================================================================================+
+| China Public Opinion | BULLISH  |          50% | { "market_temperature": "greed", "key_narratives": [],                                                                                                                                                                                                                                                                                                 |
+|                      |          |              | "black_swan": { "detected": false, "severity": "none",                                                                                                                                                                                                                                                                                                 |
+|                      |          |              | "description": "", "affected_sectors": [],                                                                                                                                                                                                                                                                                                             |
+|                      |          |              | "recommended_caution": "" }, "data_sources": {                                                                                                                                                                                                                                                                                                         |
+|                      |          |              | "stock_news_count": 10, "opinion_count": 10,                                                                                                                                                                                                                                                                                                           |
+|                      |          |              | "market_news_count": 20 }, "llm_reasoning":                                                                                                                                                                                                                                                                                                            |
+|                      |          |              | "\u4f18\u5fc5\u9009\u8fd1\u671f\u53d7\u4eff\u751f\u673a\u5668\u4eba\u53d1\u552e\u9884\u671f\u53caAI\u786c\u4ef6\u8d44\u91d1\u8ffd\u6367\uff0c\u80a1\u4ef7\u4e0a\u6da8\uff0c\u60c5\u7eea\u504f\u6b63\u9762\u3002\u4f46\u9700\u8b66\u60d5AI\u4ea7\u80fd\u8fc7\u5269\u8d28\u7591\u3001\u4e1a\u52a1\u96c6\u4e2d\u5ea6\u53ca\u5b8f\u89c2\u98ce\u9669\u3002" |
+|                      |          |              | }                                                                                                                                                                                                                                                                                                                                                      |
++----------------------+----------+--------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+TRADING DECISION: [09880.HK]
++------------+------------------------------------+
+| Action     | BUY                                |
++------------+------------------------------------+
+| Quantity   | 500                                |
++------------+------------------------------------+
+| Confidence | 50.0%                              |
++------------+------------------------------------+
+| Reasoning  | bullish signal moderate confidence |
++------------+------------------------------------+
+
+PORTFOLIO SUMMARY:
++----------+----------+------------+--------------+-----------+-----------+-----------+
+| Ticker   |  Action  |   Quantity |   Confidence |  Bullish  |  Bearish  |  Neutral  |
++==========+==========+============+==============+===========+===========+===========+
+| 09880.HK |   BUY    |        500 |        50.0% |     1     |     0     |     0     |
++----------+----------+------------+--------------+-----------+-----------+-----------+
+
+Portfolio Strategy:
+bullish signal moderate confidence
+
+═══ 【09880.HK】结论 ═══
+评级: 买入关注   信号构成: 1多 / 0空 / 1有效中性 / 0数据不足
+核心依据:
+  · 舆情+黑天鹅（多,50%）: market_temperature:贪婪; key_narratives:[]; black_swan:{'detected': False, 'severity': 'none', 'description':…
+价格锚点: 优必选 现价104.50（当日+12.85%）
+决策引擎: buy 500股 (置信度50%)
+
