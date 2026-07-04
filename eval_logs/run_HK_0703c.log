@@ -1,0 +1,182 @@
+C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\langgraph\checkpoint\base\__init__.py:18: LangChainPendingDeprecationWarning: The default value of `allowed_objects` will change in a future version. Pass an explicit value (e.g., allowed_objects='messages' or allowed_objects='core') to suppress this warning.
+  from langgraph.checkpoint.serde.jsonplus import JsonPlusSerializer
+
+============================================================
+  AI Hedge Fund — China / Hong Kong Market Edition
+============================================================
+
+  ✓ 09880.HK (HKEX (港股))
+  ✓ 09660.HK (HKEX (港股))
+
+Market mode: HK
+Date range: 2026-04-03 → 2026-07-03
+检测到纯港股标的，自动切换港股分析师组合: china_public_opinion, china_policy, china_capital_flow, technical_analyst, fundamentals_analyst, valuation_analyst, growth_analyst, nassim_taleb, warren_buffett, peter_lynch
+模型自动选择: DeepSeek / deepseek-v4-flash
+
+--- 09880.HK ---
+  Market: HKEX (港股)
+  No daily price limit.
+  Settlement: T+2
+  Short selling: available. 可沽空指定证券名单内的股票
+  Minimum lot size: 100 shares
+  Currency: HKD
+
+--- 09660.HK ---
+  Market: HKEX (港股)
+  No daily price limit.
+  Settlement: T+2
+  Short selling: available. 可沽空指定证券名单内的股票
+  Minimum lot size: 100 shares
+  Currency: HKD
+
+Running analysis...
+
+[boot] NO_PROXY injected: 30 hosts total (26 from AKShare whitelist)
+ ✓ China Capital Flow  [09660.HK] Done                                         
+ ✓ China Policy        [09660.HK] Done                                         
+ ✓ China Public Opinion[09660.HK] Done                                         
+ ✓ Fundamentals Analyst[09660.HK] Done                                         
+ ✓ Growth Analyst      [09660.HK] Done                                         
+ ✓ Nassim Taleb        [09660.HK] Done                                         
+ ✓ Peter Lynch         [09660.HK] Done                                         
+ ✓ Portfolio Manager   [09660.HK] Done                                         
+ ✓ Technical Analyst   [09660.HK] Done                                         
+ ✓ Valuation Analyst   [09660.HK] Done                                         
+ ✓ Warren Buffett      [09660.HK] Done                                         
+ ✓ Risk Management     [09660.HK] Done                                         
+Analysis for 09880.HK
+==================================================
+
+AGENT ANALYSIS: [09880.HK]
++----------------------+----------+--------------+--------------------------------------------------------------+
+| Agent                |  Signal  |   Confidence | Reasoning                                                    |
++======================+==========+==============+==============================================================+
+| China Public Opinion | NEUTRAL  |          20% | { "summary": "Insufficient public opinion data available.",  |
+|                      |          |              | "data_sources": 0, "black_swan": { "detected": false } }     |
++----------------------+----------+--------------+--------------------------------------------------------------+
+| China Capital Flow   | NEUTRAL  |          95% | { "northbound_flow": { "signal": "neutral", "confidence":    |
+|                      |          |              | 20, "details": { "error": "Insufficient northbound data" },  |
+|                      |          |              | "weight": 0.35 }, "margin_trading": { "signal": "neutral",   |
+|                      |          |              | "confidence": 20, "details": { "error": "Insufficient margin |
+|                      |          |              | data" }, "weight": 0.25 }, "stock_capital_flow": { "signal": |
+|                      |          |              | "neutral", "confidence": 20, "details": { "error":           |
+|                      |          |              | "Insufficient stock flow data" }, "weight": 0.4 },           |
+|                      |          |              | "combined": { "scores": { "bullish": 0.0, "bearish": 0.0,    |
+|                      |          |              | "neutral": 20.0 } } }                                        |
++----------------------+----------+--------------+--------------------------------------------------------------+
+| China Policy         | NEUTRAL  |          30% | { "summary": "No significant policy signals detected.",      |
+|                      |          |              | "policy_items_scanned": 0, "policy_items_relevant": 0 }      |
++----------------------+----------+--------------+--------------------------------------------------------------+
+| Nassim Taleb         | NEUTRAL  |          30% | Insufficient data for fragility, antifragility, or convexity |
+|                      |          |              | analysis; no skin in the game signals.                       |
++----------------------+----------+--------------+--------------------------------------------------------------+
+| Warren Buffett       | NEUTRAL  |          30% | Insufficient data for any fundamental assessment; outside    |
+|                      |          |              | circle of competence.                                        |
++----------------------+----------+--------------+--------------------------------------------------------------+
+| Peter Lynch          | BEARISH  |        35.0% | Well, I look at this stock and I just can't get a read on    |
+|                      |          |              | it. There's hardly any financial data to check growth or     |
+|                      |          |              | valuation, and no news or insider trades to give me a clue.  |
+|                      |          |              | When I can't understand a company's story or its numbers, I  |
+|                      |          |              | stay away. It might be a diamond in the rough, but it's just |
+|                      |          |              | too risky for my style. I'd rather miss a ten-bagger than    |
+|                      |          |              | lose my shirt on something I don't know.                     |
++----------------------+----------+--------------+--------------------------------------------------------------+
+
+TRADING DECISION: [09880.HK]
++------------+--------------------------+
+| Action     | HOLD                     |
++------------+--------------------------+
+| Quantity   | 0                        |
++------------+--------------------------+
+| Confidence | 100.0%                   |
++------------+--------------------------+
+| Reasoning  | No valid trade available |
++------------+--------------------------+
+
+Analysis for 09660.HK
+==================================================
+
+AGENT ANALYSIS: [09660.HK]
++----------------------+----------+--------------+--------------------------------------------------------------+
+| Agent                |  Signal  |   Confidence | Reasoning                                                    |
++======================+==========+==============+==============================================================+
+| China Public Opinion | NEUTRAL  |          20% | { "summary": "Insufficient public opinion data available.",  |
+|                      |          |              | "data_sources": 0, "black_swan": { "detected": false } }     |
++----------------------+----------+--------------+--------------------------------------------------------------+
+| China Capital Flow   | NEUTRAL  |          95% | { "northbound_flow": { "signal": "neutral", "confidence":    |
+|                      |          |              | 20, "details": { "error": "Insufficient northbound data" },  |
+|                      |          |              | "weight": 0.35 }, "margin_trading": { "signal": "neutral",   |
+|                      |          |              | "confidence": 20, "details": { "error": "Insufficient margin |
+|                      |          |              | data" }, "weight": 0.25 }, "stock_capital_flow": { "signal": |
+|                      |          |              | "neutral", "confidence": 20, "details": { "error":           |
+|                      |          |              | "Insufficient stock flow data" }, "weight": 0.4 },           |
+|                      |          |              | "combined": { "scores": { "bullish": 0.0, "bearish": 0.0,    |
+|                      |          |              | "neutral": 20.0 } } }                                        |
++----------------------+----------+--------------+--------------------------------------------------------------+
+| China Policy         | NEUTRAL  |          30% | { "summary": "No significant policy signals detected.",      |
+|                      |          |              | "policy_items_scanned": 0, "policy_items_relevant": 0 }      |
++----------------------+----------+--------------+--------------------------------------------------------------+
+| Nassim Taleb         | NEUTRAL  |          30% | Insufficient data across all fragility and antifragility     |
+|                      |          |              | metrics; cannot assess tail risk or convexity.               |
++----------------------+----------+--------------+--------------------------------------------------------------+
+| Warren Buffett       | BEARISH  |          10% | Insufficient data to evaluate business; outside circle of    |
+|                      |          |              | competence.                                                  |
++----------------------+----------+--------------+--------------------------------------------------------------+
+| Peter Lynch          | BEARISH  |        60.0% | Well, I look at this stock and I just don't see a story I    |
+|                      |          |              | can understand. There's no real data on growth, valuation,   |
+|                      |          |              | or fundamentals. You can't tell me a PEG ratio because       |
+|                      |          |              | there's no earnings growth to speak of. Without that, it's   |
+|                      |          |              | like driving with a blindfold on. I like to invest in what I |
+|                      |          |              | know, and I don't know anything about this company. The lack |
+|                      |          |              | of insider activity and neutral sentiment doesn't give me    |
+|                      |          |              | any comfort either. Maybe it's a diamond in the rough, but   |
+|                      |          |              | for now, I'd rather sit on the sidelines. No ten-bagger      |
+|                      |          |              | potential if you can't see the numbers.                      |
++----------------------+----------+--------------+--------------------------------------------------------------+
+
+TRADING DECISION: [09660.HK]
++------------+--------------------------+
+| Action     | HOLD                     |
++------------+--------------------------+
+| Quantity   | 0                        |
++------------+--------------------------+
+| Confidence | 100.0%                   |
++------------+--------------------------+
+| Reasoning  | No valid trade available |
++------------+--------------------------+
+
+PORTFOLIO SUMMARY:
++----------+----------+------------+--------------+-----------+-----------+-----------+
+| Ticker   |  Action  |   Quantity |   Confidence |  Bullish  |  Bearish  |  Neutral  |
++==========+==========+============+==============+===========+===========+===========+
+| 09880.HK |   HOLD   |          0 |       100.0% |     0     |     1     |     5     |
++----------+----------+------------+--------------+-----------+-----------+-----------+
+| 09660.HK |   HOLD   |          0 |       100.0% |     0     |     2     |     4     |
++----------+----------+------------+--------------+-----------+-----------+-----------+
+
+Portfolio Strategy:
+No valid trade available
+
+═══ 【09880.HK】结论 ═══
+评级: 回避   信号构成: 0多 / 1空 / 2有效中性 / 4数据不足
+核心依据:
+  · 彼得·林奇视角（空,35%）: Well, I look at this stock and I just can't get a read on it. There's hardly any financial data to check growt…
+数据缺口（低置信中性，已剔除出评级计算）:
+  · 舆情+黑天鹅(20%), 资金流向(95%), 塔勒布尾部风险(30%), 巴菲特视角(30%)
+  → 港股数据覆盖弱属正常，建议改用: --analysts technical_analyst,valuation_analyst,fundamentals_analyst,warren_buffett,nassim_taleb,china_public_opinion
+价格锚点: 优必选 现价108.90（当日+17.60%）
+决策引擎: hold 0股 (置信度100%)
+⚠️ 数据链路警报: 决策引擎被确定性短路 —— 风险管理层未能获取该标的价格（current_price=0 → 可买数量=0 → 仅剩hold）。这不是'该股不值得交易'，是行情接口故障。运行 doctor_china.py 排查。
+
+═══ 【09660.HK】结论 ═══
+评级: 回避   信号构成: 0多 / 2空 / 2有效中性 / 3数据不足
+核心依据:
+  · 彼得·林奇视角（空,60%）: Well, I look at this stock and I just don't see a story I can understand. There's no real data on growth, valu…
+  · 巴菲特视角（空,10%）: 数据不足 to evaluate business; outside circle of competence.
+数据缺口（低置信中性，已剔除出评级计算）:
+  · 舆情+黑天鹅(20%), 资金流向(95%), 塔勒布尾部风险(30%)
+  → 港股数据覆盖弱属正常，建议改用: --analysts technical_analyst,valuation_analyst,fundamentals_analyst,warren_buffett,nassim_taleb,china_public_opinion
+价格锚点: 地平线机器人-W 现价4.68（当日+9.09%）
+决策引擎: hold 0股 (置信度100%)
+⚠️ 数据链路警报: 决策引擎被确定性短路 —— 风险管理层未能获取该标的价格（current_price=0 → 可买数量=0 → 仅剩hold）。这不是'该股不值得交易'，是行情接口故障。运行 doctor_china.py 排查。
+

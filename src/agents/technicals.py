@@ -238,6 +238,24 @@ def calculate_mean_reversion_signals(prices_df):
     }
 
 
+def safe_metric(value):
+    """marker: REDLINE_FIX_TECH_METRIC_V1 (I1.1)
+    退化/NaN 指标透传 None(JSON null → 下游渲染【数据缺口】),
+    禁止以 0.0 冒充真值(旧 safe_float 把 NaN 洗成 0.0,
+    momentum_6m 在 3 个月批跑窗口下结构性 NaN → 全池长期入册假 0)。"""
+    try:
+        if value is None:
+            return None
+        if pd.isna(value):
+            return None
+        f = float(value)
+        if not math.isfinite(f):
+            return None
+        return f
+    except (ValueError, TypeError, OverflowError):
+        return None
+
+
 def calculate_momentum_signals(prices_df):
     """
     Multi-factor momentum strategy
@@ -261,6 +279,26 @@ def calculate_momentum_signals(prices_df):
     # Volume confirmation
     volume_confirmation = volume_momentum.iloc[-1] > 1.0
 
+    # I1.1 守卫:任一动量窗口退化(NaN)→ 数据不足,低置信中性 + data_gaps。
+    # 禁止让 NaN 比较静默落入 else 分支产出"像真的"中性@0.5。
+    _gaps = [name for name, series in (
+        ("momentum_1m", mom_1m), ("momentum_3m", mom_3m), ("momentum_6m", mom_6m),
+    ) if pd.isna(series.iloc[-1])]
+    if pd.isna(volume_momentum.iloc[-1]):
+        _gaps.append("volume_momentum")
+    if _gaps:
+        return {
+            "signal": "neutral",
+            "confidence": 0.2,
+            "metrics": {
+                "momentum_1m": safe_metric(mom_1m.iloc[-1]),
+                "momentum_3m": safe_metric(mom_3m.iloc[-1]),
+                "momentum_6m": safe_metric(mom_6m.iloc[-1]),
+                "volume_momentum": safe_metric(volume_momentum.iloc[-1]),
+                "data_gaps": _gaps,
+            },
+        }
+
     if momentum_score > 0.05 and volume_confirmation:
         signal = "bullish"
         confidence = min(abs(momentum_score) * 5, 1.0)
@@ -275,10 +313,10 @@ def calculate_momentum_signals(prices_df):
         "signal": signal,
         "confidence": confidence,
         "metrics": {
-            "momentum_1m": safe_float(mom_1m.iloc[-1]),
-            "momentum_3m": safe_float(mom_3m.iloc[-1]),
-            "momentum_6m": safe_float(mom_6m.iloc[-1]),
-            "volume_momentum": safe_float(volume_momentum.iloc[-1]),
+            "momentum_1m": safe_metric(mom_1m.iloc[-1]),
+            "momentum_3m": safe_metric(mom_3m.iloc[-1]),
+            "momentum_6m": safe_metric(mom_6m.iloc[-1]),
+            "volume_momentum": safe_metric(volume_momentum.iloc[-1]),
         },
     }
 
@@ -348,6 +386,22 @@ def calculate_stat_arb_signals(prices_df):
     # (would include correlation with related securities in real implementation)
 
     # Generate signal based on statistical properties
+    # I1.1 守卫:hurst 计算失败(None)或偏度退化(NaN)→ 数据不足。
+    # 旧路径 NaN hurst 被 safe_float 洗成 0.0,而 0.0<0.4 恒真,
+    # 可能配合偏度产出 (0.5-0)*2=1.0 的满置信假方向信号。
+    if hurst is None or pd.isna(skew.iloc[-1]):
+        return {
+            "signal": "neutral",
+            "confidence": 0.2,
+            "metrics": {
+                "hurst_exponent": safe_metric(hurst),
+                "skewness": safe_metric(skew.iloc[-1]),
+                "kurtosis": safe_metric(kurt.iloc[-1]),
+                "data_gaps": [n for n, v in (
+                    ("hurst_exponent", hurst), ("skewness", skew.iloc[-1]),
+                ) if v is None or pd.isna(v)],
+            },
+        }
     if hurst < 0.4 and skew.iloc[-1] > 1:
         signal = "bullish"
         confidence = (0.5 - hurst) * 2
@@ -362,9 +416,9 @@ def calculate_stat_arb_signals(prices_df):
         "signal": signal,
         "confidence": confidence,
         "metrics": {
-            "hurst_exponent": safe_float(hurst),
-            "skewness": safe_float(skew.iloc[-1]),
-            "kurtosis": safe_float(kurt.iloc[-1]),
+            "hurst_exponent": safe_metric(hurst),
+            "skewness": safe_metric(skew.iloc[-1]),
+            "kurtosis": safe_metric(kurt.iloc[-1]),
         },
     }
 
@@ -518,6 +572,9 @@ def calculate_hurst_exponent(price_series: pd.Series, max_lag: int = 20) -> floa
     Returns:
         float: Hurst exponent
     """
+    # I1.1:数据不足以支撑 R/S 估计 → None(禁止假装 0.5 随机游走)
+    if price_series is None or len(price_series) < max_lag + 2:
+        return None
     lags = range(2, max_lag)
     # Add small epsilon to avoid log(0)
     tau = [max(1e-8, np.sqrt(np.std(np.subtract(price_series[lag:], price_series[:-lag])))) for lag in lags]
@@ -525,7 +582,8 @@ def calculate_hurst_exponent(price_series: pd.Series, max_lag: int = 20) -> floa
     # Return the Hurst exponent from linear fit
     try:
         reg = np.polyfit(np.log(lags), np.log(tau), 1)
-        return reg[0]  # Hurst exponent is the slope
-    except (ValueError, RuntimeWarning):
-        # Return 0.5 (random walk) if calculation fails
-        return 0.5
+        h = float(reg[0])  # Hurst exponent is the slope
+        return h if math.isfinite(h) else None
+    except (ValueError, RuntimeWarning, TypeError):
+        # 计算失败 → None(旧版返回 0.5 假装随机游走,同属退化值冒充)
+        return None

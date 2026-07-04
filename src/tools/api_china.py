@@ -931,6 +931,20 @@ def _get_prices_df_with_fallback(norm: str, market: str, ak_start: str, ak_end: 
     chain = ([("sina", _sina), ("eastmoney", _em)] if prefer == "sina"
              else [("eastmoney", _em), ("sina", _sina)])
 
+    # marker: TUSHARE_HK_PRICE_V1 — HK 历史价首选 tushare hk_daily
+    # (token 化 REST,机制不同于东财/新浪 web JSON;两者 2026-07-03 双双失守
+    #  致 current_price=0 决策短路)。无 token/无权限 → available()=False 自动跳过。
+    if market == "HK":
+        def _tushare_hk():
+            try:
+                from src.tools import tushare_data as _tsd
+            except ImportError:
+                import tushare_data as _tsd  # type: ignore
+            if not _tsd.available():
+                return None
+            return _tsd.get_hk_prices_df(norm, ak_start, ak_end)
+        chain = [("tushare_hk", _tushare_hk)] + chain
+
     for name, fn in chain:
         try:
             df = fn()

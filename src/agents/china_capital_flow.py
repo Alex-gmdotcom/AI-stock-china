@@ -87,13 +87,32 @@ def china_capital_flow_agent(
             signal_scores[signal] += conf * weight
 
         # Determine overall signal
+        # ── marker: REDLINE_FIX_CAPFLOW_DQ_V1 (I10.3 / I1.1) ──
+        # 置信度必须反映数据覆盖度,而非归一化占比:
+        # 旧式在三腿全缺数据时给出 NEUTRAL@95(2026-07-03 港股实锤),
+        # 单腿(北向)缺失时给出 82% 高置信(2026-06 A股实锤)。
+        # 修类:coverage = 有数据腿的权重和;置信度 ×coverage;
+        #       coverage=0 → 强制 neutral@20;coverage<0.5 → 封顶 30。
+        _dq_legs = (
+            ("northbound", nb_reasoning, 0.35),
+            ("margin", margin_reasoning, 0.25),
+            ("stock_flow", stock_reasoning, 0.40),
+        )
+        data_coverage = sum(w for _n, _r, w in _dq_legs
+                            if not (isinstance(_r, dict) and "error" in _r))
         max_signal = max(signal_scores, key=signal_scores.get)
         total_weight_conf = sum(signal_scores.values())
-        overall_confidence = (
-            int(signal_scores[max_signal] / max(total_weight_conf, 1) * 100)
-            if total_weight_conf > 0 else 30
+        raw_share = (
+            signal_scores[max_signal] / max(total_weight_conf, 1)
+            if total_weight_conf > 0 else 0.0
         )
-        overall_confidence = min(overall_confidence, 95)
+        if data_coverage <= 0:
+            max_signal = "neutral"
+            overall_confidence = 20
+        else:
+            overall_confidence = int(min(raw_share * 100 * data_coverage, 95))
+            if data_coverage < 0.5:
+                overall_confidence = min(overall_confidence, 30)
 
         reasoning = {
             "northbound_flow": {
@@ -116,6 +135,14 @@ def china_capital_flow_agent(
             },
             "combined": {
                 "scores": {k: round(v, 2) for k, v in signal_scores.items()},
+            },
+            "data_quality": {
+                "northbound": not (isinstance(nb_reasoning, dict) and "error" in nb_reasoning),
+                "margin": not (isinstance(margin_reasoning, dict) and "error" in margin_reasoning),
+                "stock_flow": not (isinstance(stock_reasoning, dict) and "error" in stock_reasoning),
+                "coverage": round(data_coverage, 2),
+                "note": ("" if data_coverage >= 1.0 else
+                         "【数据缺口】部分资金流输入缺失,置信度已按覆盖度降权(I10.3)"),
             },
         }
 

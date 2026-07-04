@@ -207,3 +207,36 @@ def get_fcf_latest(norm: str, asof: str) -> Optional[float]:
         return None
     rep = sorted(periods.keys(), reverse=True)[0]
     return periods[rep].get("free_cash_flow")
+
+# ── marker: TUSHARE_HK_DAILY_V1 (HK PRICE 链首选,权限探针 2026-07-03 通过) ──
+def get_hk_prices_df(norm: str, start_yyyymmdd: str, end_yyyymmdd: str):
+    """港股日线 via pro.hk_daily(不复权) → DataFrame[date,open,close,high,low,volume] 升序。
+    口径注记:hk_daily 为不复权价;与东财 qfq 的口径差属已接受兜底取舍
+    (同 pytdx 先例,ADR-06);tushare 居链首时同源自洽。
+    失败/空/无权限 → None(上层链继续东财/新浪)。"""
+    if not norm or not norm.endswith(".HK"):
+        return None
+    df = _query("hk_daily", ts_code=norm,
+                start_date=_compact(start_yyyymmdd), end_date=_compact(end_yyyymmdd))
+    if df is None or len(df) == 0:
+        return None
+    try:
+        rows = []
+        for _, r in df.iterrows():
+            rows.append({
+                "date": _iso(str(r.get("trade_date", ""))),
+                "open": _f(r.get("open")),
+                "close": _f(r.get("close")),
+                "high": _f(r.get("high")),
+                "low": _f(r.get("low")),
+                "volume": _f(r.get("vol")) or 0,
+            })
+        rows = [x for x in rows if x["date"] and x["close"] is not None]
+        if not rows:
+            return None
+        rows.sort(key=lambda x: x["date"])  # tushare 返回降序 → 升序
+        import pandas as _pd_local
+        return _pd_local.DataFrame(rows)
+    except Exception as exc:
+        logger.warning("tushare hk_daily(%s) 解析失败: %s", norm, str(exc)[:140])
+        return None

@@ -1,0 +1,153 @@
+C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\langgraph\checkpoint\base\__init__.py:18: LangChainPendingDeprecationWarning: The default value of `allowed_objects` will change in a future version. Pass an explicit value (e.g., allowed_objects='messages' or allowed_objects='core') to suppress this warning.
+  from langgraph.checkpoint.serde.jsonplus import JsonPlusSerializer
+
+============================================================
+  AI Hedge Fund — China / Hong Kong Market Edition
+============================================================
+
+  ✓ 600519.SH (Shanghai Main Board (沪市主板))
+
+Market mode: CN
+Date range: 2026-04-04 → 2026-07-04
+模型自动选择: DeepSeek / deepseek-v4-flash
+
+--- 600519.SH ---
+  Market: Shanghai Main Board (沪市主板)
+  Daily price limit: ±10% (ST stocks: ±5%)
+  Settlement: T+1
+  Cannot sell same-day purchases (T+1 constraint).
+  Short selling: restricted. 融券做空仅限融资融券标的，门槛高且券源稀缺
+  Minimum lot size: 100 shares
+  Currency: CNY
+  ST mechanism: stocks with financial risk are marked ST/*ST with tighter price limits.
+
+Running analysis...
+
+login success!
+[boot] NO_PROXY injected: 30 hosts total (26 from AKShare whitelist)
+ ✓ China Capital Flow  [600519.SH] Done                                        
+ ✓ China Policy        [600519.SH] Done                                        
+ ✓ China Public Opinion[600519.SH] Done                                        
+ ✓ China Sector RotationDone                                                   
+ ✓ Fundamentals Analyst[600519.SH] Done                                        
+ ✓ Nassim Taleb        [600519.SH] Done                                        
+ ✓ Portfolio Manager   [600519.SH] Done                                        
+ ✓ Technical Analyst   [600519.SH] Done                                        
+ ✓ Valuation Analyst   [600519.SH] Done                                        
+ ✓ Warren Buffett      [600519.SH] Done                                        
+ ✓ Risk Management     [600519.SH] Done                                        
+Analysis for 600519.SH
+==================================================
+
+AGENT ANALYSIS: [600519.SH]
++-----------------------+----------+--------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Agent                 |  Signal  |   Confidence | Reasoning                                                                                                                                                        |
++=======================+==========+==============+==================================================================================================================================================================+
+| China Public Opinion  | NEUTRAL  |          20% | { "summary": "\u3010\u6570\u636e\u7f3a\u53e3\u3011\u65e0                                                                                                         |
+|                       |          |              | openclaw                                                                                                                                                         |
+|                       |          |              | \u6570\u636e\u4e14\u81ea\u52a8\u65b0\u95fb\u6e90\u4e3a\u7a7a,\u5f3a\u5236\u4e2d\u6027(I1.3                                                                       |
+|                       |          |              | Tier-3)\u3002\u5efa\u8bae\u5bfc\u5165 openclaw JSON\u3002",                                                                                                      |
+|                       |          |              | "source_tier": "none", "data_sources": 0, "black_swan": {                                                                                                        |
+|                       |          |              | "detected": false } }                                                                                                                                            |
++-----------------------+----------+--------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| China Policy          | NEUTRAL  |          30% | { "summary": "No significant policy signals detected.",                                                                                                          |
+|                       |          |              | "policy_items_scanned": 0, "policy_items_relevant": 0 }                                                                                                          |
++-----------------------+----------+--------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| China Capital Flow    | NEUTRAL  |          20% | { "northbound_flow": { "signal": "neutral", "confidence":                                                                                                        |
+|                       |          |              | 20, "details": { "error": "Insufficient northbound data" },                                                                                                      |
+|                       |          |              | "weight": 0.35 }, "margin_trading": { "signal": "neutral",                                                                                                       |
+|                       |          |              | "confidence": 20, "details": { "error": "Insufficient margin                                                                                                     |
+|                       |          |              | data" }, "weight": 0.25 }, "stock_capital_flow": { "signal":                                                                                                     |
+|                       |          |              | "neutral", "confidence": 20, "details": { "error":                                                                                                               |
+|                       |          |              | "Insufficient stock flow data" }, "weight": 0.4 },                                                                                                               |
+|                       |          |              | "combined": { "scores": { "bullish": 0.0, "bearish": 0.0,                                                                                                        |
+|                       |          |              | "neutral": 20.0 } }, "data_quality": { "northbound": false,                                                                                                      |
+|                       |          |              | "margin": false, "stock_flow": false, "coverage": 0, "note":                                                                                                     |
+|                       |          |              | "\u3010\u6570\u636e\u7f3a\u53e3\u3011\u90e8\u5206\u8d44\u91d1\u6d41\u8f93\u5165\u7f3a\u5931,\u7f6e\u4fe1\u5ea6\u5df2\u6309\u8986\u76d6\u5ea6\u964d\u6743(I10.3)" |
+|                       |          |              | } }                                                                                                                                                              |
++-----------------------+----------+--------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| China Sector Rotation | NEUTRAL  |          20% | { "error": "Sector performance data unavailable" }                                                                                                               |
++-----------------------+----------+--------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Technical Analyst     | BEARISH  |          24% | { "trend_following": { "signal": "bearish", "confidence":                                                                                                        |
+|                       |          |              | 32, "metrics": { "adx": 31.729785288135535,                                                                                                                      |
+|                       |          |              | "trend_strength": 0.31729785288135537 } }, "mean_reversion":                                                                                                     |
+|                       |          |              | { "signal": "neutral", "confidence": 50, "metrics": {                                                                                                            |
+|                       |          |              | "z_score": -1.197648423041231, "price_vs_bb":                                                                                                                    |
+|                       |          |              | 0.34034365391635835, "rsi_14": 34.317417670118544, "rsi_28":                                                                                                     |
+|                       |          |              | 43.06493458529662 } }, "momentum": { "signal": "neutral",                                                                                                        |
+|                       |          |              | "confidence": 20, "metrics": { "momentum_1m":                                                                                                                    |
+|                       |          |              | -0.04561844137748927, "momentum_3m": null, "momentum_6m":                                                                                                        |
+|                       |          |              | null, "volume_momentum": 0.7893835844280309, "data_gaps": [                                                                                                      |
+|                       |          |              | "momentum_3m", "momentum_6m" ] } }, "volatility": {                                                                                                              |
+|                       |          |              | "signal": "neutral", "confidence": 50, "metrics": {                                                                                                              |
+|                       |          |              | "historical_volatility": 0.2013697253073911,                                                                                                                     |
+|                       |          |              | "volatility_regime": 0.0, "volatility_z_score": 0.0,                                                                                                             |
+|                       |          |              | "atr_ratio": 0.025975481994103697 } },                                                                                                                           |
+|                       |          |              | "statistical_arbitrage": { "signal": "neutral",                                                                                                                  |
+|                       |          |              | "confidence": 20, "metrics": { "hurst_exponent":                                                                                                                 |
+|                       |          |              | 4.686994974318529e-16, "skewness": null, "kurtosis": null,                                                                                                       |
+|                       |          |              | "data_gaps": [ "skewness" ] } } }                                                                                                                                |
++-----------------------+----------+--------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Fundamentals Analyst  | NEUTRAL  |        50.0% | { "profitability_signal": { "signal": "bullish", "details":                                                                                                      |
+|                       |          |              | "ROE: 30.62%, Net Margin: 52.22%, Op Margin: 68.41%" },                                                                                                          |
+|                       |          |              | "growth_signal": { "signal": "bearish", "details": "Revenue                                                                                                      |
+|                       |          |              | Growth: N/A, Earnings Growth: 1.47%" },                                                                                                                          |
+|                       |          |              | "financial_health_signal": { "signal": "bullish", "details":                                                                                                     |
+|                       |          |              | "Current Ratio: 7.06, D/E: 0.14" }, "price_ratios_signal": {                                                                                                     |
+|                       |          |              | "signal": "bearish", "details": "P/E: 18.05, P/B: 5.51, P/S:                                                                                                     |
+|                       |          |              | 8.52" } }                                                                                                                                                        |
++-----------------------+----------+--------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Valuation Analyst     | BULLISH  |          51% | { "dcf_analysis": { "signal": "bullish", "details": "Value:                                                                                                      |
+|                       |          |              | $1,796,820,376,276.27, Market Cap: $1,495,774,158,306.75,                                                                                                        |
+|                       |          |              | Gap: 20.1%, Weight: 35%\n WACC: 7.3%, Bear:                                                                                                                      |
+|                       |          |              | $1,041,468,238,997.87, Bull: $2,459,029,827,107.80, Range:                                                                                                       |
+|                       |          |              | $1,417,561,588,109.93" }, "residual_income_analysis": {                                                                                                          |
+|                       |          |              | "signal": "neutral", "details": "Value:                                                                                                                          |
+|                       |          |              | $1,474,893,682,894.93, Market Cap: $1,495,774,158,306.75,                                                                                                        |
+|                       |          |              | Gap: -1.4%, Weight: 10%" }, "dcf_scenario_analysis": {                                                                                                           |
+|                       |          |              | "bear_case": "$1,041,468,238,997.87", "base_case":                                                                                                               |
+|                       |          |              | "$1,827,867,938,425.23", "bull_case":                                                                                                                            |
+|                       |          |              | "$2,459,029,827,107.80", "wacc_used": "7.3%",                                                                                                                    |
+|                       |          |              | "fcf_periods_analyzed": 8 } }                                                                                                                                    |
++-----------------------+----------+--------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Nassim Taleb          | NEUTRAL  |          60% | Low fragility but no strong convexity or skin in the game;                                                                                                       |
+|                       |          |              | tail risk is thin but moderate upside asymmetry.                                                                                                                 |
++-----------------------+----------+--------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Warren Buffett        | NEUTRAL  |          60% | Strong fundamentals but inconsistent earnings and                                                                                                                |
+|                       |          |              | insufficient moat data; no margin of safety available.                                                                                                           |
++-----------------------+----------+--------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+TRADING DECISION: [600519.SH]
++------------+-------------------------------------------------------------+
+| Action     | BUY                                                         |
++------------+-------------------------------------------------------------+
+| Quantity   | 10                                                          |
++------------+-------------------------------------------------------------+
+| Confidence | 51.0%                                                       |
++------------+-------------------------------------------------------------+
+| Reasoning  | Neutral signals dominate; valuation bullish suggests slight |
+|            | upside. Buy small quantity.                                 |
++------------+-------------------------------------------------------------+
+
+PORTFOLIO SUMMARY:
++-----------+----------+------------+--------------+-----------+-----------+-----------+
+| Ticker    |  Action  |   Quantity |   Confidence |  Bullish  |  Bearish  |  Neutral  |
++===========+==========+============+==============+===========+===========+===========+
+| 600519.SH |   BUY    |         10 |        51.0% |     1     |     1     |     7     |
++-----------+----------+------------+--------------+-----------+-----------+-----------+
+
+Portfolio Strategy:
+Neutral signals dominate; valuation bullish suggests slight
+upside. Buy small quantity.
+
+═══ 【600519.SH】结论 ═══
+评级: 偏多观察   信号构成: 1多 / 1空 / 5有效中性 / 3数据不足
+核心依据:
+  · 估值分析（多,51%）: dcf_analysis:{'signal': '看多', 'details': 'Value: $1,796,820,376,276.27, Market Cap: $1,495,774,158,306.75…
+  · 技术分析（空,24%）: 趋势_following:{'signal': '看空', 'confidence': 32, 'metrics': {'adx': 31.729785288135535, '趋势_strength…
+数据缺口（低置信中性，已剔除出评级计算）:
+  · 舆情+黑天鹅(20%), 资金流向(20%), 巴菲特视角(60%)
+  → 注: 数据缺口与 IP 无关 —— 估值/巴菲特类缺现金流绝对科目(FCF/capex/折旧),待激活 Tushare;资金流/板块类为东财接口反爬间歇 drop,已自动降级(可重试)。趋势(technical)与叙事(舆情/政策)数据可达,为有效信号。
+价格锚点: 贵州茅台 现价1194.45（当日-0.71% 量比0.69）
+决策引擎: buy 10股 (置信度51%)
+
