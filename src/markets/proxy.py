@@ -165,3 +165,22 @@ def _self_test() -> None:
 
 if __name__ == "__main__":
     _self_test()
+
+
+# ── marker: V8_IMPORT_GUARD_V1 (I10.6) ──
+def _poison_py_mini_racer() -> None:
+    """akshare 依赖树自带 mini-racer(V8)。V8 非线程安全,py_mini_racer 端点在
+    多 agent 并发下进程级 FATAL(try/except 接不住,2026-07-03 港股批跑实锤,
+    2026-07-04 随 poetry add akshare 回流)。
+    sys.modules 置 None → 官方语义: 后续 import py_mini_racer 抛 ImportError
+    → akshare/我方 fallback 接住 → fail-soft 降级而非进程死亡。
+    自家代码零 V8 引用(已核),损失仅 akshare 个别 JS 加密端点(链尾兜底,
+    坏了走缺口,I10.6: 降级 >> 崩溃)。包装/未装/重装均免疫(修类不修例)。"""
+    import sys as _sys
+    _existing = _sys.modules.get("py_mini_racer")
+    if _existing is not None:
+        return  # 已被真实加载(异常情况,不制造半初始化态);正常启动不会发生
+    _sys.modules["py_mini_racer"] = None
+
+
+_poison_py_mini_racer()  # proxy 是 main_china/web_app 的最早公共 import,导入即生效
