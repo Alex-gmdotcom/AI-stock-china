@@ -169,18 +169,35 @@ if __name__ == "__main__":
 
 # ── marker: V8_IMPORT_GUARD_V1 (I10.6) ──
 def _poison_py_mini_racer() -> None:
-    """akshare 依赖树自带 mini-racer(V8)。V8 非线程安全,py_mini_racer 端点在
-    多 agent 并发下进程级 FATAL(try/except 接不住,2026-07-03 港股批跑实锤,
-    2026-07-04 随 poetry add akshare 回流)。
-    sys.modules 置 None → 官方语义: 后续 import py_mini_racer 抛 ImportError
-    → akshare/我方 fallback 接住 → fail-soft 降级而非进程死亡。
-    自家代码零 V8 引用(已核),损失仅 akshare 个别 JS 加密端点(链尾兜底,
-    坏了走缺口,I10.6: 降级 >> 崩溃)。包装/未装/重装均免疫(修类不修例)。"""
+    """marker: V8_IMPORT_GUARD_V2 (I10.6)
+    v1 教训: None 毒杀使 akshare 1.18.64 整包 ImportError(其 fund 子模块在
+    包初始化链顶层 import py_mini_racer)→ _HAVE_AK=False → 全市场零价格
+    (2026-07-05 实锤)。v2: 假模块桩——import 放行(akshare 正常加载),
+    MiniRacer 实例化(akshare 全部在端点函数体内,惰性)抛可捕获 RuntimeError
+    → 单端点 fail-soft 走缺口;V8 DLL 永不加载,0703 FATAL 类保持灭绝。"""
     import sys as _sys
+    import types as _types
     _existing = _sys.modules.get("py_mini_racer")
-    if _existing is not None:
-        return  # 已被真实加载(异常情况,不制造半初始化态);正常启动不会发生
-    _sys.modules["py_mini_racer"] = None
+    if _existing is not None and not getattr(_existing, "_AIHF_V8_STUB", False):
+        return  # 已被真实加载(异常情况),不制造半初始化态
+
+    class _V8Blocked:
+        """任何实例化/属性用法 → 可捕获异常,绝不加载 V8 DLL。"""
+        def __init__(self, *a, **kw):
+            raise RuntimeError(
+                "py_mini_racer 已被 V8 护栏禁用(I10.6): 该 akshare 端点依赖 V8,"
+                "降级为【数据缺口】,fallback 链继续")
+    _V8Blocked.MiniRacer = _V8Blocked  # 兼容 from py_mini_racer import py_mini_racer 旧式
+
+    stub = _types.ModuleType("py_mini_racer")
+    stub._AIHF_V8_STUB = True
+    stub.MiniRacer = _V8Blocked
+    def _module_getattr(name):
+        if name.startswith("__"):
+            raise AttributeError(name)
+        return _V8Blocked
+    stub.__getattr__ = _module_getattr
+    _sys.modules["py_mini_racer"] = stub
 
 
 _poison_py_mini_racer()  # proxy 是 main_china/web_app 的最早公共 import,导入即生效
