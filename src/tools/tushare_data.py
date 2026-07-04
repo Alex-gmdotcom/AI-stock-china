@@ -292,3 +292,125 @@ def get_hk_prices_df(norm: str, start_yyyymmdd: str, end_yyyymmdd: str):
     _HK_MEMO[norm] = df
     out = df[(df["date"] >= s_iso) & (df["date"] <= e_iso)]
     return out.reset_index(drop=True) if len(out) else None
+
+# ── marker: TUSHARE_HK_DAILY_V3 (1次/小时配额适配: 双检锁+磁盘缓存+预算+固定超集) ──
+# 0705b 实锤: ① 配额实为 1次/小时(分级限频降档,61s 节流无效);
+# ② v2 memo 检查在锁外 → 并发竞态重复请求白烧配额;
+# ③ v2 空返回覆盖 memo 好数据(09880 首调 193 行被第二调的空覆盖销毁)。
+# v3: memo 判定进锁内(双检);失败永不覆盖好数据;固定超集窗口 end−450天
+#     (一次调用喂饱 3月/1年 两类请求);磁盘缓存跨 run 收敛(TTL 20h);
+#     每 run API 预算默认 1(AIHF_HK_DAILY_BUDGET 可调),过期无预算供旧+标注。
+import json as _json
+from pathlib import Path as _Path
+
+_HK_DISK_DIR = _Path.home() / ".ai-hedge-fund" / "hk_prices"
+_HK_TTL_SECONDS = 20 * 3600
+_HK_SUPERSET_DAYS = 450
+_hk_api_attempts = 0
+
+
+def _hk_budget() -> int:
+    try:
+        return int(os.environ.get("AIHF_HK_DAILY_BUDGET", "1"))
+    except ValueError:
+        return 1
+
+
+def _hk_disk_load(norm: str):
+    """→ (rows_df | None, age_seconds | None);损坏/缺失 → (None, None)。"""
+    try:
+        p = _HK_DISK_DIR / f"{norm}.json"
+        if not p.exists():
+            return None, None
+        data = _json.loads(p.read_text(encoding="utf-8"))
+        rows = data.get("rows") or []
+        if not rows:
+            return None, None
+        import pandas as _pd_local
+        df = _pd_local.DataFrame(rows)
+        age = time.time() - float(data.get("fetched_at_ts", 0))
+        return df, age
+    except Exception as exc:
+        logger.warning("tushare_hk 磁盘缓存读取失败 %s: %s", norm, str(exc)[:100])
+        return None, None
+
+
+def _hk_disk_save(norm: str, df) -> None:
+    try:
+        _HK_DISK_DIR.mkdir(parents=True, exist_ok=True)
+        payload = {"fetched_at_ts": time.time(),
+                   "rows": df.to_dict(orient="records")}
+        p = _HK_DISK_DIR / f"{norm}.json"
+        tmp = p.with_suffix(".json.tmp")
+        tmp.write_text(_json.dumps(payload, ensure_ascii=False), encoding="utf-8")
+        tmp.replace(p)  # 原子写(I4.4 同款纪律)
+    except Exception as exc:
+        logger.warning("tushare_hk 磁盘缓存写入失败 %s: %s", norm, str(exc)[:100])
+
+
+def _hk_slice(df, s_iso: str, e_iso: str):
+    out = df[(df["date"] >= s_iso) & (df["date"] <= e_iso)]
+    return out.reset_index(drop=True) if len(out) else None
+
+
+def get_hk_prices_df(norm: str, start_yyyymmdd: str, end_yyyymmdd: str):
+    """v3: 双检锁 + 磁盘缓存 + 每 run API 预算(1次/小时配额适配)。"""
+    global _hk_api_attempts
+    if not norm or not norm.endswith(".HK"):
+        return None
+    s_iso, e_iso = _iso(start_yyyymmdd), _iso(end_yyyymmdd)
+
+    with _LOCK:  # 双检: memo 判定必须在锁内(v2 竞态教训)
+        if norm in _HK_MEMO:
+            base = _HK_MEMO[norm]
+            if base is None:
+                return None  # 本 run 已确认无数据,不再烧配额
+            return _hk_slice(base, s_iso, e_iso)
+
+        # 磁盘缓存(跨 run 收敛)
+        disk_df, age = _hk_disk_load(norm)
+        if disk_df is not None and age is not None and age < _HK_TTL_SECONDS:
+            _HK_MEMO[norm] = disk_df
+            logger.warning("tushare_hk 磁盘缓存命中 %s rows=%d age=%.1fh",
+                           norm, len(disk_df), age / 3600)
+            return _hk_slice(disk_df, s_iso, e_iso)
+
+        # 预算门控(1次/小时配额,白烧一次全 run 皆输)
+        if _hk_api_attempts >= _hk_budget():
+            if disk_df is not None:
+                _HK_MEMO[norm] = disk_df
+                logger.warning("tushare_hk 预算耗尽,供给过期缓存 %s age=%.1fh(【数据缺口】非最新)",
+                               norm, (age or 0) / 3600)
+                return _hk_slice(disk_df, s_iso, e_iso)
+            logger.warning("tushare_hk 预算耗尽(本 run %d/%d)且无缓存 %s → 缺口",
+                           _hk_api_attempts, _hk_budget(), norm)
+            _HK_MEMO[norm] = None
+            return None
+
+        # 固定超集窗口: end−450天,一次调用喂饱本 run 全部窗口需求
+        try:
+            _end_dt = datetime.strptime(_compact(end_yyyymmdd), "%Y%m%d")
+        except Exception:
+            _end_dt = datetime.now()
+        _sup_start = (_end_dt - timedelta(days=_HK_SUPERSET_DAYS)).strftime("%Y%m%d")
+        _sup_end = _end_dt.strftime("%Y%m%d")
+
+        _hk_api_attempts += 1
+        logger.warning("tushare_hk 请求 %s window=%s..%s (预算 %d/%d)",
+                       norm, _sup_start, _sup_end, _hk_api_attempts, _hk_budget())
+        df = _get_hk_prices_df_v1(norm, _sup_start, _sup_end)
+
+        if df is None or len(df) == 0:
+            logger.warning("tushare_hk 空返回 %s(限频/无数据)", norm)
+            if disk_df is not None:
+                _HK_MEMO[norm] = disk_df  # 失败永不覆盖好数据: 退回旧缓存
+                logger.warning("tushare_hk 退回过期缓存 %s age=%.1fh", norm, (age or 0) / 3600)
+                return _hk_slice(disk_df, s_iso, e_iso)
+            _HK_MEMO[norm] = None
+            return None
+
+        logger.warning("tushare_hk 命中 %s rows=%d (%s..%s)",
+                       norm, len(df), df.iloc[0]["date"], df.iloc[-1]["date"])
+        _HK_MEMO[norm] = df
+        _hk_disk_save(norm, df)
+        return _hk_slice(df, s_iso, e_iso)
