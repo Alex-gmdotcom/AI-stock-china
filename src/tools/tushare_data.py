@@ -240,3 +240,55 @@ def get_hk_prices_df(norm: str, start_yyyymmdd: str, end_yyyymmdd: str):
     except Exception as exc:
         logger.warning("tushare hk_daily(%s) 解析失败: %s", norm, str(exc)[:140])
         return None
+
+# ── marker: TUSHARE_HK_DAILY_V2 (1次/分钟 限频适配 + 诊断面包屑) ──
+# 背景: 2026-07-04 探针实测本档位 hk_daily 限频 1次/分钟(A 股行情 80次/分不受影响)。
+# 策略: 每 run 每票只调 1 次(超集窗口 + 进程内 memo 切片),调用间隔 ≥61s。
+# 面包屑: 请求/结果/空返回一律 warning 级,让"无声失败"在 run log 里现形。
+_HK_MEMO: dict = {}
+_HK_MIN_INTERVAL = 61.0
+_hk_last_call_ts = 0.0
+_get_hk_prices_df_v1 = get_hk_prices_df  # 保留 v1 作为底层取数
+
+
+def get_hk_prices_df(norm: str, start_yyyymmdd: str, end_yyyymmdd: str):
+    """v2: memo + 限频包装。切片返回请求窗口;memo 空结果也缓存(同 run 不复烧配额)。"""
+    if not norm or not norm.endswith(".HK"):
+        return None
+    s_iso, e_iso = _iso(start_yyyymmdd), _iso(end_yyyymmdd)
+
+    if norm in _HK_MEMO:
+        base = _HK_MEMO[norm]
+        if base is None:
+            logger.warning("tushare_hk memo命中(空) %s — 本 run 不再重试", norm)
+            return None
+        out = base[(base["date"] >= s_iso) & (base["date"] <= e_iso)]
+        return out.reset_index(drop=True) if len(out) else None
+
+    # 超集窗口: 请求起点再前推 ~200 自然日,覆盖本 run 内其他 agent 的更长窗口
+    try:
+        _start_dt = datetime.strptime(_compact(start_yyyymmdd), "%Y%m%d") - timedelta(days=200)
+        _sup_start = _start_dt.strftime("%Y%m%d")
+    except Exception:
+        _sup_start = _compact(start_yyyymmdd)
+    _sup_end = _compact(end_yyyymmdd)
+
+    global _hk_last_call_ts
+    with _LOCK:
+        _wait = _HK_MIN_INTERVAL - (time.time() - _hk_last_call_ts)
+        if _hk_last_call_ts > 0 and _wait > 0:
+            logger.warning("tushare_hk 限频等待 %.0fs (hk_daily 1次/分钟档)", _wait)
+            time.sleep(_wait)
+        logger.warning("tushare_hk 请求 %s window=%s..%s", norm, _sup_start, _sup_end)
+        df = _get_hk_prices_df_v1(norm, _sup_start, _sup_end)
+        _hk_last_call_ts = time.time()
+
+    if df is None or len(df) == 0:
+        logger.warning("tushare_hk 空返回 %s (无声路径现形: _query 返回空/None)", norm)
+        _HK_MEMO[norm] = None
+        return None
+    logger.warning("tushare_hk 命中 %s rows=%d (%s..%s)", norm, len(df),
+                   df.iloc[0]["date"], df.iloc[-1]["date"])
+    _HK_MEMO[norm] = df
+    out = df[(df["date"] >= s_iso) & (df["date"] <= e_iso)]
+    return out.reset_index(drop=True) if len(out) else None

@@ -941,6 +941,8 @@ def _get_prices_df_with_fallback(norm: str, market: str, ak_start: str, ak_end: 
             except ImportError:
                 import tushare_data as _tsd  # type: ignore
             if not _tsd.available():
+                # marker: TUSHARE_HK_PRICE_V2 — 无声路径现形
+                _logger.warning("tushare_hk 跳过: available()=False (token/tushare包缺失)")
                 return None
             return _tsd.get_hk_prices_df(norm, ak_start, ak_end)
         chain = [("tushare_hk", _tushare_hk)] + chain
