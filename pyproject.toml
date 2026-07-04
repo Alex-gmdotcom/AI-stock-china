@@ -40,6 +40,8 @@ langchain-xai = "^0.2.5"
 scipy = "^1.11.0"
 pytdx = "^1.72"
 tushare = "^1.4.29"
+akshare = "^1.18.64"
+baostock = "^0.9.2"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.4.0"

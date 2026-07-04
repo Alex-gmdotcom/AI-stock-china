@@ -171,6 +171,54 @@ frozenlist = ">=1.1.0"
 typing-extensions = {version = ">=4.2", markers = "python_version < \"3.13\""}
 
 [[package]]
+name = "akracer"
+version = "0.0.14"
+description = "akracer is next version of py_mini_racer"
+optional = false
+python-versions = ">=3.8"
+groups = ["main"]
+markers = "platform_system == \"Linux\""
+files = [
+    {file = "akracer-0.0.14-py3-none-any.whl", hash = "sha256:629eaccd0e1d18366804b797eb2692ed47bed0028f55b5a5af3cc277d521df04"},
+    {file = "akracer-0.0.14.tar.gz", hash = "sha256:e084c14bf6d9a02d5da375e3af1cba3d46f103aa1cf3a2010593b3e95bf1c29a"},
+]
+
+[[package]]
+name = "akshare"
+version = "1.18.64"
+description = "AKShare is an elegant and simple financial data interface library for Python, built for human beings!"
+optional = false
+python-versions = ">=3.9"
+groups = ["main"]
+files = [
+    {file = "akshare-1.18.64-py3-none-any.whl", hash = "sha256:27792ca5b3dd4bee47fe83f212da7d3a9d0f43f327eef3beee5f2399e58eb390"},
+    {file = "akshare-1.18.64.tar.gz", hash = "sha256:6ea525cc278204d5957e7bc1b68c93185ccecf004f7df81d9865982825fd94b9"},
+]
+
+[package.dependencies]
+akracer = {version = ">=0.0.13", markers = "platform_system == \"Linux\""}
+beautifulsoup4 = ">=4.9.1"
+curl_cffi = ">=0.13.0"
+decorator = ">=4.4.2"
+html5lib = ">=1.0.1"
+jsonpath = ">=0.82"
+lxml = ">=4.2.1"
+mini-racer = {version = ">=0.12.4", markers = "platform_system != \"Linux\""}
+openpyxl = ">=3.0.3"
+pandas = ">=2.0.0"
+py-mini-racer = {version = ">=0.6.0", markers = "platform_system == \"Linux\""}
+requests = ">=2.22.0"
+tabulate = ">=0.8.6"
+tqdm = ">=4.43.0"
+urllib3 = ">=1.25.8"
+xlrd = ">=1.2.0"
+
+[package.extras]
+dev = ["akqmt (>=0.1.0)", "commitizen (>=4.12.1) ; python_version >= \"3.10\"", "mplfinance (>=0.12.10b0)", "pre-commit (>=3.6.2) ; python_version >= \"3.9\"", "recommonmark (>=0.7.1)", "ruff (>=0.14.14) ; python_version >= \"3.10\"", "ruff-lsp (>=0.0.53) ; python_version >= \"3.10\"", "sphinx (>=7.4.3)", "sphinx_markdown_tables (>=0.0.17)", "sphinx_rtd_theme (>=1.0.0)"]
+full = ["akqmt"]
+qmt = ["akqmt"]
+
+[[package]]
 name = "alembic"
 version = "1.18.4"
 description = "A database migration tool for SQLAlchemy."
@@ -278,6 +326,21 @@ files = [
 ]
 
 [[package]]
+name = "baostock"
+version = "0.9.2"
+description = "A tool for obtaining historical data of China stock market"
+optional = false
+python-versions = "*"
+groups = ["main"]
+files = [
+    {file = "baostock-0.9.2-py3-none-any.whl", hash = "sha256:f7aaca22eb010db268a2b8bc3ed1a8743cc6f1989902477c65c1c3c022d2ecbf"},
+    {file = "baostock-0.9.2.tar.gz", hash = "sha256:7a3fbba3417b308f774e84a62fc10909a70e81384051b3d693cbe54213686544"},
+]
+
+[package.dependencies]
+pandas = ">=0.18.0"
+
+[[package]]
 name = "beautifulsoup4"
 version = "4.15.0"
 description = "Screen-scraping library"
@@ -379,7 +442,6 @@ description = "Foreign Function Interface for Python calling C code."
 optional = false
 python-versions = ">=3.9"
 groups = ["main"]
-markers = "platform_python_implementation != \"PyPy\""
 files = [
     {file = "cffi-2.0.0-cp310-cp310-macosx_10_13_x86_64.whl", hash = "sha256:0cf2d91ecc3fcc0625c2c530fe004f82c110405f101548512cce44322fa8ac44"},
     {file = "cffi-2.0.0-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:f73b96c41e3b2adedc34a7356e64c8eb96e03a3782b535e043a986276ce12a49"},
@@ -795,6 +857,48 @@ cffi = {version = ">=2.0.0", markers = "platform_python_implementation != \"PyPy
 ssh = ["bcrypt (>=3.1.5)"]
 
 [[package]]
+name = "curl-cffi"
+version = "0.15.0"
+description = "libcurl ffi bindings for Python, with impersonation support."
+optional = false
+python-versions = ">=3.10"
+groups = ["main"]
+files = [
+    {file = "curl_cffi-0.15.0-cp310-abi3-macosx_10_9_x86_64.whl", hash = "sha256:bda66404010e9ed743b1b83c20c86f24fe21a9a6873e17479d6e67e29d8ded28"},
+    {file = "curl_cffi-0.15.0-cp310-abi3-macosx_11_0_arm64.whl", hash = "sha256:a25620d9bf989c9c029a7d1642999c4c265abb0bad811deb2f77b0b5b2b12e5b"},
+    {file = "curl_cffi-0.15.0-cp310-abi3-manylinux2014_aarch64.manylinux_2_17_aarch64.whl", hash = "sha256:582e570aa2586b96ed47cf4a17586b9a3c462cbe43f780487c3dc245c6ef1527"},
+    {file = "curl_cffi-0.15.0-cp310-abi3-manylinux2014_i686.manylinux_2_17_i686.whl", hash = "sha256:838e48212447d9c81364b04707a5c861daf08f8320f9ecb3406a8919d1d5c3b3"},
+    {file = "curl_cffi-0.15.0-cp310-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl", hash = "sha256:2b6c847d86283b07ae69bb72c82eb8a59242277142aa35b89850f89e792a02fc"},
+    {file = "curl_cffi-0.15.0-cp310-abi3-manylinux_2_28_armv7l.manylinux_2_31_armv7l.whl", hash = "sha256:9e5e69eee735f659287e2c84444319d68a1fa68dd37abf228943a4074864283a"},
+    {file = "curl_cffi-0.15.0-cp310-abi3-manylinux_2_34_riscv64.manylinux_2_39_riscv64.whl", hash = "sha256:aa1323950224db24f4c510d010b3affa02196ca853fb424191fa917a513d3f4b"},
+    {file = "curl_cffi-0.15.0-cp310-abi3-musllinux_1_2_aarch64.whl", hash = "sha256:41f80170ba844009273b2660da1964ec31e99e5719d16b3422ada87177e32e13"},
+    {file = "curl_cffi-0.15.0-cp310-abi3-musllinux_1_2_x86_64.whl", hash = "sha256:1977e1e12cfb5c11352cbb74acef1bed24eb7d226dab61ca57c168c21acd4d61"},
+    {file = "curl_cffi-0.15.0-cp310-abi3-win_amd64.whl", hash = "sha256:5a0c1896a0d5a5ac1eb89cd24b008d2b718dd1df6fd2f75451b59ca66e49e572"},
+    {file = "curl_cffi-0.15.0-cp310-abi3-win_arm64.whl", hash = "sha256:a6d57f8389273a3a1f94370473c74897467bcc36af0a17336989780c507fa43d"},
+    {file = "curl_cffi-0.15.0-cp313-abi3-android_24_arm64_v8a.whl", hash = "sha256:4682dc38d4336e0eb0b185374db90a760efde63cbea994b4e63f3521d44c4c92"},
+    {file = "curl_cffi-0.15.0-cp314-cp314t-macosx_10_15_x86_64.whl", hash = "sha256:967ad7355bd8e9586f8c2d02eaa99953747549e7ea4a9b25cd53353e6b67fe6d"},
+    {file = "curl_cffi-0.15.0-cp314-cp314t-macosx_11_0_arm64.whl", hash = "sha256:7e63539d0d839d0a8c5eacf86229bc68c57803547f35e0db7ee0986328b478c3"},
+    {file = "curl_cffi-0.15.0-cp314-cp314t-manylinux2014_aarch64.manylinux_2_17_aarch64.whl", hash = "sha256:08c799b89740b9bc49c09fbc3d5907f13ac1f845ca52620507ef9466d4639dd5"},
+    {file = "curl_cffi-0.15.0-cp314-cp314t-manylinux2014_x86_64.manylinux_2_17_x86_64.whl", hash = "sha256:7b7a92767a888ee90147e18964b396d8435ff42737030d6fb00824ffd6094805"},
+    {file = "curl_cffi-0.15.0-cp314-cp314t-musllinux_1_2_aarch64.whl", hash = "sha256:829cc357061ecb99cc2d406301f609a039e05665322f5c025ec67c38b0dc49ce"},
+    {file = "curl_cffi-0.15.0-cp314-cp314t-musllinux_1_2_x86_64.whl", hash = "sha256:408d6f14e346841cd889c2e0962832bb235ba3b6749ebf609f347f747da5e60f"},
+    {file = "curl_cffi-0.15.0-cp314-cp314t-win_amd64.whl", hash = "sha256:b624c7ce087bfda967a013ed0a64702a525444e5b6e97d23534d567ccc6525aa"},
+    {file = "curl_cffi-0.15.0-cp314-cp314t-win_arm64.whl", hash = "sha256:0b6c0543b993996670e9e4b78e305a2d60809d5681903ffb5568e21a387434d3"},
+    {file = "curl_cffi-0.15.0.tar.gz", hash = "sha256:ea0c67652bf6893d34ee0f82c944f37e488f6147e9421bef1771cc6545b02ded"},
+]
+
+[package.dependencies]
+certifi = ">=2024.2.2"
+cffi = ">=2.0.0"
+rich = "*"
+
+[package.extras]
+build = ["cibuildwheel", "wheel"]
+dev = ["charset_normalizer (>=3.3.2,<4.0)", "coverage (>=6.4.1,<7.0)", "cryptography (>=46.0.4,<47.0)", "httpx (==0.23.1)", "mypy (>=1.9.0,<2.0)", "pytest (>=8.1.1,<9.0)", "pytest-asyncio (>=0.23.6,<1.0)", "pytest-trio (>=0.8.0,<1.0)", "ruff (>=0.3.5,<1.0)", "trio (>=0.25.0,<1.0)", "trustme (>=1.1.0,<2.0)", "typing_extensions", "uvicorn (>=0.29.0,<1.0)", "websockets (>=14.0)"]
+extra = ["lxml_html_clean", "markdownify (>=1.1.0)", "readability-lxml (>=0.8.1)"]
+test = ["charset_normalizer (>=3.3.2,<4.0)", "cryptography (>=46.0.4,<47.0)", "httpx (==0.23.1)", "litestar (>=2.19.0,<3.0)", "proxy.py (>=2.4.3,<3.0)", "pytest (>=8.1.1,<9.0)", "pytest-asyncio (>=0.23.6,<1.0)", "pytest-trio (>=0.8.0,<1.0)", "python-multipart (>=0.0.9,<1.0)", "trio (>=0.25.0,<1.0)", "trustme (>=1.1.0,<2.0)", "typing_extensions", "uvicorn (>=0.29.0,<1.0)", "websockets (>=14.0)"]
+
+[[package]]
 name = "cycler"
 version = "0.12.1"
 description = "Composable style cycles"
@@ -809,6 +913,18 @@ files = [
 [package.extras]
 docs = ["ipython", "matplotlib", "numpydoc", "sphinx"]
 tests = ["pytest", "pytest-cov", "pytest-xdist"]
+
+[[package]]
+name = "decorator"
+version = "5.3.1"
+description = "Decorators for Humans"
+optional = false
+python-versions = ">=3.8"
+groups = ["main"]
+files = [
+    {file = "decorator-5.3.1-py3-none-any.whl", hash = "sha256:f47fe6fdbd2edd623ecfe36875d37aba411624e2670dd395dddae1358689bb3c"},
+    {file = "decorator-5.3.1.tar.gz", hash = "sha256:4cbcdd55a6efadb9dbea26b858f4fb3264567b52d69ca0d25b721b553f60ea82"},
+]
 
 [[package]]
 name = "defusedxml"
@@ -850,6 +966,18 @@ files = [
 dev = ["pre-commit (>=2.16.0) ; python_version >= \"3.9\"", "pydoctor (>=25.4.0)", "pytest"]
 docs = ["pydoctor (>=25.4.0)"]
 test = ["pytest"]
+
+[[package]]
+name = "et-xmlfile"
+version = "2.0.0"
+description = "An implementation of lxml.xmlfile for the standard library"
+optional = false
+python-versions = ">=3.8"
+groups = ["main"]
+files = [
+    {file = "et_xmlfile-2.0.0-py3-none-any.whl", hash = "sha256:7a91720bc756843502c3b7504c77b8fe44217c85c537d85037f0f536151b2caa"},
+    {file = "et_xmlfile-2.0.0.tar.gz", hash = "sha256:dab3f4764309081ce75662649be815c4c9081e88f0837825f90fd28317d4da54"},
+]
 
 [[package]]
 name = "fastapi"
@@ -1469,6 +1597,28 @@ files = [
 ]
 
 [[package]]
+name = "html5lib"
+version = "1.1"
+description = "HTML parser based on the WHATWG HTML specification"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
+groups = ["main"]
+files = [
+    {file = "html5lib-1.1-py2.py3-none-any.whl", hash = "sha256:0d78f8fde1c230e99fe37986a60526d7049ed4bf8a9fadbad5f00e22e58e041d"},
+    {file = "html5lib-1.1.tar.gz", hash = "sha256:b2e5b40261e20f354d198eae92afc10d750afb487ed5e50f9c4eaf07c184146f"},
+]
+
+[package.dependencies]
+six = ">=1.9"
+webencodings = "*"
+
+[package.extras]
+all = ["chardet (>=2.2)", "genshi", "lxml ; platform_python_implementation == \"CPython\""]
+chardet = ["chardet (>=2.2)"]
+genshi = ["genshi"]
+lxml = ["lxml ; platform_python_implementation == \"CPython\""]
+
+[[package]]
 name = "httpcore"
 version = "1.0.9"
 description = "A minimal low-level HTTP client."
@@ -1751,6 +1901,17 @@ files = [
 
 [package.dependencies]
 jsonpointer = ">=1.9"
+
+[[package]]
+name = "jsonpath"
+version = "0.82.2"
+description = "An XPath for JSON"
+optional = false
+python-versions = "*"
+groups = ["main"]
+files = [
+    {file = "jsonpath-0.82.2.tar.gz", hash = "sha256:d87ef2bcbcded68ee96bc34c1809b69457ecec9b0c4dd471658a12bd391002d1"},
+]
 
 [[package]]
 name = "jsonpointer"
@@ -2584,6 +2745,26 @@ files = [
 ]
 
 [[package]]
+name = "mini-racer"
+version = "0.14.1"
+description = "Minimal, modern embedded V8 for Python."
+optional = false
+python-versions = ">=3.10"
+groups = ["main"]
+markers = "platform_system != \"Linux\""
+files = [
+    {file = "mini_racer-0.14.1-py3-none-macosx_10_9_x86_64.whl", hash = "sha256:a401ecdf5f73d4714b76dc3a4c9b5780059cf4c59a5b64cff7497dc6c219d5a0"},
+    {file = "mini_racer-0.14.1-py3-none-macosx_11_0_arm64.whl", hash = "sha256:56cc6965a1665a50d8d613bc43aa83b4cec6b1f09acc69dc4c2845dacb201463"},
+    {file = "mini_racer-0.14.1-py3-none-manylinux_2_27_aarch64.whl", hash = "sha256:7f93d91973ddb2da4e899e06ecb426bfe7ea103cd1c92687ec9c38f206f375eb"},
+    {file = "mini_racer-0.14.1-py3-none-manylinux_2_27_x86_64.whl", hash = "sha256:cdf3a088e1363f16a695288f882abf76b3705b8e1df21418208b87ed010037a4"},
+    {file = "mini_racer-0.14.1-py3-none-musllinux_1_2_aarch64.whl", hash = "sha256:6788f31608c6c5d0faac4e6b4f36fc5498885f951e510717e8825eaebae6a4c5"},
+    {file = "mini_racer-0.14.1-py3-none-musllinux_1_2_x86_64.whl", hash = "sha256:ad4b5c15993caab571fac3d67e0d55157b358bd439e629e0fef26c45a12c8bab"},
+    {file = "mini_racer-0.14.1-py3-none-win_amd64.whl", hash = "sha256:4abd58c62c9955988dbc0cbf5a798914334fe570d2b192f8890bec20135ab6d1"},
+    {file = "mini_racer-0.14.1-py3-none-win_arm64.whl", hash = "sha256:440bef1269655b1da94b550612b50669de9881c3d88b805c139f7f1b5ec8ae7b"},
+    {file = "mini_racer-0.14.1.tar.gz", hash = "sha256:0df25889b7c4e753520324a1687d85e41f9f64984efa81963339ed400f004d49"},
+]
+
+[[package]]
 name = "multidict"
 version = "6.7.1"
 description = "multidict implementation"
@@ -2876,6 +3057,21 @@ aiohttp = ["aiohttp", "httpx-aiohttp (>=0.1.9)"]
 datalib = ["numpy (>=1)", "pandas (>=1.2.3)", "pandas-stubs (>=1.1.0.11)"]
 realtime = ["websockets (>=13,<16)"]
 voice-helpers = ["numpy (>=2.0.2)", "sounddevice (>=0.5.1)"]
+
+[[package]]
+name = "openpyxl"
+version = "3.1.5"
+description = "A Python library to read/write Excel 2010 xlsx/xlsm files"
+optional = false
+python-versions = ">=3.8"
+groups = ["main"]
+files = [
+    {file = "openpyxl-3.1.5-py2.py3-none-any.whl", hash = "sha256:5282c12b107bffeef825f4617dc029afaf41d0ea60823bbb665ef3079dc79de2"},
+    {file = "openpyxl-3.1.5.tar.gz", hash = "sha256:cf0e3cf56142039133628b5acffe8ef0c12bc902d2aadd3e0fe5878dc08d1050"},
+]
+
+[package.dependencies]
+et-xmlfile = "*"
 
 [[package]]
 name = "orjson"
@@ -3468,6 +3664,21 @@ files = [
 ]
 
 [[package]]
+name = "py-mini-racer"
+version = "0.6.0"
+description = "Minimal, modern embedded V8 for Python."
+optional = false
+python-versions = "*"
+groups = ["main"]
+markers = "platform_system == \"Linux\""
+files = [
+    {file = "py_mini_racer-0.6.0-py2.py3-none-macosx_10_10_x86_64.whl", hash = "sha256:346e73bb89a2024888244d487834be24a121089ceb0641dd0200cb96c4e24b57"},
+    {file = "py_mini_racer-0.6.0-py2.py3-none-manylinux1_x86_64.whl", hash = "sha256:42896c24968481dd953eeeb11de331f6870917811961c9b26ba09071e07180e2"},
+    {file = "py_mini_racer-0.6.0-py2.py3-none-win_amd64.whl", hash = "sha256:97cab31bbf63ce462ba4cd6e978c572c916d8b15586156c7c5e0b2e42c10baab"},
+    {file = "py_mini_racer-0.6.0.tar.gz", hash = "sha256:f71e36b643d947ba698c57cd9bd2232c83ca997b0802fc2f7f79582377040c11"},
+]
+
+[[package]]
 name = "pyasn1"
 version = "0.6.3"
 description = "Pure-Python implementation of ASN.1 types and DER/BER/CER codecs (X.208)"
@@ -3513,7 +3724,7 @@ description = "C parser in Python"
 optional = false
 python-versions = ">=3.10"
 groups = ["main"]
-markers = "platform_python_implementation != \"PyPy\" and implementation_name != \"PyPy\""
+markers = "implementation_name != \"PyPy\""
 files = [
     {file = "pycparser-3.0-py3-none-any.whl", hash = "sha256:b727414169a36b7d524c1c3e31839a521725078d7b2ff038656844266160a992"},
     {file = "pycparser-3.0.tar.gz", hash = "sha256:600f49d217304a5902ac3c37e1281c9fe94e4d0489de643a9504c5cdfdfc6b29"},
@@ -5017,6 +5228,18 @@ files = [
 ]
 
 [[package]]
+name = "webencodings"
+version = "0.5.1"
+description = "Character encoding aliases for legacy web content"
+optional = false
+python-versions = "*"
+groups = ["main"]
+files = [
+    {file = "webencodings-0.5.1-py2.py3-none-any.whl", hash = "sha256:a0af1213f3c2226497a97e2b3aa01a7e4bee4f403f95be16fc9acd2947514a78"},
+    {file = "webencodings-0.5.1.tar.gz", hash = "sha256:b36a1c245f2d304965eb4e0a82848379241dc04b865afcc4aab16748587e1923"},
+]
+
+[[package]]
 name = "websocket-client"
 version = "1.9.0"
 description = "WebSocket client for Python with low level API options"
@@ -5103,6 +5326,23 @@ files = [
     {file = "websockets-16.0-py3-none-any.whl", hash = "sha256:1637db62fad1dc833276dded54215f2c7fa46912301a24bd94d45d46a011ceec"},
     {file = "websockets-16.0.tar.gz", hash = "sha256:5f6261a5e56e8d5c42a4497b364ea24d94d9563e8fbd44e78ac40879c60179b5"},
 ]
+
+[[package]]
+name = "xlrd"
+version = "2.0.2"
+description = "Library for developers to extract data from Microsoft Excel (tm) .xls spreadsheet files"
+optional = false
+python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,!=3.5.*,>=2.7"
+groups = ["main"]
+files = [
+    {file = "xlrd-2.0.2-py2.py3-none-any.whl", hash = "sha256:ea762c3d29f4cca48d82df517b6d89fbce4db3107f9d78713e48cd321d5c9aa9"},
+    {file = "xlrd-2.0.2.tar.gz", hash = "sha256:08b5e25de58f21ce71dc7db3b3b8106c1fa776f3024c54e45b45b374e89234c9"},
+]
+
+[package.extras]
+build = ["twine", "wheel"]
+docs = ["sphinx"]
+test = ["pytest", "pytest-cov"]
 
 [[package]]
 name = "xxhash"
@@ -5535,4 +5775,4 @@ cffi = ["cffi (>=1.17,<2.0) ; platform_python_implementation != \"PyPy\" and pyt
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.11"
-content-hash = "082dcce0454fa6f1649e2d414c156de40e6bdbe8997b0ddcca8403f3442a83c3"
+content-hash = "e43c2a9b1349e3b904e1f2fe61c4d3697608423e4ad4e6f8e6b01a463c57b43f"

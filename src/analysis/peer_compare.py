@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-analysis/peer_compare.py — 同业对比 + 行业指数叠加 (Phase 3 Step 9, v1.0.1)
+analysis/peer_compare.py — 同业对比 + 行业指数叠加 (Phase 3 Step 9, v1.0.2)
 ============================================================================
 规格: TECH v1.1 §8.4 / PRODUCT F11+F12 / D1(申万二级) / D2(行业指数+沪深300+中证500)
 
@@ -30,7 +30,7 @@ from typing import Optional
 from pydantic import BaseModel
 
 logger = logging.getLogger(__name__)
-__version__ = "1.0.1"
+__version__ = "1.0.2"
 
 # ROE 限量取的成员数上限(控制 fina_indicator 调用次数,80次/分档下 ~15s)
 ROE_TOP_N = 20
@@ -296,9 +296,12 @@ def _sw_index_series_ak(sw_code_plain: str, start_iso: str, end_iso: str) -> lis
     try:
         import akshare as ak
     except ImportError:
+        logger.warning("akshare 未安装,申万兜底跳过(注意: akshare 不在 poetry.lock,属游离包)")
         return []
     fn = getattr(ak, "index_hist_sw", None)
     if fn is None:
+        logger.warning("akshare(%s) 无 index_hist_sw 接口,申万兜底跳过(版本过旧?)",
+                       getattr(ak, "__version__", "?"))
         return []
     try:
         df = fn(symbol=sw_code_plain, period="day")
@@ -306,6 +309,7 @@ def _sw_index_series_ak(sw_code_plain: str, start_iso: str, end_iso: str) -> lis
         logger.warning("akshare index_hist_sw(%s) 失败: %s", sw_code_plain, str(exc)[:120])
         return []
     if df is None or len(df) == 0:
+        logger.warning("akshare index_hist_sw(%s) 空返回", sw_code_plain)
         return []
     cols = list(df.columns)
     dcol = next((c for c in ("日期", "date") if c in cols), None)
@@ -335,6 +339,7 @@ def _sw_index_series(l2_code: str, start: str, end: str) -> tuple[list[tuple[str
     s = _index_series("index_daily", sw_code, start, end)
     if s:
         return s, "tushare.index_daily"
+    logger.warning("tushare index_daily(%s) 申万代码空返回,尝试 akshare 兜底", sw_code)
     t = _tsd()
     s = _sw_index_series_ak(sw_code.split(".")[0], t._iso(start), t._iso(end))
     if s:
