@@ -163,3 +163,14 @@ Running analysis...
  67%|██████▋   | 2/3 [00:02<00:01,  1.16s/it]100%|██████████| 3/3 [00:03<00:00,  1.21s/it]                                               0%|          | 0/7 [00:00<?, ?it/s] 14%|█▍        | 1/7 [00:01<00:08,  1.46s/it] 29%|██▊       | 2/7 [00:02<00:06,  1.32s/it] 43%|████▎     | 3/7 [00:04<00:05,  1.34s/it] 57%|█████▋    | 4/7 [00:05<00:03,  1.24s/it] 71%|███████▏  | 5/7 [00:06<00:02,  1.20s/it] 86%|████████▌ | 6/7 [00:07<00:01,  1.19s/it]100%|██████████| 7/7 [00:08<00:00,  1.17s/it]                                             stock_individual_fund_flow(600519.SH) 失败: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
 stock_individual_fund_flow(000858.SZ) 失败: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
 stock_board_industry_name_em 失败: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+stock_individual_fund_flow(300308.SZ) 失败: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+stock_individual_fund_flow(300502.SZ) 失败: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+stock_individual_fund_flow(688019.SH) 失败: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+stock_individual_fund_flow(002444.SZ) 失败: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+stock_individual_fund_flow(000333.SZ) 失败: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+stock_individual_fund_flow(300124.SZ) 失败: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+stock_individual_fund_flow(600522.SH) 失败: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+stock_individual_fund_flow(002396.SZ) 失败: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+stock_individual_fund_flow(603501.SH) 失败: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+stock_individual_fund_flow(002138.SZ) 失败: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+stock_individual_fund_flow(605358.SH) 失败: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
