@@ -39,12 +39,12 @@ app = FastAPI(title="AI Hedge Fund China — Web UI")
 
 def default_model() -> tuple[str, str]:
     if os.getenv("DEEPSEEK_API_KEY"):
-        return "deepseek-chat", "DeepSeek"
+        return "deepseek-v4-flash", "DeepSeek"
     if os.getenv("ANTHROPIC_API_KEY"):
         return "claude-sonnet-4-20250514", "Anthropic"
     if os.getenv("OPENAI_API_KEY"):
         return "gpt-4.1", "OpenAI"
-    return "deepseek-chat", "DeepSeek"
+    return "deepseek-v4-flash", "DeepSeek"
 
 
 # ════════════════════════════════════════════
@@ -109,7 +109,7 @@ def get_kline(ticker: str, days: int = 120):
 
 @app.post("/api/briefing/ingest")
 def ingest_briefing_route(req: BriefingIngestRequest):
-    """股市早晚报入库（粘贴原文）。"""
+    """早晚报入库 + LLM 标的抽取(F3/I2.2)。归档成功与抽取成败解耦(I2.1)。"""
     try:
         if not (req.text or "").strip():
             return JSONResponse({"error": "正文为空"}, status_code=400)
@@ -118,8 +118,26 @@ def ingest_briefing_route(req: BriefingIngestRequest):
         b = ingest_briefing_text(req.text, source="web_paste")
         BriefingStorage().save(b, overwrite=True)
         bt = b.briefing_type.value if hasattr(b.briefing_type, "value") else str(b.briefing_type)
-        return {"id": b.briefing_id, "type": bt, "date": str(b.briefing_date),
-                "tickers": list(getattr(b.metadata, "tickers", []) or [])}
+        resp = {"id": b.briefing_id, "type": bt, "date": str(b.briefing_date),
+                "tickers": list(getattr(b.metadata, "tickers_mentioned", []) or [])}
+        # ── LLM 标的抽取(归档已成功,抽取失败只降级不回滚) ──
+        try:
+            from src.analysis.ticker_extractor import extract_tickers, TickerExtractionFailed
+            try:
+                ext = extract_tickers(req.text, bt)
+                _save_extraction(b.briefing_id, "llm",
+                                 [t.model_dump() for t in ext], None)
+                resp["extraction"] = {"method": "llm", "failed": False,
+                                      "tickers": [t.model_dump() for t in ext]}
+            except TickerExtractionFailed as ee:
+                _save_extraction(b.briefing_id, "failed", [], str(ee))
+                resp["extraction"] = {"method": "manual_fallback", "failed": True,
+                                      "error": str(ee),
+                                      "pool_tickers": _pool_tickers()}   # I2.2 手动多选票单
+        except ImportError as ie:
+            resp["extraction"] = {"method": "unavailable", "failed": True,
+                                  "error": f"ticker_extractor 不可用: {ie}"}
+        return resp
     except Exception as e:
         return JSONResponse({"error": str(e), "trace": traceback.format_exc()},
                             status_code=500)
@@ -435,6 +453,98 @@ def index():
     except Exception:
         amap = {}
     return HTML.replace("__AGENT_ZH__", json.dumps(amap, ensure_ascii=False))
+
+
+
+# ════════════════════════════════════════════
+# marker: STEP14_BRIEFING_TICKERS_V1 — 入口A 抽取端点 + healthz
+# ════════════════════════════════════════════
+def _extraction_dir():
+    from src.briefings_archive.storage import default_storage_path
+    d = default_storage_path() / "extracted_tickers"
+    d.mkdir(parents=True, exist_ok=True)
+    return d
+
+
+def _save_extraction(briefing_id: str, method: str, tickers: list, error):
+    import json as _json
+    from datetime import datetime as _dt
+    p = _extraction_dir() / f"{briefing_id}.json"
+    tmp = p.with_suffix(".json.tmp")
+    tmp.write_text(_json.dumps({"briefing_id": briefing_id, "method": method,
+                                "tickers": tickers, "error": error,
+                                "at": _dt.now().isoformat(timespec="seconds")},
+                               ensure_ascii=False, indent=1), encoding="utf-8")
+    tmp.replace(p)   # 原子写(I4.4 同款纪律)
+
+
+def _pool_tickers() -> list[str]:
+    try:
+        from src.strategy.three_categories import load_pool_state
+        s = load_pool_state()
+        out = []
+        for pool in (s.v_pool, s.t_pool, s.n_pool):
+            out.extend(e.ticker for e in pool)
+        return out
+    except Exception:
+        return []   # 池不可读不阻塞降级路径,UI 允许自由输入
+
+
+@app.get("/api/briefing/{briefing_id}/tickers")
+def get_briefing_tickers(briefing_id: str):
+    """历史抽取结果(故事D: 用缓存,不重抽)。无缓存 → status=none。"""
+    import json as _json
+    p = _extraction_dir() / f"{briefing_id}.json"
+    if not p.exists():
+        return {"briefing_id": briefing_id, "status": "none",
+                "pool_tickers": _pool_tickers()}
+    try:
+        return {"status": "ok", **_json.loads(p.read_text(encoding="utf-8"))}
+    except Exception as e:
+        return JSONResponse({"error": f"抽取缓存损坏: {e}"}, status_code=500)
+
+
+class ManualTickersRequest(BaseModel):
+    tickers: list[str]
+
+
+@app.post("/api/briefing/{briefing_id}/tickers/manual")
+def set_briefing_tickers_manual(briefing_id: str, req: ManualTickersRequest):
+    """I2.2 手动兜底提交: 归一化校验后持久化(method=manual)。"""
+    try:
+        from src.markets.ticker import normalize_ticker
+        items, bad = [], []
+        for t in req.tickers:
+            try:
+                items.append({"ticker": normalize_ticker(t.strip()), "name": "",
+                              "role": "focus", "raw_mention": "(手动选择)"})
+            except Exception:
+                bad.append(t)
+        if bad:
+            return JSONResponse({"error": f"无法识别的标的: {bad}"}, status_code=400)
+        _save_extraction(briefing_id, "manual", items, None)
+        return {"status": "ok", "briefing_id": briefing_id, "count": len(items)}
+    except Exception as e:
+        return JSONResponse({"error": str(e), "trace": traceback.format_exc()},
+                            status_code=500)
+
+
+@app.get("/healthz")
+def healthz():
+    """I5.1: 核心模块实际路径 + 版本(Ghost Version 排查)。"""
+    mods = {}
+    for name in ("src.analysis.ticker_extractor", "src.analysis.unlock_radar",
+                 "src.analysis.fraud_detector", "src.analysis.dcf",
+                 "src.analysis.peer_compare", "src.tools.api_china",
+                 "src.tools.baostock_data", "src.tools.tushare_data"):
+        try:
+            import importlib
+            m = importlib.import_module(name)
+            mods[name] = {"version": getattr(m, "__version__", "?"),
+                          "path": getattr(m, "__file__", "?")}
+        except Exception as e:
+            mods[name] = {"error": str(e)[:80]}
+    return {"status": "ok", "modules": mods}
 
 
 if __name__ == "__main__":

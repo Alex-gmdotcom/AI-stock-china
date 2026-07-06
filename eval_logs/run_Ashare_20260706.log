@@ -1,0 +1,165 @@
+C:\Users\35366\AppData\Local\pypoetry\Cache\virtualenvs\ai-hedge-fund-PxMASVHH-py3.13\Lib\site-packages\langgraph\checkpoint\base\__init__.py:18: LangChainPendingDeprecationWarning: The default value of `allowed_objects` will change in a future version. Pass an explicit value (e.g., allowed_objects='messages' or allowed_objects='core') to suppress this warning.
+  from langgraph.checkpoint.serde.jsonplus import JsonPlusSerializer
+
+============================================================
+  AI Hedge Fund — China / Hong Kong Market Edition
+============================================================
+
+  ✓ 600519.SH (Shanghai Main Board (沪市主板))
+  ✓ 000858.SZ (Shenzhen Main Board (深市主板))
+  ✓ 300308.SZ (ChiNext (创业板))
+  ✓ 300502.SZ (ChiNext (创业板))
+  ✓ 688019.SH (STAR Market (科创板))
+  ✓ 002444.SZ (Shenzhen Main Board (深市主板))
+  ✓ 000333.SZ (Shenzhen Main Board (深市主板))
+  ✓ 300124.SZ (ChiNext (创业板))
+  ✓ 600522.SH (Shanghai Main Board (沪市主板))
+  ✓ 002396.SZ (Shenzhen Main Board (深市主板))
+  ✓ 603501.SH (Shanghai Main Board (沪市主板))
+  ✓ 002138.SZ (Shenzhen Main Board (深市主板))
+  ✓ 605358.SH (Shanghai Main Board (沪市主板))
+
+Market mode: CN
+Date range: 2025-12-01 → 2026-07-06
+模型自动选择: DeepSeek / deepseek-v4-flash
+
+--- 600519.SH ---
+  Market: Shanghai Main Board (沪市主板)
+  Daily price limit: ±10% (ST stocks: ±5%)
+  Settlement: T+1
+  Cannot sell same-day purchases (T+1 constraint).
+  Short selling: restricted. 融券做空仅限融资融券标的，门槛高且券源稀缺
+  Minimum lot size: 100 shares
+  Currency: CNY
+  ST mechanism: stocks with financial risk are marked ST/*ST with tighter price limits.
+
+--- 000858.SZ ---
+  Market: Shenzhen Main Board (深市主板)
+  Daily price limit: ±10% (ST stocks: ±5%)
+  Settlement: T+1
+  Cannot sell same-day purchases (T+1 constraint).
+  Short selling: restricted. 融券做空仅限融资融券标的，门槛高且券源稀缺
+  Minimum lot size: 100 shares
+  Currency: CNY
+  ST mechanism: stocks with financial risk are marked ST/*ST with tighter price limits.
+
+--- 300308.SZ ---
+  Market: ChiNext (创业板)
+  Daily price limit: ±20% (ST stocks: ±20%)
+  Settlement: T+1
+  Cannot sell same-day purchases (T+1 constraint).
+  Short selling: restricted. 创业板注册制股票上市前5日不设涨跌幅限制
+  Minimum lot size: 100 shares
+  Currency: CNY
+  ST mechanism: stocks with financial risk are marked ST/*ST with tighter price limits.
+  Registration-based IPO system (注册制) — higher new-listing volatility.
+
+--- 300502.SZ ---
+  Market: ChiNext (创业板)
+  Daily price limit: ±20% (ST stocks: ±20%)
+  Settlement: T+1
+  Cannot sell same-day purchases (T+1 constraint).
+  Short selling: restricted. 创业板注册制股票上市前5日不设涨跌幅限制
+  Minimum lot size: 100 shares
+  Currency: CNY
+  ST mechanism: stocks with financial risk are marked ST/*ST with tighter price limits.
+  Registration-based IPO system (注册制) — higher new-listing volatility.
+
+--- 688019.SH ---
+  Market: STAR Market (科创板)
+  Daily price limit: ±20% (ST stocks: ±20%)
+  Settlement: T+1
+  Cannot sell same-day purchases (T+1 constraint).
+  Short selling: restricted. 科创板股票上市前5日不设涨跌幅限制；50万资产+2年经验门槛
+  Minimum lot size: 200 shares
+  Currency: CNY
+  Registration-based IPO system (注册制) — higher new-listing volatility.
+
+--- 002444.SZ ---
+  Market: Shenzhen Main Board (深市主板)
+  Daily price limit: ±10% (ST stocks: ±5%)
+  Settlement: T+1
+  Cannot sell same-day purchases (T+1 constraint).
+  Short selling: restricted. 融券做空仅限融资融券标的，门槛高且券源稀缺
+  Minimum lot size: 100 shares
+  Currency: CNY
+  ST mechanism: stocks with financial risk are marked ST/*ST with tighter price limits.
+
+--- 000333.SZ ---
+  Market: Shenzhen Main Board (深市主板)
+  Daily price limit: ±10% (ST stocks: ±5%)
+  Settlement: T+1
+  Cannot sell same-day purchases (T+1 constraint).
+  Short selling: restricted. 融券做空仅限融资融券标的，门槛高且券源稀缺
+  Minimum lot size: 100 shares
+  Currency: CNY
+  ST mechanism: stocks with financial risk are marked ST/*ST with tighter price limits.
+
+--- 300124.SZ ---
+  Market: ChiNext (创业板)
+  Daily price limit: ±20% (ST stocks: ±20%)
+  Settlement: T+1
+  Cannot sell same-day purchases (T+1 constraint).
+  Short selling: restricted. 创业板注册制股票上市前5日不设涨跌幅限制
+  Minimum lot size: 100 shares
+  Currency: CNY
+  ST mechanism: stocks with financial risk are marked ST/*ST with tighter price limits.
+  Registration-based IPO system (注册制) — higher new-listing volatility.
+
+--- 600522.SH ---
+  Market: Shanghai Main Board (沪市主板)
+  Daily price limit: ±10% (ST stocks: ±5%)
+  Settlement: T+1
+  Cannot sell same-day purchases (T+1 constraint).
+  Short selling: restricted. 融券做空仅限融资融券标的，门槛高且券源稀缺
+  Minimum lot size: 100 shares
+  Currency: CNY
+  ST mechanism: stocks with financial risk are marked ST/*ST with tighter price limits.
+
+--- 002396.SZ ---
+  Market: Shenzhen Main Board (深市主板)
+  Daily price limit: ±10% (ST stocks: ±5%)
+  Settlement: T+1
+  Cannot sell same-day purchases (T+1 constraint).
+  Short selling: restricted. 融券做空仅限融资融券标的，门槛高且券源稀缺
+  Minimum lot size: 100 shares
+  Currency: CNY
+  ST mechanism: stocks with financial risk are marked ST/*ST with tighter price limits.
+
+--- 603501.SH ---
+  Market: Shanghai Main Board (沪市主板)
+  Daily price limit: ±10% (ST stocks: ±5%)
+  Settlement: T+1
+  Cannot sell same-day purchases (T+1 constraint).
+  Short selling: restricted. 融券做空仅限融资融券标的，门槛高且券源稀缺
+  Minimum lot size: 100 shares
+  Currency: CNY
+  ST mechanism: stocks with financial risk are marked ST/*ST with tighter price limits.
+
+--- 002138.SZ ---
+  Market: Shenzhen Main Board (深市主板)
+  Daily price limit: ±10% (ST stocks: ±5%)
+  Settlement: T+1
+  Cannot sell same-day purchases (T+1 constraint).
+  Short selling: restricted. 融券做空仅限融资融券标的，门槛高且券源稀缺
+  Minimum lot size: 100 shares
+  Currency: CNY
+  ST mechanism: stocks with financial risk are marked ST/*ST with tighter price limits.
+
+--- 605358.SH ---
+  Market: Shanghai Main Board (沪市主板)
+  Daily price limit: ±10% (ST stocks: ±5%)
+  Settlement: T+1
+  Cannot sell same-day purchases (T+1 constraint).
+  Short selling: restricted. 融券做空仅限融资融券标的，门槛高且券源稀缺
+  Minimum lot size: 100 shares
+  Currency: CNY
+  ST mechanism: stocks with financial risk are marked ST/*ST with tighter price limits.
+
+Running analysis...
+
+[boot] NO_PROXY injected: 30 hosts total (26 from AKShare whitelist)
+  0%|          | 0/3 [00:00<?, ?it/s] 33%|███▎      | 1/3 [00:01<00:02,  1.14s/it]login success!
+ 67%|██████▋   | 2/3 [00:02<00:01,  1.16s/it]100%|██████████| 3/3 [00:03<00:00,  1.21s/it]                                               0%|          | 0/7 [00:00<?, ?it/s] 14%|█▍        | 1/7 [00:01<00:08,  1.46s/it] 29%|██▊       | 2/7 [00:02<00:06,  1.32s/it] 43%|████▎     | 3/7 [00:04<00:05,  1.34s/it] 57%|█████▋    | 4/7 [00:05<00:03,  1.24s/it] 71%|███████▏  | 5/7 [00:06<00:02,  1.20s/it] 86%|████████▌ | 6/7 [00:07<00:01,  1.19s/it]100%|██████████| 7/7 [00:08<00:00,  1.17s/it]                                             stock_individual_fund_flow(600519.SH) 失败: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+stock_individual_fund_flow(000858.SZ) 失败: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+stock_board_industry_name_em 失败: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
