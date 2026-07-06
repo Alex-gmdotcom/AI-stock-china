@@ -174,3 +174,4 @@ stock_individual_fund_flow(002396.SZ) 失败: ('Connection aborted.', RemoteDisc
 stock_individual_fund_flow(603501.SH) 失败: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
 stock_individual_fund_flow(002138.SZ) 失败: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
 stock_individual_fund_flow(605358.SH) 失败: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+^C
