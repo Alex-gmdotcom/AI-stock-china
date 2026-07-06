@@ -32,7 +32,7 @@ from typing import Literal, Optional
 from pydantic import BaseModel
 
 logger = logging.getLogger(__name__)
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 
 # I6.3: 早晚报典型 4-8K tokens;超过此字符数不发请求直接 fail-loud
 MAX_TEXT_CHARS = 60000
@@ -140,7 +140,7 @@ def extract_tickers(briefing_text: str, briefing_type: str = "morning",
     result = call_llm(
         prompt=prompt,
         pydantic_model=_LLMExtraction,
-        agent_name=None,
+        agent_name="ticker_extractor",  # 必须非 None: call_llm 分支条件 (state and agent_name),否则 state 桩被短路
         state=llm_state,
         default_factory=lambda: _LLMExtraction(tickers=[], llm_failed=True),  # 哨兵
     )
