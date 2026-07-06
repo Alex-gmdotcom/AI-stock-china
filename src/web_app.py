@@ -547,6 +547,94 @@ def healthz():
     return {"status": "ok", "modules": mods}
 
 
+
+# ════════════════════════════════════════════
+# marker: STEP15_HKNEWS_IMPORT_V1 — 港股 openclaw 新闻导入(I3.1/I3.2/I3.3)
+# ════════════════════════════════════════════
+def _hk_flat_dir():
+    from pathlib import Path as _P
+    d = _P.home() / ".ai-hedge-fund" / "hk_news"
+    d.mkdir(parents=True, exist_ok=True)
+    return d
+
+
+class HKNewsImportRequest(BaseModel):
+    raw_json: str
+
+
+@app.post("/stock/{ticker}/hk-news/import")
+def import_hk_news(ticker: str, req: HKNewsImportRequest):
+    """openclaw 港股新闻 JSON 导入。校验失败整体拒绝 400(I3.1 红底素材)。
+    平铺 I3.2 文件 = 现役消费真相源(舆情 agent Tier-1 读);storage = 历史存档。"""
+    import json as _json
+    from datetime import datetime as _dt
+    try:
+        from src.markets.ticker import normalize_ticker
+        from src.hk_news.ingest import ingest_snapshot_text, HKNewsParseError
+        try:
+            norm = normalize_ticker(ticker.strip())
+        except Exception as e:
+            return JSONResponse({"errors": [f"URL ticker 无法识别: {e}"]}, status_code=400)
+        if not norm.upper().endswith(".HK"):
+            return JSONResponse({"errors": [f"{norm} 非港股;本端点仅服务港股(A股新闻自动拉取)"]},
+                                status_code=400)
+        try:
+            snap = ingest_snapshot_text(req.raw_json)
+        except HKNewsParseError as e:
+            return JSONResponse({"errors": [str(e)]}, status_code=400)   # I3.1 整体拒绝
+        if str(snap.schema_version) != "1.0":
+            return JSONResponse({"errors": [f"schema_version 必须 '1.0',得 {snap.schema_version!r}"]},
+                                status_code=400)
+        if snap.ticker != norm:
+            return JSONResponse({"errors": [f"JSON ticker={snap.ticker} 与 URL {norm} 不符,整体拒绝"]},
+                                status_code=400)
+
+        # ① 平铺 I3.2 canonical(agent Tier-1 glob 此处;24h 规则以本文件 mtime 起算)
+        flat = _hk_flat_dir() / f"{norm}_{_dt.now().strftime('%Y%m%d')}.json"
+        tmp = flat.with_suffix(".json.tmp")
+        tmp.write_text(_json.dumps(snap.to_dict(), ensure_ascii=False, indent=1),
+                       encoding="utf-8")
+        tmp.replace(flat)
+
+        # ② storage 历史存档(失败不回滚 canonical,带注记 fail-soft)
+        archived, archive_note = True, None
+        try:
+            from src.hk_news.storage import HKNewsStorage
+            HKNewsStorage().save(snap, overwrite=True)
+        except Exception as e:
+            archived, archive_note = False, f"历史存档失败(canonical 已写,不影响 agent): {e}"
+
+        return {"status": "ok", "ticker": norm,
+                "snapshot_at": str(snap.snapshot_at),
+                "counts": {"news": len(snap.news or []),
+                           "announcements": len(snap.announcements or []),
+                           "risk_events": len(snap.risk_events or [])},
+                "flat_path": str(flat), "archived": archived,
+                "note": archive_note}
+    except Exception as e:
+        return JSONResponse({"error": str(e), "trace": traceback.format_exc()},
+                            status_code=500)
+
+
+@app.get("/stock/{ticker}/hk-news/status")
+def hk_news_status(ticker: str):
+    """24h 缓存新鲜度(I3.2;UI 徽章/故事E 自动加载判定)。"""
+    import glob as _glob, os as _os, time as _time
+    try:
+        from src.markets.ticker import normalize_ticker
+        norm = normalize_ticker(ticker.strip())
+        cands = sorted(_glob.glob(str(_hk_flat_dir() / f"{norm}_*.json")), reverse=True)
+        if not cands:
+            return {"ticker": norm, "status": "none",
+                    "hint": "无 openclaw 数据,建议导入(I1.3)"}
+        age_h = (_time.time() - _os.path.getmtime(cands[0])) / 3600
+        return {"ticker": norm, "status": "fresh" if age_h <= 24 else "stale",
+                "age_hours": round(age_h, 1), "path": cands[0],
+                "hint": None if age_h <= 24 else "缓存超 24h,建议重跑 openclaw 后重新导入"}
+    except Exception as e:
+        return JSONResponse({"error": str(e)}, status_code=500)
+
+
 if __name__ == "__main__":
     print("\n  ✦ AI Hedge Fund 中国版 — Web 控制台")
     print("  ✦ 浏览器打开: http://localhost:8000\n")
