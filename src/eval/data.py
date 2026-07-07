@@ -48,7 +48,27 @@ class PriceSource(Protocol):
 # ----------------------------------------------------------------------
 @contextmanager
 def baostock_session():
+    # marker: EVAL_BS_SHARED_SESSION_V1 — 复用 baostock_data 进程级会话 + 全局锁
+    # 根因(2026-07-07 Step16 真机):本函数自建 login/logout 绕过 _BS_LOCK,与
+    # api_china 并发时单 socket 串话(11列数据串进3列查询)+ logout 拆掉别人
+    # 正在用的连接(WinError 10053/10038)。修类:进程内 baostock 会话唯一
+    # 真相源 = tools.baostock_data;本函数持锁期间独占,退出不 logout。
     import baostock as bs
+    _bsd = None
+    try:
+        from src.tools import baostock_data as _bsd  # type: ignore
+    except ImportError:
+        try:
+            from tools import baostock_data as _bsd  # type: ignore
+        except ImportError:
+            _bsd = None
+    if _bsd is not None and getattr(_bsd, "_HAVE_BS", False):
+        with _bsd._BS_LOCK:
+            if not _bsd._ensure_login():
+                raise RuntimeError("baostock 登录失败(共享会话)")
+            yield bs   # 进程级会话:不 logout,退出由进程回收
+        return
+    # 兜底:独立环境(无 baostock_data)保留旧行为
     lg = bs.login()
     if lg.error_code != "0":
         raise RuntimeError(f"baostock 登录失败: {lg.error_code} {lg.error_msg}")
@@ -56,6 +76,7 @@ def baostock_session():
         yield bs
     finally:
         bs.logout()
+
 
 
 class BaostockPriceSource:

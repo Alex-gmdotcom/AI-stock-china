@@ -535,7 +535,8 @@ def healthz():
     mods = {}
     for name in ("src.analysis.ticker_extractor", "src.analysis.unlock_radar",
                  "src.analysis.fraud_detector", "src.analysis.dcf",
-                 "src.analysis.peer_compare", "src.tools.api_china",
+                 "src.analysis.peer_compare", "src.analysis.snapshot",
+                 "src.tools.api_china",
                  "src.tools.baostock_data", "src.tools.tushare_data"):
         try:
             import importlib
@@ -633,6 +634,128 @@ def hk_news_status(ticker: str):
                 "hint": None if age_h <= 24 else "缓存超 24h,建议重跑 openclaw 后重新导入"}
     except Exception as e:
         return JSONResponse({"error": str(e)}, status_code=500)
+
+
+
+
+# ════════════════════════════════════════════
+# marker: STEP16_DEEP_PAGE_V1 — 个股深度页(TECH §7.1/§7.3;I6.2/I8.3/I1.4)
+# ════════════════════════════════════════════
+
+class DCFRecomputeRequest(BaseModel):
+    perpetual_growth_rate: float
+    wacc: float
+    five_year_growth_rate: float
+    fcf_base: float
+
+
+@app.get("/stock/{ticker}/snapshot")
+def stock_snapshot(ticker: str, agents: int = 0, llm: int = 0):
+    """深度页 JSON 快照:10 维并行;≥50% 失败 → 503 暂停页(I6.2)。"""
+    try:
+        from src.analysis.snapshot import (build_stock_snapshot_sync,
+                                           MajorPageDataFailure)
+        return build_stock_snapshot_sync(ticker, include_agents=bool(agents),
+                                         with_llm=bool(llm))
+    except MajorPageDataFailure as e:
+        return JSONResponse(
+            {"error": "MajorPageDataFailure", "message": str(e),
+             "failed_dims": e.failed, "attempted": e.attempted,
+             "detail": e.detail,
+             "hint": "≥50% 数据维度失败,页面暂停渲染(I6.2)。检查网络/数据源后重试。"},
+            status_code=503)
+    except Exception as e:
+        return JSONResponse({"error": str(e), "trace": traceback.format_exc()},
+                            status_code=500)
+
+
+@app.post("/stock/{ticker}/dcf")
+def stock_dcf_recompute(ticker: str, req: DCFRecomputeRequest):
+    """DCF 滑块重算(纯计算路径,I1.4:三假设可见可调)。"""
+    try:
+        from src.analysis import dcf as _dcf
+        from src.markets.ticker import parse_ticker
+        norm = parse_ticker(ticker).full_ticker
+        a = _dcf.DCFAssumptions(
+            perpetual_growth_rate=req.perpetual_growth_rate, wacc=req.wacc,
+            five_year_growth_rate=req.five_year_growth_rate, fcf_base=req.fcf_base)
+        return _dcf.compute(norm, assumptions=a).model_dump(mode="json")
+    except Exception as e:
+        return JSONResponse({"error": str(e)}, status_code=500)
+
+
+_DEEP_PAGE_HTML = """<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>__TICKER__ · 深度页</title><style>
+:root{--bg:#0b0d13;--card:#14171f;--border:#232838;--text:#e6e8ef;--dim:#6e7389;
+--accent:#5b7cfa;--up:#e2453e;--down:#1ba784;--warn:#e8b339;--mono:ui-monospace,Consolas,monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:system-ui,'PingFang SC','Microsoft YaHei',sans-serif;font-size:14px}
+.wrap{max-width:1100px;margin:0 auto;padding:24px 20px}
+.strip{display:flex;gap:18px;align-items:baseline;flex-wrap:wrap;margin-bottom:18px}
+.strip .tk{font-family:var(--mono);color:var(--dim)}
+.strip .nm{font-size:22px;font-weight:800}
+.strip .px{font-size:20px;font-weight:700}
+.up{color:var(--up)}.down{color:var(--down)}
+.grid8{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px;margin-bottom:16px}
+.mcard{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 12px}
+.mcard .k{font-size:11px;color:var(--dim)}.mcard .v{font-size:16px;font-weight:700;margin-top:3px}
+.sec{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 18px;margin-bottom:14px}
+.sec h2{font-size:14px;font-weight:700;margin-bottom:8px}
+.sec pre{font-family:var(--mono);font-size:11.5px;color:var(--dim);white-space:pre-wrap;
+max-height:320px;overflow-y:auto;background:var(--bg);border-radius:8px;padding:10px}
+.gap{color:var(--warn);font-size:12px}
+.badge{display:inline-block;font-size:11px;padding:2px 8px;border-radius:5px;font-weight:700;margin-left:8px}
+.b-ok{background:rgba(27,167,132,.15);color:#1ba784}.b-fail{background:rgba(226,69,62,.15);color:#e2453e}
+.b-skip{background:rgba(110,115,137,.15);color:#6e7389}
+.footer{color:var(--dim);font-size:11.5px;margin-top:20px;line-height:1.8}
+.loading{color:var(--dim);padding:40px;text-align:center}
+.pausebox{background:rgba(226,69,62,.08);border:1px solid #e2453e;border-radius:12px;padding:24px;line-height:1.9}
+</style></head><body><div class="wrap" id="root"><div class="loading">加载快照(10 维并行,首次约 1-2 分钟)…</div></div>
+<script>
+const T="__TICKER__";
+function fmt(v,pct){if(v===null||v===undefined)return '<span class="gap">【数据缺口】</span>';
+if(typeof v==='number'){if(pct)return (v*100).toFixed(2)+'%';
+if(Math.abs(v)>1e8)return (v/1e8).toFixed(1)+'亿';return v.toFixed(2);}return v;}
+fetch(`/stock/${T}/snapshot`).then(async r=>{
+const d=await r.json();const root=document.getElementById('root');
+if(r.status===503){root.innerHTML=`<div class="pausebox"><b>页面暂停渲染(I6.2)</b><br>${d.message||''}<br>失败维度: ${(d.failed_dims||[]).join(', ')}<br>${d.hint||''}</div>`;return;}
+if(d.error){root.innerHTML=`<div class="pausebox">${d.error}</div>`;return;}
+const dim=d.dimensions||{},val=dim.valuation||{},s=val.strip||{},c=val.cards||{};
+const pc=s.pct_chg,pcCls=pc>0?'up':(pc<0?'down':'');
+let h=`<div class="strip"><span class="nm">${s.name||T}</span><span class="tk">${d.ticker} · ${d.market}</span>
+<span class="px">${fmt(s.price)}</span><span class="px ${pcCls}">${pc!=null?(pc>0?'+':'')+Number(pc).toFixed(2)+'%':''}</span>
+<span class="tk">市值 ${fmt(s.market_cap)}</span><span class="tk">asof ${d.asof}</span></div>`;
+const cards=[['PE(TTM)',c.pe_ttm],['PB',c.pb],['ROE',c.roe,1],['股息率',c.dividend_yield,1],
+['营收YoY',c.revenue_yoy,1],['净利YoY',c.net_profit_yoy,1],['负债率',c.debt_ratio,1],
+['机构持仓',c.institutional_holding,1],['行业中位PE',c.industry_median_pe]];
+h+='<div class="grid8">'+cards.map(([k,v,p])=>`<div class="mcard"><div class="k">${k}</div><div class="v">${fmt(v,p)}</div></div>`).join('')+'</div>';
+const meta=(d.footer||{}).dim_meta||{};
+const secs=[['kline','K线 (近250交易日 + MA5/20/60)'],['dcf','DCF 估值卡 (F9,滑块重算 POST /stock/{t}/dcf)'],
+['fraud','财务舞弊检测 (F10)'],['peers','同业对比 (F11)'],['industry_index','同业指数叠加 (F12)'],
+['capital','资金面 20日 (F13)'],['unlock','限售解禁雷达 (F14)'],['news','公告/新闻/研报 (F15)'],['agents','多 Agent 决议 (F8)']];
+for(const [k,title] of secs){const m=meta[k]||{};const st=m.status||'?';
+const badge=st==='ok'?'b-ok':(st==='skipped'?'b-skip':'b-fail');
+let body=dim[k]?`<pre>${JSON.stringify(dim[k],null,1).slice(0,12000)}</pre>`:
+`<div class="gap">${m.note||m.error||'【数据缺口】'}</div>`;
+h+=`<div class="sec"><h2>${title}<span class="badge ${badge}">${st}${m.elapsed_ms?` · ${(m.elapsed_ms/1000).toFixed(1)}s`:''}</span></h2>${body}</div>`;}
+const gaps=(d.footer||{}).data_gaps||[];
+h+=`<div class="footer"><b>Footer(I8.3)</b> · 数据时点 ${d.captured_at} · snapshot v${(d.footer||{}).snapshot_version}<br>
+数据缺口 ${gaps.length} 项:<br>${gaps.map(g=>'· '+g).join('<br>')}</div>`;
+root.innerHTML=h;
+}).catch(e=>{document.getElementById('root').innerHTML='<div class="pausebox">'+e+'</div>';});
+</script></body></html>"""
+
+
+@app.get("/stock/{ticker}", response_class=HTMLResponse)
+def stock_deep_page(ticker: str):
+    """深度页 HTML 壳(Step 16 最小可用版;Step 17 上正式图表)。"""
+    try:
+        from src.markets.ticker import parse_ticker
+        norm = parse_ticker(ticker).full_ticker
+    except Exception:
+        norm = ticker
+    return HTMLResponse(_DEEP_PAGE_HTML.replace("__TICKER__", norm))
 
 
 if __name__ == "__main__":
