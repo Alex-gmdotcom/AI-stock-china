@@ -53,15 +53,32 @@ def baostock_session():
     # api_china 并发时单 socket 串话(11列数据串进3列查询)+ logout 拆掉别人
     # 正在用的连接(WinError 10053/10038)。修类:进程内 baostock 会话唯一
     # 真相源 = tools.baostock_data;本函数持锁期间独占,退出不 logout。
+    # marker: EVAL_BS_SHARED_SESSION_V2 — 已加载实例优先,根除双模块实例
+    # 根因(2026-07-07 真机):V1 优先 `src.tools`,而 api_china 优先 `tools`;
+    # `python src/web_app.py` 下两路径都可导 → 同一文件两个模块实例(两把锁
+    # 两次 login),第二次 login 顶掉在用连接 → utf-8/zlib 收包垃圾。
+    # 修类:进程里已加载哪个实例就加入哪个;都没有才按 api_china 同序导入。
     import baostock as bs
-    _bsd = None
-    try:
-        from src.tools import baostock_data as _bsd  # type: ignore
-    except ImportError:
+    import sys as _sys
+    _bsd = (_sys.modules.get("tools.baostock_data")
+            or _sys.modules.get("src.tools.baostock_data"))
+    if _bsd is None:
         try:
             from tools import baostock_data as _bsd  # type: ignore
         except ImportError:
-            _bsd = None
+            try:
+                from src.tools import baostock_data as _bsd  # type: ignore
+            except ImportError:
+                _bsd = None
+    else:
+        _a = _sys.modules.get("tools.baostock_data")
+        _b = _sys.modules.get("src.tools.baostock_data")
+        if _a is not None and _b is not None and _a is not _b:
+            import logging as _logging
+            _logging.getLogger(__name__).warning(
+                "baostock_data 双模块实例并存(tools.* 与 src.tools.*),已加入 tools.* 会话;"
+                "另一实例若被使用仍有串话风险,请排查导入路径")
+
     if _bsd is not None and getattr(_bsd, "_HAVE_BS", False):
         with _bsd._BS_LOCK:
             if not _bsd._ensure_login():
