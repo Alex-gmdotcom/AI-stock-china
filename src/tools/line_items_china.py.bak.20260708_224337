@@ -105,7 +105,7 @@ except ImportError:
             cash_and_equivalents: Optional[float] = None
             shareholders_equity: Optional[float] = None
             dividends_and_other_cash_distributions: Optional[float] = None
-            def model_dump(self, **_kw): return asdict(self)
+            def model_dump(self): return asdict(self)
 
 # ensure_no_proxy
 try:

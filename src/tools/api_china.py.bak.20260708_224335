@@ -714,7 +714,7 @@ except ImportError:
             high: float = 0.0
             low: float = 0.0
             volume: int = 0
-            def model_dump(self, **_kw): return _asdict(self)
+            def model_dump(self): return _asdict(self)
 
         @_dc
         class _FinancialMetrics:  # type: ignore
@@ -736,7 +736,7 @@ except ImportError:
             receivables_turnover: Optional[float] = None
             earnings_per_share: Optional[float] = None
             book_value_per_share: Optional[float] = None
-            def model_dump(self, **_kw): return _asdict(self)
+            def model_dump(self): return _asdict(self)
 
         @_dc
         class _LineItem:  # type: ignore
@@ -756,7 +756,7 @@ except ImportError:
             shareholders_equity: Optional[float] = None
             dividends_and_other_cash_distributions: Optional[float] = None
             issuance_or_purchase_of_equity_shares: Optional[float] = None
-            def model_dump(self, **_kw): return _asdict(self)
+            def model_dump(self): return _asdict(self)
 
         @_dc
         class _CompanyNews:  # type: ignore
@@ -767,7 +767,7 @@ except ImportError:
             date: str = ""
             url: str = ""
             sentiment: str = ""
-            def model_dump(self, **_kw): return _asdict(self)
+            def model_dump(self): return _asdict(self)
 
 
 class _NullCache:
@@ -1747,7 +1747,7 @@ class NorthboundFlow:
     total_net_buy: Optional[float] = None
     sh_net_buy: Optional[float] = None       # 沪股通
     sz_net_buy: Optional[float] = None       # 深股通
-    def model_dump(self, **_kw): return _v103_asdict(self)
+    def model_dump(self): return _v103_asdict(self)
 
 
 @_v103_dc
@@ -1757,7 +1757,7 @@ class MarginTrading:
     margin_balance: Optional[float] = None         # 融资余额
     short_balance: Optional[float] = None          # 融券余额
     total_balance: Optional[float] = None          # 两融总余额
-    def model_dump(self, **_kw): return _v103_asdict(self)
+    def model_dump(self): return _v103_asdict(self)
 
 
 @_v103_dc
@@ -1770,7 +1770,7 @@ class MainCapitalFlow:
     large_net_inflow: Optional[float] = None       # 大单
     close: Optional[float] = None                  # 当日收盘
     change_pct: Optional[float] = None             # 当日涨跌幅
-    def model_dump(self, **_kw): return _v103_asdict(self)
+    def model_dump(self): return _v103_asdict(self)
 
 
 @_v103_dc
@@ -1782,7 +1782,7 @@ class PublicOpinionItem:
     date: str = ""
     url: str = ""
     sentiment: str = ""
-    def model_dump(self, **_kw): return _v103_asdict(self)
+    def model_dump(self): return _v103_asdict(self)
 
 
 @_v103_dc
@@ -1793,7 +1793,7 @@ class SectorPerformance:
     turnover_rate: Optional[float] = None
     leader_stock: str = ""        # 领涨股
     sector_code: str = ""
-    def model_dump(self, **_kw): return _v103_asdict(self)
+    def model_dump(self): return _v103_asdict(self)
 
 
 @_v103_dc
@@ -1803,7 +1803,7 @@ class StockSectorInfo:
     industry: str = ""             # 申万 / 东财行业
     concepts: list = _v103_field(default_factory=list)
     name: str = ""                 # 股票简称
-    def model_dump(self, **_kw): return _v103_asdict(self)
+    def model_dump(self): return _v103_asdict(self)
 
 
 # ---------------------------------------------------------------------------

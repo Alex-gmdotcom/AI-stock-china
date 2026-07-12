@@ -56,8 +56,6 @@ __version__ = "v1.0.1"
 # =====================================================================
 
 Category = Literal["V", "T", "N"]
-# OUT 补丁(TECH §10.3):腿的类别域含池外 OUT;PoolEntry.category 仍只能是 V/T/N
-LegCategory = Literal["V", "T", "N", "OUT"]
 
 
 @dataclass
@@ -327,48 +325,14 @@ def find_entry(state: PoolState, ticker: str) -> Optional[Tuple[Category, PoolEn
 # 配对迁移（常规工作流）
 # =====================================================================
 
-class LegDirectionMismatch(PoolError):
-    """两腿方向不互补:V/T/N 某池净变化 != 0(OUT 不计入)。"""
-
-
 @dataclass
 class MigrationLeg:
-    """配对迁移的一条腿。
-
-    from_category / to_category 可为 "OUT"(池外):
-      - X → OUT : 出池腿(该票离开池)
-      - OUT → X : 入池腿(新票进入池),需提供 name / rationale
-    约束:OUT 腿必须成对同类 —— X→OUT 必配 OUT→X(同一 category),
-         以保证该类净变化 = 0、池规模恒 5+5+5(I4.1)。
-    """
+    """配对迁移的一条腿。"""
     ticker: str
-    from_category: LegCategory
-    to_category: LegCategory
+    from_category: Category
+    to_category: Category
     signal: str = "manual"
     evidence: List[dict] = field(default_factory=list)
-    name: str = ""          # 仅 OUT→X 入池腿需要
-    rationale: str = ""     # 仅 OUT→X 入池腿需要(入池理由,存入 PoolEntry)
-
-
-def _check_net_delta(exit_leg: "MigrationLeg", enter_leg: "MigrationLeg") -> None:
-    """显式校验 V/T/N 各池净变化 = 0(OUT 不计入)。
-
-    原实现只靠末尾 assert_pool_size_invariant 兜底,报错为"规模违反",
-    掩盖了真正原因(方向不互补)。此处前置校验并给出可读错误。
-    """
-    delta: dict = {}
-    for leg in (exit_leg, enter_leg):
-        if leg.from_category != "OUT":
-            delta[leg.from_category] = delta.get(leg.from_category, 0) - 1
-        if leg.to_category != "OUT":
-            delta[leg.to_category] = delta.get(leg.to_category, 0) + 1
-    bad = {k: v for k, v in delta.items() if v != 0}
-    if bad:
-        raise LegDirectionMismatch(
-            f"两腿方向不互补,池净变化 {bad} != 0。"
-            f"合法例:V→T 配 T→V;N→OUT 配 OUT→N。"
-            f"非法例:V→T 配 N→T;N→OUT 配 OUT→V。"
-        )
 
 
 def execute_migration_pair(
@@ -421,17 +385,8 @@ def execute_migration_pair(
             f"本月已用 {current}/{MONTHLY_MIGRATION_LIMIT} 次配对迁移配额。下月清零。"
         )
 
-    # 显式净变化校验(OUT 补丁):方向不互补 -> 可读错误,而非事后"规模违反"
-    _check_net_delta(exit_leg, enter_leg)
-
-    # 校验源池中存在(OUT 入池腿改为校验"尚未在任何池中")
+    # 校验源池中存在
     for leg in (exit_leg, enter_leg):
-        if leg.from_category == "OUT":
-            if find_entry(state, leg.ticker):
-                raise DuplicateTickerError(
-                    f"{leg.ticker} 已在池中,不能作为入池腿(OUT→{leg.to_category})"
-                )
-            continue
         src = _get_pool(state, leg.from_category)
         if not any(e.ticker == leg.ticker for e in src):
             raise PoolNotFoundError(
@@ -465,41 +420,17 @@ def _apply_migration_leg(
     decided_at: str,
 ) -> None:
     """在 state 上原地执行一条迁移腿。"""
-    # ── OUT 补丁:三分支(池内互迁 / 出池 / 入池) ──
-    if leg.from_category == "OUT" and leg.to_category == "OUT":
-        raise LegDirectionMismatch("OUT→OUT 无意义")
+    src = _get_pool(state, leg.from_category)
+    dst = _get_pool(state, leg.to_category)
 
-    if leg.from_category == "OUT":
-        # 入池腿:新建 PoolEntry(不从任何池取)
-        dst = _get_pool(state, leg.to_category)
-        new_entry = PoolEntry(
-            ticker=leg.ticker,
-            name=leg.name or leg.ticker,
-            category=leg.to_category,
-            sub_id=_next_sub_id(dst, leg.to_category),
-            rationale=leg.rationale or user_rationale,
-            added_at=decided_at,
-            last_migrated_at=decided_at,
-        )
-        dst.append(new_entry)
-    elif leg.to_category == "OUT":
-        # 出池腿:从源池移除,不入任何池
-        src = _get_pool(state, leg.from_category)
-        entry = next(e for e in src if e.ticker == leg.ticker)
-        src.remove(entry)
-    else:
-        # 池内互迁:原逻辑,零改动
-        src = _get_pool(state, leg.from_category)
-        dst = _get_pool(state, leg.to_category)
+    entry = next(e for e in src if e.ticker == leg.ticker)
+    src.remove(entry)
 
-        entry = next(e for e in src if e.ticker == leg.ticker)
-        src.remove(entry)
-
-        new_entry = copy.copy(entry)
-        new_entry.category = leg.to_category
-        new_entry.sub_id = _next_sub_id(dst, leg.to_category)
-        new_entry.last_migrated_at = decided_at
-        dst.append(new_entry)
+    new_entry = copy.copy(entry)
+    new_entry.category = leg.to_category
+    new_entry.sub_id = _next_sub_id(dst, leg.to_category)
+    new_entry.last_migrated_at = decided_at
+    dst.append(new_entry)
 
     rec = MigrationRecord(
         record_id=str(uuid.uuid4()),

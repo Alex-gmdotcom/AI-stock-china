@@ -1042,11 +1042,10 @@ def stock_deep_page(ticker: str):
     return HTMLResponse(_DEEP_PAGE_HTML.replace("__TICKER__", norm))
 
 
-# <<STEP18_BLOCK_BEGIN>>
 _POOL_PAGE_HTML = """<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>三分法池 · 总览</title>
-<!-- STEP18_POOL_PAGE_V3 -->
+<!-- STEP18_POOL_PAGE_V2 -->
 <style>
 :root{--bg:#0b0d13;--card:#14171f;--border:#232838;--text:#e6e8ef;--dim:#6e7389;
 --accent:#5b7cfa;--up:#e2453e;--down:#1ba784;--warn:#e8b339;--mono:ui-monospace,Consolas,monospace;
@@ -1172,23 +1171,19 @@ ${perfReady?'':' · <span style="color:var(--warn)">涨跌加载中(首次约 1-
 <div class="leg exit ${SEL.exit?'on':''}"><div class="lab">出腿(离开原类)</div>
 ${SEL.exit?`<div class="who">${esc(SEL.exit.name)} <span class="tk">${esc(SEL.exit.ticker)}</span></div>
 <div class="path">${esc(SEL.exit.category)} → <select id="exit-to" style="width:auto;display:inline-block">
-${['V','T','N'].filter(x=>x!==SEL.exit.category).map(x=>`<option value="${x}">${x}</option>`).join('')}
-<option value="OUT">OUT(出池)</option></select></div>`
+${['V','T','N'].filter(x=>x!==SEL.exit.category).map(x=>`<option value="${x}">${x}</option>`).join('')}</select></div>`
 :'<div class="ph">未选择 · 点击上方任一票</div>'}</div>
-<div class="leg enter ${SEL.enter?'on':''}" id="leg-enter"><div class="lab">入腿(进入目标类)</div>
+<div class="leg enter ${SEL.enter?'on':''}"><div class="lab">入腿(进入目标类)</div>
 ${SEL.enter?`<div class="who">${esc(SEL.enter.name)} <span class="tk">${esc(SEL.enter.ticker)}</span></div>
 <div class="path">${esc(SEL.enter.category)} → <select id="enter-to" style="width:auto;display:inline-block">
 ${['V','T','N'].filter(x=>x!==SEL.enter.category).map(x=>`<option value="${x}">${x}</option>`).join('')}</select></div>`
-:'<div class="ph">未选择 · 再点池内另一只票,或填上方池外新票</div>'}</div>
+:'<div class="ph">未选择 · 再点池内另一只票</div>'}</div>
 </div>
-<div class="hint" style="border-left:2px solid var(--accent);padding-left:10px;margin-top:10px">
-<b>换票(池外新票进,老票出)</b>:出腿选池内一只 → <code>出池(OUT)</code>,入腿填池外新票。
-<b>两腿必须同类</b>(如 N→OUT 配 OUT→N),否则该类净变化 ≠ 0、破坏 5+5+5,后端直接拒。
-一次原子执行,吃 1 个月度配额,留两条共享 pair_id 的迁移记录。</div>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
-<input id="new-tk" placeholder="池外 ticker,如 01810.HK"><input id="new-nm" placeholder="名称,如 小米集团"></div>
-<input id="new-why" placeholder="该票入池理由(存入 PoolEntry.rationale)" style="margin-top:6px">
-<div class="hint" style="margin-top:4px">填了池外票 → 自动作为入腿,类别 = 出腿所属类(同类成对)。留空则用池内第二只作入腿。</div>
+<div class="hint" style="border-left:2px solid var(--warn);padding-left:10px;margin-top:10px">
+<b style="color:var(--warn)">池外新票入腿暂不可用。</b> 当前 <code>execute_migration_pair</code> 仅支持池内 <b>V/T/N 三类互迁</b>
+(两腿方向必须互补,各池净变化 = 0);<code>MigrationLeg</code> 的类别域为 <code>Literal['V','T','N']</code>,不含 <code>OUT</code>。
+TECH §10.3 规格含 OUT,实现待补。<br>
+进出池当前只能:<b>目标类未满员</b> → 下方单票加池;<b>已满员</b> → 先移出一只再加(注意:会经过瞬时 4/5 中间态)。</div>
 <label class="f">迁移理由(必填,I4.5——不填后端直接拒绝 MissingMigrationRationale)</label>
 <textarea id="rationale" placeholder="写清楚为什么迁:触发了什么信号 / 依据哪些数据点"></textarea>
 <div class="tmpl" id="tmpl"></div>
@@ -1238,37 +1233,23 @@ t.querySelectorAll('button').forEach(b=>b.onclick=()=>{const ta=document.getElem
 var NL=String.fromCharCode(10);ta.value=(ta.value?ta.value.trimEnd()+NL:'')+'· '+b.dataset.k;ta.focus();});}
 // 提交闸门
 const btn=document.getElementById('btn-mig'),why=document.getElementById('mig-why');
-function gate(){
-const nt=((document.getElementById('new-tk')||{}).value||'').trim();
-const nn=((document.getElementById('new-nm')||{}).value||'').trim();
-const exitTo=(document.getElementById('exit-to')||{}).value;
-const ra=((document.getElementById('rationale')||{}).value||'');
+function gate(){const hasEnter=!!SEL.enter;
+const ra=(document.getElementById('rationale')||{}).value||'';
 const q=POOL.monthly_migrations_used>=POOL.monthly_migrations_limit;
 let msg='';
 if(q)msg='本月配额已用尽(I4.2)';
 else if(!SEL.exit)msg='需选出腿';
-else if(nt){ // 池外入腿模式
-  if(exitTo!=='OUT')msg='填了池外新票 → 出腿目标须选 OUT(出池)';
-  else if(!nn)msg='池外新票需填名称';
-  else if(!ra.trim())msg='迁移理由必填(I4.5)';
-}else if(exitTo==='OUT')msg='出腿选了 OUT → 需填池外新票作入腿(同类)';
-else if(!SEL.enter)msg='需选入腿(池内另一只票,或填池外新票)';
-else if(SEL.exit.category===SEL.enter.category)msg='两腿同类互迁无意义(净变化须为 0)';
-else if(SEL.enter.to_hint&&false)msg='';
+else if(!hasEnter)msg='需选入腿(池内另一只票)';
+else if(SEL.exit.category===SEL.enter.category)msg='两腿同类无意义(净变化须为 0,需方向互补)';
 else if(!ra.trim())msg='迁移理由必填(I4.5)';
 btn.disabled=!!msg;why.textContent=msg;}
-['rationale','new-tk','new-nm','new-why'].forEach(id=>{const el=document.getElementById(id);if(el)el.oninput=gate,el.onchange=gate;});
+['rationale'].forEach(id=>{const el=document.getElementById(id);if(el)el.oninput=gate,el.onchange=gate;});
 gate();
 document.getElementById('btn-clear').onclick=()=>{SEL={exit:null,enter:null};render();};
 btn.onclick=async()=>{
 const exitTo=(document.getElementById('exit-to')||{}).value;
-const nt=((document.getElementById('new-tk')||{}).value||'').trim();
-const enterLeg = nt
-? {ticker:nt,name:((document.getElementById('new-nm')||{}).value||'').trim(),
-   from_category:'OUT',to_category:SEL.exit.category,
-   rationale:((document.getElementById('new-why')||{}).value||'').trim()}
-: {ticker:SEL.enter.ticker,name:SEL.enter.name,from_category:SEL.enter.category,
-   to_category:(document.getElementById('enter-to')||{}).value};
+const enterLeg={ticker:SEL.enter.ticker,name:SEL.enter.name,from_category:SEL.enter.category,
+to_category:(document.getElementById('enter-to')||{}).value};
 btn.disabled=true;
 const body={exit_leg:{ticker:SEL.exit.ticker,name:SEL.exit.name,from_category:SEL.exit.category,to_category:exitTo},
 enter_leg:enterLeg,user_rationale:document.getElementById('rationale').value};
@@ -1299,7 +1280,7 @@ boot();
 
 
 # ────────────────────────────────────────────────────────────
-# marker: STEP18_POOL_PAGE_V3 — 池总览页 + 配对迁移 API(TECH §10.3;I4.1-I4.5)
+# marker: STEP18_POOL_PAGE_V2 — 池总览页 + 配对迁移 API(TECH §10.3;I4.1-I4.5)
 # ────────────────────────────────────────────────────────────
 
 _POOL_PERF_CACHE: dict = {"at": 0.0, "data": None}
@@ -1309,9 +1290,8 @@ _POOL_PERF_TTL = 900  # 15 分钟(池总览非高频页;15 只票串行 baostock
 class _MigLegIn(BaseModel):
     ticker: str
     name: str = ""
-    from_category: str          # "V"/"T"/"N"/"OUT"
-    to_category: str            # "V"/"T"/"N"/"OUT"
-    rationale: str = ""         # 仅 OUT→X 入池腿需要
+    from_category: str
+    to_category: str
 
 
 class _MigrateIn(BaseModel):
@@ -1427,39 +1407,32 @@ def pool_migrate(req: _MigrateIn):
         execute_migration_pair(state, exit_leg, enter_leg, user_rationale,
                                dir_override=None) -> PoolState   # 内部已写盘
         MigrationLeg(ticker, from_category, to_category, signal='manual', evidence=[])
-    约束:两腿方向必须互补(V/T/N 各池净变化 = 0)。
-         OUT 腿需 deploy_migration_out.py 已部署;且必须同类成对(N→OUT 配 OUT→N)。
+    约束:两腿方向必须互补(V/T/N 各池净变化 = 0);当前实现不支持 OUT(池外腿)。
     """
     tc = _import_tc()
     try:
         if not (req.user_rationale or "").strip():
             raise tc.MissingMigrationRationale("迁移理由必填(I4.5)")
-        legs = (req.exit_leg, req.enter_leg)
-        for lg in legs:
-            for c in (lg.from_category, lg.to_category):
-                if c not in ("V", "T", "N", "OUT"):
-                    raise ValueError(f"非法类别 {c}(须 V/T/N/OUT)")
-        if not hasattr(tc, "LegDirectionMismatch"):
-            for lg in legs:
-                if "OUT" in (lg.from_category, lg.to_category):
-                    return JSONResponse(
-                        {"error": "OutLegNotSupported",
-                         "message": "OUT 补丁未部署。请先运行 deploy_migration_out.py。"},
-                        status_code=400)
+        for lg in (req.exit_leg, req.enter_leg):
+            if lg.from_category == "OUT" or lg.to_category == "OUT":
+                return JSONResponse(
+                    {"error": "OutLegNotSupported",
+                     "message": "当前 execute_migration_pair 仅支持池内 V/T/N 三类互迁,"
+                                "不支持 OUT(池外腿)。进出池请用单票 加池/减池,"
+                                "或等待 OUT 支持补丁(TECH §10.3 规格已含 OUT,实现待补)。"},
+                    status_code=400)
         state = tc.load_pool_state()
         ev = [{"source": "web_ui", "manual": True}]
-
-        def _leg(x):
-            kw = dict(ticker=x.ticker, from_category=x.from_category,
-                      to_category=x.to_category, signal="manual", evidence=ev)
-            # OUT→X 入池腿:透传 name / rationale(建 PoolEntry 用)
-            if x.from_category == "OUT":
-                kw["name"] = x.name or x.ticker
-                kw["rationale"] = x.rationale or req.user_rationale
-            return tc.MigrationLeg(**kw)
-
-        # 内部自行写盘(.tmp + rename + backup),此处不得重复 save(避免双写)
-        tc.execute_migration_pair(state, _leg(req.exit_leg), _leg(req.enter_leg),
+        exit_leg = tc.MigrationLeg(ticker=req.exit_leg.ticker,
+                                   from_category=req.exit_leg.from_category,
+                                   to_category=req.exit_leg.to_category,
+                                   signal="manual", evidence=ev)
+        enter_leg = tc.MigrationLeg(ticker=req.enter_leg.ticker,
+                                    from_category=req.enter_leg.from_category,
+                                    to_category=req.enter_leg.to_category,
+                                    signal="manual", evidence=ev)
+        # 内部自行写盘(.tmp + rename + backup),此处不得重复 save(避免双写污染备份轮转)
+        tc.execute_migration_pair(state, exit_leg, enter_leg,
                                   user_rationale=req.user_rationale)
         _POOL_PERF_CACHE["data"] = None
         return {"ok": True,
@@ -1470,10 +1443,6 @@ def pool_migrate(req: _MigrateIn):
             tc.PoolNotFoundError) as e:
         return _pool_err(e, 400)
     except Exception as e:
-        if type(e).__name__ == "LegDirectionMismatch":     # OUT 补丁新异常
-            return _pool_err(e, 400)
-        if isinstance(e, (ValueError, TypeError)):
-            return _pool_err(e, 400)
         return _pool_err(e, 500)
 
 
@@ -1531,7 +1500,6 @@ def pool_remove(req: _RemoveIn):
     except Exception as e:
         return _pool_err(e, 500)
 
-# <<STEP18_BLOCK_END>>
 
 if __name__ == "__main__":
     print("\n  ✦ AI Hedge Fund 中国版 — Web 控制台")
