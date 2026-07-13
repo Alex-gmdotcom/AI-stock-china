@@ -49,19 +49,12 @@ def china_capital_flow_agent(
 
     flow_analysis = {}
 
-    # Step 1: Northbound daily net-buy RETIRED (裁决⑦, 2024-08-19 披露机制调整)
-    # ── marker: CAPFLOW_DECISION7_V1 ──
-    # 日度北向净买入源头制度性消失(非权限/非bug, 见 TECH 坑23);
-    # 资金面重构: 融资余额 0.45 + 个股主力资金 0.55。
-    # 保留 northbound 汇报块(weight=0)以维持 reasoning 结构与前端兼容。
-    progress.update_status(agent_id, None, "Northbound retired (裁决⑦)")
-    nb_signal, nb_confidence = "neutral", 0
-    nb_reasoning = {
-        "status": "retired",
-        "note": ("2024-08-19 起陆股通不再披露日度净买入(制度性停更, 非数据缺口); "
-                 "北向腿退役(裁决⑦); tushare moneyflow_hsgt.north_money 改制后为成交总额, "
-                 "禁止当净买入消费(坑23)"),
-    }
+    # Step 1: Market-wide northbound flow
+    progress.update_status(agent_id, None, "Fetching northbound capital flow")
+    northbound_data = get_northbound_flow(limit=30)
+
+    # Analyze northbound trend
+    nb_signal, nb_confidence, nb_reasoning = _analyze_northbound(northbound_data)
 
     # Step 2: Market-wide margin trading
     progress.update_status(agent_id, None, "Fetching margin trading data")
@@ -77,7 +70,7 @@ def china_capital_flow_agent(
         )
 
         # Step 4: Combine signals with weights
-        # 裁决⑦: Margin 45% + Stock-specific 55% (northbound retired)
+        # Northbound 35% + Margin 25% + Stock-specific 40%
         progress.update_status(agent_id, ticker, "Combining flow signals")
 
         signal_scores = {
@@ -87,8 +80,9 @@ def china_capital_flow_agent(
         }
 
         for signal, conf, weight in [
-            (margin_signal, margin_confidence, 0.45),
-            (stock_signal, stock_confidence, 0.55),
+            (nb_signal, nb_confidence, 0.35),
+            (margin_signal, margin_confidence, 0.25),
+            (stock_signal, stock_confidence, 0.40),
         ]:
             signal_scores[signal] += conf * weight
 
@@ -100,8 +94,9 @@ def china_capital_flow_agent(
         # 修类:coverage = 有数据腿的权重和;置信度 ×coverage;
         #       coverage=0 → 强制 neutral@20;coverage<0.5 → 封顶 30。
         _dq_legs = (
-            ("margin", margin_reasoning, 0.45),
-            ("stock_flow", stock_reasoning, 0.55),
+            ("northbound", nb_reasoning, 0.35),
+            ("margin", margin_reasoning, 0.25),
+            ("stock_flow", stock_reasoning, 0.40),
         )
         data_coverage = sum(w for _n, _r, w in _dq_legs
                             if not (isinstance(_r, dict) and "error" in _r))
@@ -124,25 +119,25 @@ def china_capital_flow_agent(
                 "signal": nb_signal,
                 "confidence": nb_confidence,
                 "details": nb_reasoning,
-                "weight": 0.0,
+                "weight": 0.35,
             },
             "margin_trading": {
                 "signal": margin_signal,
                 "confidence": margin_confidence,
                 "details": margin_reasoning,
-                "weight": 0.45,
+                "weight": 0.25,
             },
             "stock_capital_flow": {
                 "signal": stock_signal,
                 "confidence": stock_confidence,
                 "details": stock_reasoning,
-                "weight": 0.55,
+                "weight": 0.40,
             },
             "combined": {
                 "scores": {k: round(v, 2) for k, v in signal_scores.items()},
             },
             "data_quality": {
-                "northbound": "retired-20240819(裁决⑦)",
+                "northbound": not (isinstance(nb_reasoning, dict) and "error" in nb_reasoning),
                 "margin": not (isinstance(margin_reasoning, dict) and "error" in margin_reasoning),
                 "stock_flow": not (isinstance(stock_reasoning, dict) and "error" in stock_reasoning),
                 "coverage": round(data_coverage, 2),
