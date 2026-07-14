@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-run_migration_signals.py — Step 18c 跑批器 v1.1(CLI, +dotenv)
+run_migration_signals.py — Step 18c 跑批器(CLI)
 ================================================================
 流程: 加载三分法池 -> 采集输入 -> evaluate_pool -> 落盘 + 报告
 运行: poetry run python run_migration_signals.py
@@ -19,12 +19,6 @@ from datetime import date
 from pathlib import Path
 
 sys.path.insert(0, ".")
-
-try:                                   # v1.1: 与 main/web_app 入口一致加载 .env
-    from dotenv import load_dotenv     # (AIHF_TUSHARE_TOKEN 等; 无 dotenv 不阻塞)
-    load_dotenv()
-except Exception:
-    pass
 
 from src.strategy.migration_signals import evaluate_pool, __version__ as ENGINE_VER
 from src.strategy.signal_inputs import collect_signal_inputs
