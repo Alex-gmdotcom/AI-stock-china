@@ -3,37 +3,37 @@
     "5": {
       "overall": {
         "n_dates": 1,
-        "n_obs": 0,
-        "rank_ic_mean": NaN,
-        "ic_mean": NaN,
+        "n_obs": 13,
+        "rank_ic_mean": 0.44279613062223466,
+        "ic_mean": 0.5672153900795559,
         "rank_icir": NaN,
         "icir": NaN,
-        "hit_rate": NaN,
-        "directional_n": 0,
-        "excess_hit_rate": NaN
+        "hit_rate": 0.6923076923076923,
+        "directional_n": 13,
+        "excess_hit_rate": 0.6923076923076923
       },
       "by_class": {
         "T": {
           "n_dates": 1,
-          "n_obs": 0,
-          "rank_ic_mean": NaN,
-          "ic_mean": NaN,
+          "n_obs": 3,
+          "rank_ic_mean": 0.8660254037844387,
+          "ic_mean": 0.900328535510852,
           "rank_icir": NaN,
           "icir": NaN,
-          "hit_rate": NaN,
-          "directional_n": 0,
-          "excess_hit_rate": NaN
+          "hit_rate": 1.0,
+          "directional_n": 3,
+          "excess_hit_rate": 1.0
         },
         "V": {
           "n_dates": 1,
-          "n_obs": 0,
+          "n_obs": 2,
           "rank_ic_mean": NaN,
           "ic_mean": NaN,
           "rank_icir": NaN,
           "icir": NaN,
-          "hit_rate": NaN,
-          "directional_n": 0,
-          "excess_hit_rate": NaN
+          "hit_rate": 0.5,
+          "directional_n": 2,
+          "excess_hit_rate": 0.5
         }
       }
     },
