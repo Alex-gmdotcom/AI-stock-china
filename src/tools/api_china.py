@@ -868,7 +868,7 @@ def _safe_construct(cls, **kwargs):
             filtered = {k: v for k, v in kwargs.items() if k in accepted}
             return cls(**filtered)
         except Exception as exc:
-            _logger.debug("_safe_construct(%s) 失败: %s", cls.__name__, exc)
+            _logger.warning("_safe_construct(%s) 失败: %s", cls.__name__, exc)
             return None
 
 
@@ -1192,6 +1192,22 @@ def _parse_hk_report_long_df(df) -> list:
     return out
 
 
+# ── marker: HKFIN_FIELDS_V2 — FinancialMetrics 43 字段全必填(pydantic v2 无默认值),
+# 稀疏记录在 _safe_construct 静默失败整条丢弃(真机 2026-07-15 实证: 35 validation errors)。
+# 修类: 构造前按模型字段补 None; ticker/period/currency 留给上层 setdefault。
+def _hk_complete_fields(records: list) -> list:
+    try:
+        fields = getattr(_FinancialMetrics, "model_fields", None) or {}
+        skip = {"ticker", "period", "currency"}
+        for r in records:
+            for k in fields:
+                if k not in skip:
+                    r.setdefault(k, None)
+    except Exception as exc:
+        _logger.warning("hk 字段补全失败(记录可能被构造器丢弃): %s", exc)
+    return records
+
+
 def _fetch_hk_metrics(norm: str) -> list:
     """港股财务指标 — 主链 indicator_em(报告期), 兜底 年度 -> report_em 长表。"""
     sym = _ak_hk_symbol(norm)
@@ -1207,7 +1223,7 @@ def _fetch_hk_metrics(norm: str) -> list:
             continue
         out = _parse_hk_indicator_df(df)
         if out:
-            return out
+            return _hk_complete_fields(out)
         _logger.warning("hk indicator_em(%s,%s) 有行但解析为空(疑列名漂移: %s)",
                         norm, ind, list(df.columns)[:8])
     # 兜底: 利润表长表透视
@@ -1222,7 +1238,7 @@ def _fetch_hk_metrics(norm: str) -> list:
     out = _parse_hk_report_long_df(df)
     if not out:
         _logger.warning("hk report_em(%s) 有行但透视为空(疑科目名漂移)", norm)
-    return out
+    return _hk_complete_fields(out)
 
 
 def get_financial_metrics(ticker: str, end_date: str, period: str = "ttm",
