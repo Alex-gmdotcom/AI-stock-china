@@ -1081,6 +1081,7 @@ cursor:pointer;position:relative;transition:border-color .12s}
 display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .lamp{position:absolute;top:8px;right:8px;width:7px;height:7px;border-radius:50%}
 .lamp.red{background:var(--up)}.lamp.yellow{background:var(--warn)}
+.lamp.gray{background:var(--dim,#8a8f98);opacity:.55}
 .badge-sel{position:absolute;top:-7px;left:8px;font-size:9px;font-weight:800;padding:1px 6px;border-radius:4px}
 .badge-sel.exit{background:var(--up);color:#fff}.badge-sel.enter{background:var(--down);color:#fff}
 .sec{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 18px;margin-bottom:14px}
@@ -1357,13 +1358,42 @@ def pool_page():
     return HTMLResponse(_POOL_PAGE_HTML)
 
 
+# ── marker: STEP18C_SIGNALS_V1 — 18c 信号接入 /api/pool/perf ──
+def _load_18c_signals():
+    """读 run_migration_signals.py 产物 latest.json →
+    {ticker: {strength, from_cat, to_cat, sig, note}}(前端 cellHTML 已预留插座)。
+    文件缺失/读取失败 → 空 + 说明(不给假灯); 灰灯=不可算, 照传(I1.1)。"""
+    import json as _json
+    from datetime import date as _date
+    from pathlib import Path as _P
+    f = _P.home() / ".ai-hedge-fund" / "migration_signals_latest.json"
+    if not f.exists():
+        return {}, "signals 空: 尚无 18c 跑批产物(先跑 run_migration_signals.py)"
+    try:
+        blob = _json.loads(f.read_text(encoding="utf-8"))
+    except Exception as _e:
+        return {}, f"signals 空: latest.json 读取失败({_e})"
+    rd = str(blob.get("run_date", ""))
+    m = {}
+    for s in blob.get("signals", []):
+        tk = s.get("ticker")
+        if not tk:
+            continue
+        note = (("★高亮 " if s.get("highlight") else "") +
+                f"{s.get('signal','')} {s.get('strength','')} " + (s.get("note") or "")).strip()
+        m[tk] = {"strength": s.get("strength"), "from_cat": s.get("from_category"),
+                 "to_cat": s.get("to_category"), "sig": s.get("signal"), "note": note}
+    stale = "" if rd == _date.today().isoformat() else f"(信号日期 {rd}, 非今日, 跑批可能未更新)"
+    return m, f"18c signals {len(m)} 条 run_date={rd} {stale}".strip()
+
+
 @app.get("/api/pool/perf")
 def pool_perf(refresh: int = 0):
     """池内 15 只票 5日/20日涨跌 + 迁移信号(TTL 缓存)。
 
     失败个股置 None(I1.1:不以 0 冒充);整体失败不阻塞热力图。
-    signals 暂空——detect_migration_signals 未实现(TECH §10.2 待建),
-    不给假红黄灯。
+    signals = 18c 引擎跑批产物(migration_signals_latest.json;
+    STEP18C_SIGNALS_V1)。灰灯=不可算, 照传; 产物缺失 → 空 + 说明。
     """
     import time as _t
     now = _t.time()
@@ -1384,8 +1414,8 @@ def pool_perf(refresh: int = 0):
             print(f"[pool_perf] {tk} 失败: {e}")
             perf[tk] = {"ret_5d": None, "ret_20d": None, "error": str(e)[:80]}
 
-    out = {"perf": perf, "signals": {}, "cached": False,
-           "note": "signals 空:detect_migration_signals 未实现;T→V/N→T 依赖资金流(当前【数据缺口】)"}
+    _sigs, _sig_note = _load_18c_signals()
+    out = {"perf": perf, "signals": _sigs, "cached": False, "note": _sig_note}
     _POOL_PERF_CACHE.update({"at": now, "data": out})
     return out
 
