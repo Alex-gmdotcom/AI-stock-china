@@ -80,3 +80,5 @@ phase1_backup/
 phase2_backup/
 phase2_hotfix_backup/
 baostock_probe*
+*.bak.* 
+*.bak
