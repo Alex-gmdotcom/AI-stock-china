@@ -1079,7 +1079,7 @@ cursor:pointer;position:relative;transition:border-color .12s}
 .cell .r2 b{font-weight:700}
 .cell .why{font-size:11px;color:var(--dim);margin-top:4px;line-height:1.4;
 display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.lamp{position:absolute;top:6px;right:6px;width:12px;height:12px;border-radius:50%;z-index:6;cursor:help;box-shadow:0 0 0 2px rgba(255,255,255,.08)}/*STEP18C_LAMP_V2*/
+.lamp{position:absolute;top:8px;right:8px;width:7px;height:7px;border-radius:50%}
 .lamp.red{background:var(--up)}.lamp.yellow{background:var(--warn)}
 .lamp.gray{background:var(--dim,#8a8f98);opacity:.55}
 .badge-sel{position:absolute;top:-7px;left:8px;font-size:9px;font-weight:800;padding:1px 6px;border-radius:4px}

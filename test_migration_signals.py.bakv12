@@ -98,18 +98,6 @@ check("T9c 重复触发合并: record_id 不变", sig_of(s2, "R0").record_id == 
 check("T9d 幂等: 同日重跑结果一致",
       [x.to_dict() for x in evaluate_pool(pool9, d9, st9, "2026-07-14")[0]] == [x.to_dict() for x in s2])
 
-# ---- T10: S3 未盈利降级(营收YoY代理, 2026-07-14 批) ----
-pool10 = {"RVA": "N", "RVB": "N", "RVC": "N"}
-d10 = {"RVA": {"net_profit_yoy": None, "revenue_yoy": 0.35, "ret_20d": 0.12, "consensus_beat": None},
-       "RVB": {"net_profit_yoy": None, "revenue_yoy": 0.20, "ret_20d": 0.15, "consensus_beat": None},
-       "RVC": {"net_profit_yoy": 0.10, "revenue_yoy": 0.50, "ret_20d": 0.15, "consensus_beat": None}}
-s, _ = evaluate_pool(pool10, d10, None, "2026-07-14")
-_a = sig_of(s, "RVA")
-check("T10a 未盈利+营收YoY35% ->黄(标proxy)", _a and _a.strength == "yellow"
-      and _a.evidence.get("proxy", "").startswith("revenue_yoy"))
-check("T10b 未盈利+营收YoY20% ->不触发", sig_of(s, "RVB") is None)
-check("T10c 有净利YoY(10%)不降级营收 ->不触发", sig_of(s, "RVC") is None)
-
 n_pass = sum(1 for _, ok in PASS if ok)
 print(f"\n==== {n_pass}/{len(PASS)} PASS ====")
 sys.exit(0 if n_pass == len(PASS) else 1)

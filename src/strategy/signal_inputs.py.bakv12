@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-signal_inputs.py — Step 18c 数据接线层 v1.2(+未盈利营收YoY降级)
+signal_inputs.py — Step 18c 数据接线层 v1.1(引擎输入采集 + 申万L1排名)
 ================================================================
 职责: 为 migration_signals.evaluate_pool 采集每票输入。
 纪律:
@@ -224,58 +224,30 @@ def _default_fetch_sector_rank_change(ticker: str, asof_iso: str):
     return float(shift)
 
 
-def _g(rec, key):
-    return rec.get(key) if isinstance(rec, dict) else getattr(rec, key, None)
-
-
-def _same_period_rev_yoy(recs) -> float | None:
-    """同报告期营收YoY: 找上一年同期(同月日)记录, 避免中报对年报错配。"""
-    seq = []
-    for r in recs or []:
-        p, v = str(_g(r, "report_period") or ""), _g(r, "revenue")
-        if p and v:
-            seq.append((p, float(v)))
-    for i, (p, v) in enumerate(seq):
-        if len(p) < 8:
-            continue
-        prev = str(int(p[:4]) - 1) + p[4:]
-        for q, w in seq[i + 1:]:
-            if q == prev and w:
-                return v / w - 1.0
-    return None
-
-
-def _default_fetch_fin_growth(ticker: str, asof_iso: str):
-    """返回 (net_profit_yoy, revenue_yoy); 单次取数两个口径都出。"""
+def _default_fetch_earnings_yoy(ticker: str, asof_iso: str):
     try:
         try:
             from src.tools import api_china
         except ImportError:
             import api_china  # type: ignore
-        recs = api_china.get_financial_metrics(ticker, asof_iso, period="ttm", limit=6)
-        net = None
+        recs = api_china.get_financial_metrics(ticker, asof_iso, period="ttm", limit=4)
         for rec in recs or []:
-            g = _g(rec, "earnings_growth")
+            g = rec.get("earnings_growth") if isinstance(rec, dict) \
+                else getattr(rec, "earnings_growth", None)
             if g is not None:
-                net = float(g)
-                break
-        rev = _same_period_rev_yoy(recs)
-        if net is None and rev is None:
-            _logger.warning("18c inputs: %s 净利/营收增速均缺失", ticker)
-        elif net is None:
-            _logger.warning("18c inputs: %s earnings_growth 缺失, 降级营收YoY=%.1f%%",
-                            ticker, rev * 100)
-        return net, rev
+                return float(g)
+        _logger.warning("18c inputs: %s earnings_growth 缺失", ticker)
+        return None
     except Exception as exc:
         _logger.warning("18c inputs: %s 财务采集失败: %s", ticker, exc)
-        return None, None
+        return None
 
 
 DEFAULT_FETCHERS = {
     "closes": _default_fetch_closes,
     "stock_margin": _default_fetch_stock_margin,
     "sector_rank_change": _default_fetch_sector_rank_change,
-    "fin_growth": _default_fetch_fin_growth,
+    "earnings_yoy": _default_fetch_earnings_yoy,
 }
 
 
@@ -307,9 +279,7 @@ def collect_signal_inputs(pool: dict, asof_iso: str, fetchers: dict | None = Non
             d["margin_balance"] = f["stock_margin"](ticker, asof_iso)
             d["sector_rank_change_5d"] = f["sector_rank_change"](ticker, asof_iso)
         elif cls == "N":
-            net, rev = f["fin_growth"](ticker, asof_iso)
-            d["net_profit_yoy"] = net
-            d["revenue_yoy"] = rev              # 未盈利降级代理(引擎仅在 net 缺失时用)
+            d["net_profit_yoy"] = f["earnings_yoy"](ticker, asof_iso)
             d["consensus_beat"] = None          # 无一致预期源, 走 YoY 代理(审批单 S3)
             d["ret_20d"] = _ret(f["closes"](ticker, asof_iso), 20)
         data[ticker] = d

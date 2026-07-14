@@ -19,7 +19,7 @@ import statistics
 import uuid
 from dataclasses import dataclass, field, asdict
 
-__version__ = "18c-core-v1.1"
+__version__ = "18c-core-v1.0"
 
 # ---------------------------------------------------------------
 # 阈值常量表 — single source of truth(审批单 v1 §1/§2, 已批)
@@ -32,7 +32,6 @@ S2_RANK_DROP = 5          # AND 板块排名 5 日下滑 >5 位
 S2_RED_SIGMA = 2.0        # 红: 3日降幅合计 > 近20日日均变化 2σ
 S2_SIGMA_WINDOW = 20      # σ 计算窗口(日度变化数)
 S3_YOY_PROXY = 0.30       # N→T: 无一致预期时 净利YoY >30% 代理
-S3_REV_PROXY = 0.30       # 未盈利降级: 净利YoY不可得时 营收YoY >30%(2026-07-14 批)
 S3_RET20_YELLOW = 0.10    # AND ret_20d >10% 黄
 S3_RET20_RED = 0.20       # ret_20d >20% 红
 COOLDOWN_DAYS = 5         # 熄灯/事件触发后 5 个运行日冷却
@@ -113,30 +112,18 @@ def _eval_s2(d: dict):
 def _eval_s3(d: dict):
     missing = []
     yoy = d.get("net_profit_yoy")
-    rev = d.get("revenue_yoy")              # 未盈利降级代理(仅当 yoy 不可得时启用)
     ret20 = d.get("ret_20d")
     beat = d.get("consensus_beat")          # True/False/None(无一致预期)
-    if yoy is None and beat is None and rev is None:
-        missing.append("net_profit_yoy/consensus_beat/revenue_yoy")
+    if yoy is None and beat is None:
+        missing.append("net_profit_yoy/consensus_beat")
     if ret20 is None:
         missing.append("ret_20d")
     if missing:
         return None, {}, False, missing
-    proxy = None
-    if beat is not None:
-        earnings_ok = bool(beat)
-    elif yoy is not None:
-        earnings_ok = yoy > S3_YOY_PROXY    # 有净利YoY就用它, 不降级(盈利但弱≠触发)
-    else:
-        earnings_ok = rev > S3_REV_PROXY    # 未盈利降级: 营收YoY代理
-        proxy = "revenue_yoy(未盈利降级)"
+    earnings_ok = bool(beat) if beat is not None else (yoy is not None and yoy > S3_YOY_PROXY)
     ev = {"net_profit_yoy": None if yoy is None else round(yoy, 4),
-          "revenue_yoy": None if rev is None else round(rev, 4),
           "consensus_beat": beat, "ret_20d": round(ret20, 4), "score": ret20,
-          "rule": (f"业绩超预期(或净利YoY>{S3_YOY_PROXY:.0%}; 未盈利降级营收YoY>{S3_REV_PROXY:.0%}) "
-                   f"AND ret20 黄>{S3_RET20_YELLOW:.0%} 红>{S3_RET20_RED:.0%}; 事件型不迟滞")}
-    if proxy:
-        ev["proxy"] = proxy
+          "rule": f"业绩超预期(或YoY>{S3_YOY_PROXY:.0%}) AND ret20 黄>{S3_RET20_YELLOW:.0%} 红>{S3_RET20_RED:.0%}; 事件型不迟滞"}
     level = None
     if earnings_ok and ret20 > S3_RET20_YELLOW:
         level = "red" if ret20 > S3_RET20_RED else "yellow"
