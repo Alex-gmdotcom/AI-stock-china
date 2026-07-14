@@ -1107,40 +1107,121 @@ def _fetch_a_share_metrics(norm: str) -> list:
     return out
 
 
-def _fetch_hk_metrics(norm: str) -> list:
-    """港股财务指标 (东财年度利润表)."""
+# ── marker: HKFIN_INDICATOR_V1 — 港股财务链重构(探针 2026-07-15 实证) ──
+# 根因(坑9 接口漂移家族): report_em 已改长表(科目行), 旧宽表解析永取 None;
+# REPORT_DATE 带时间尾巴, _from_ak_date 解析失败 -> 全行跳过 -> 空列表(且无面包屑)。
+# 修类: 主链换 indicator_em(宽表, 直含 OPERATE_INCOME_YOY/HOLDER_PROFIT_YOY 等,
+#        东财口径为百分数, 统一 /100); report_em 长表透视为兜底; 所有空退出留面包屑。
+
+def _hk_num(v):
+    """NaN/None/非数 -> None."""
     try:
-        df = _ak.stock_financial_hk_report_em(
-            stock=_ak_hk_symbol(norm), symbol="利润表", indicator="年度")
-    except Exception as exc:
-        _logger.warning("stock_financial_hk_report_em(%s) 失败: %s", norm, exc)
-        return []
-    if df is None or len(df) == 0:
-        return []
+        f = float(v)
+        return None if f != f else f
+    except (TypeError, ValueError):
+        return None
 
-    date_col = None
-    for cand in ("REPORT_DATE", "报告期", "报告日期"):
-        if cand in df.columns:
-            date_col = cand
-            break
 
+def _hk_rep_date(v) -> str:
+    """'2025-12-31 00:00:00' -> '2025-12-31'."""
+    s = str(v or "").strip()
+    return s.split(" ")[0].split("T")[0] if s and s.lower() != "nan" else ""
+
+
+def _parse_hk_indicator_df(df) -> list:
+    """indicator_em 宽表 -> 记录列表(百分数字段统一转小数)。纯解析, 可单测。"""
     out = []
     for _, row in df.iterrows():
-        rep = _from_ak_date(_row_get(row, date_col, default="")) if date_col else ""
+        rep = _hk_rep_date(row.get("REPORT_DATE"))
         if not rep:
             continue
-        revenue = _to_float(_row_get(row, "营业额", "营业收入", "REVENUE"))
-        net_income = _to_float(_row_get(row, "股东应占溢利", "净利润", "NET_PROFIT"))
-        gross_margin = _to_float(_row_get(row, "毛利率"))
-        if gross_margin is not None and abs(gross_margin) > 1:
-            gross_margin = gross_margin / 100.0
-        net_margin = (net_income / revenue) if (revenue and net_income) else None
+        pct = lambda k: (lambda x: x / 100.0 if x is not None else None)(_hk_num(row.get(k)))
+        rec = {
+            "report_period": rep,
+            "revenue": _hk_num(row.get("OPERATE_INCOME")),
+            "net_income": _hk_num(row.get("HOLDER_PROFIT")),
+            "revenue_growth": pct("OPERATE_INCOME_YOY"),
+            "earnings_growth": pct("HOLDER_PROFIT_YOY"),
+            "gross_margin": pct("GROSS_PROFIT_RATIO"),
+            "net_margin": pct("NET_PROFIT_RATIO"),
+            "return_on_equity": pct("ROE_AVG"),
+            "return_on_assets": pct("ROA"),
+            "debt_to_assets": pct("DEBT_ASSET_RATIO"),
+        }
+        cur = str(row.get("CURRENCY") or "").strip()
+        if cur and cur.lower() != "nan":
+            rec["currency"] = cur
+        out.append(rec)
+    out.sort(key=lambda r: r.get("report_period", ""), reverse=True)
+    return out
+
+
+def _parse_hk_report_long_df(df) -> list:
+    """report_em 长表(科目行)透视 -> 记录列表; 同期YoY自算。纯解析, 可单测。"""
+    by_rep = {}
+    for _, row in df.iterrows():
+        rep = _hk_rep_date(row.get("REPORT_DATE"))
+        item = str(row.get("STD_ITEM_NAME") or "").strip()
+        amt = _hk_num(row.get("AMOUNT"))
+        if not rep or amt is None:
+            continue
+        d = by_rep.setdefault(rep, {})
+        if item in ("营业额", "营运收入", "营业收入") and "revenue" not in d:
+            d["revenue"] = amt
+        elif item in ("股东应占溢利", "持续经营业务股东应占溢利", "净利润") and "net_income" not in d:
+            d["net_income"] = amt
+    reps = sorted(by_rep, reverse=True)
+
+    def _yoy(rep, key):
+        cur = by_rep.get(rep, {}).get(key)
+        prev = by_rep.get(str(int(rep[:4]) - 1) + rep[4:], {}).get(key) if len(rep) >= 8 else None
+        return (cur / prev - 1.0) if (cur is not None and prev) else None
+
+    out = []
+    for rep in reps:
+        d = by_rep[rep]
         out.append({
             "report_period": rep,
-            "gross_margin": gross_margin,
-            "net_margin": net_margin,
+            "revenue": d.get("revenue"),
+            "net_income": d.get("net_income"),
+            "revenue_growth": _yoy(rep, "revenue"),
+            "earnings_growth": _yoy(rep, "net_income"),
+            "net_margin": (d["net_income"] / d["revenue"]
+                            if d.get("revenue") and d.get("net_income") is not None else None),
         })
-    out.sort(key=lambda r: r.get("report_period", ""), reverse=True)
+    return out
+
+
+def _fetch_hk_metrics(norm: str) -> list:
+    """港股财务指标 — 主链 indicator_em(报告期), 兜底 年度 -> report_em 长表。"""
+    sym = _ak_hk_symbol(norm)
+    # 主链: 指标接口(宽表, 直含 YoY)
+    for ind in ("报告期", "年度"):
+        try:
+            df = _ak.stock_financial_hk_analysis_indicator_em(symbol=sym, indicator=ind)
+        except Exception as exc:
+            _logger.warning("hk indicator_em(%s,%s) 失败: %s", norm, ind, exc)
+            continue
+        if df is None or len(df) == 0:
+            _logger.warning("hk indicator_em(%s,%s) 空返回", norm, ind)
+            continue
+        out = _parse_hk_indicator_df(df)
+        if out:
+            return out
+        _logger.warning("hk indicator_em(%s,%s) 有行但解析为空(疑列名漂移: %s)",
+                        norm, ind, list(df.columns)[:8])
+    # 兜底: 利润表长表透视
+    try:
+        df = _ak.stock_financial_hk_report_em(stock=sym, symbol="利润表", indicator="报告期")
+    except Exception as exc:
+        _logger.warning("hk report_em(%s) 失败: %s", norm, exc)
+        return []
+    if df is None or len(df) == 0:
+        _logger.warning("hk report_em(%s) 空返回 — 港股财务全链无数", norm)
+        return []
+    out = _parse_hk_report_long_df(df)
+    if not out:
+        _logger.warning("hk report_em(%s) 有行但透视为空(疑科目名漂移)", norm)
     return out
 
 

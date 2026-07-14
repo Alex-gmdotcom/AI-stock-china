@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-signal_inputs.py — Step 18c 数据接线层 v1.2(+未盈利营收YoY降级)
+signal_inputs.py — Step 18c 数据接线层 v1.3(优先读 revenue_growth 字段)
 ================================================================
 职责: 为 migration_signals.evaluate_pool 采集每票输入。
 纪律:
@@ -259,7 +259,14 @@ def _default_fetch_fin_growth(ticker: str, asof_iso: str):
             if g is not None:
                 net = float(g)
                 break
-        rev = _same_period_rev_yoy(recs)
+        rev = None
+        for rec in recs or []:                 # v1.3: 源已直供 YoY(HKFIN_INDICATOR_V1)则直取
+            rg = _g(rec, "revenue_growth")
+            if rg is not None:
+                rev = float(rg)
+                break
+        if rev is None:
+            rev = _same_period_rev_yoy(recs)   # 兜底: 同期revenue自算
         if net is None and rev is None:
             _logger.warning("18c inputs: %s 净利/营收增速均缺失", ticker)
         elif net is None:
