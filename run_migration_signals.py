@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-run_migration_signals.py — Step 18c 跑批器 v1.1(CLI, +dotenv)
+run_migration_signals.py — Step 18c 跑批器 v1.2(CLI, 空报告文案修正)
 ================================================================
 流程: 加载三分法池 -> 采集输入 -> evaluate_pool -> 落盘 + 报告
 运行: poetry run python run_migration_signals.py
@@ -88,7 +88,8 @@ def main():
         if s.strength != "gray":
             lines.append(f"      evidence: {json.dumps(s.evidence, ensure_ascii=False)}")
     if not signals:
-        lines.append("(无信号, 也无灰灯 —— 池空?)")
+        lines.append("(池空 —— 未加载到任何持仓?)" if not pool else
+                     f"全池 {len(pool)} 只三信号均可算且无红/黄/灰 —— 今日无触发, 此即结论")
     lines.append("-" * 56)
     lines.append(f"红 {n_red} | 黄 {n_yel} | 灰(不可算) {n_gray} | "
                  f"红灯高亮上限 3, 冷却 5 运行日")

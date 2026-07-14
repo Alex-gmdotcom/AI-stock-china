@@ -868,7 +868,13 @@ def _safe_construct(cls, **kwargs):
             filtered = {k: v for k, v in kwargs.items() if k in accepted}
             return cls(**filtered)
         except Exception as exc:
-            _logger.warning("_safe_construct(%s) 失败: %s", cls.__name__, exc)
+            # marker: SAFE_CONSTRUCT_COMPACT_V1 — 单行面包屑(pydantic 多行错误压缩为字段名清单)
+            try:
+                _locs = ",".join(str(e0["loc"][0]) for e0 in exc.errors()[:8])
+                _msg = str(exc).splitlines()[0] + " [" + _locs + "]"
+            except Exception:
+                _msg = str(exc).splitlines()[0][:200] if str(exc) else repr(exc)
+            _logger.warning("_safe_construct(%s) 失败: %s", cls.__name__, _msg)
             return None
 
 
