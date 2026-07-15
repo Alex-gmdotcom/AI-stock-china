@@ -122,7 +122,8 @@ class BaostockPriceSource:
         df = df[df["tradestatus"] == "1"]          # 只保留正常交易日
         s = pd.to_numeric(df["close"], errors="coerce")
         s.index = pd.to_datetime(df["date"]).dt.strftime("%Y-%m-%d")
-        return s.dropna()
+        s = s.dropna()
+        return s[s > 0]          # OHLC_SANITY_V1: 非正价在加载层丢弃
 
     def get_benchmark_closes(self, start: str, end: str) -> pd.Series:
         """沪深300 收盘。指数 tradestatus 字段不同，单独处理。"""
@@ -148,6 +149,40 @@ class BaostockPriceSource:
 # ----------------------------------------------------------------------
 # 交易日历工具（不依赖数据源，纯逻辑，可沙箱验证）
 # ----------------------------------------------------------------------
+def nth_trading_day_in_series(px: pd.Series, date: str, n: int) -> str | None:
+    """在该票自身价格索引(即其自身交易日历)上取从 date(含)起第 n 个交易日。
+    marker: EVAL_HK_PRICE_V1 —— 港股不用 A 股日历(两市假期不同)。"""
+    td = [d for d in px.index if d >= date]
+    if len(td) <= n:
+        return None
+    return td[n]
+
+
+def hk_closes_via_api_china(ticker: str, start: str, end: str) -> pd.Series:
+    """港股收盘序列(marker: EVAL_HK_PRICE_V1)。
+    复用 api_china 价格链(tushare_hk → 东财 → 新浪, qfq; 同一快照内比率一致)。
+    基准仍 = 沪深300(F34 口径不变); 失败 → 空 Series(该票跳过, I10.6 不崩 run)。"""
+    import logging
+    try:
+        try:
+            from src.tools import api_china
+        except ImportError:
+            import api_china  # type: ignore
+        prices = api_china.get_prices(ticker, start, end)
+        if not prices:
+            logging.getLogger(__name__).warning(
+                "EVAL_HK_PRICE: %s 价格链返回空(%s..%s)", ticker, start, end)
+            return pd.Series(dtype=float)
+        s = pd.Series({str(p.time)[:10]: float(p.close)
+                       for p in prices if getattr(p, "close", None)})
+        s = s[s > 0].sort_index()               # OHLC_SANITY_V1: 非正价丢弃
+        return s
+    except Exception as exc:
+        logging.getLogger(__name__).warning(
+            "EVAL_HK_PRICE: %s 失败: %s", ticker, str(exc)[:120])
+        return pd.Series(dtype=float)
+
+
 def nth_trading_day_on_or_after(date: str, n: int, trade_dates: list[str]) -> str | None:
     """从 date（含）起第 n 个交易日。n=0 表示 date 当天或之后最近的交易日。
 

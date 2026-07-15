@@ -26,8 +26,8 @@ from pathlib import Path
 import pandas as pd
 
 from . import metrics
-from .data import (BaostockPriceSource, baostock_session,
-                   nth_trading_day_on_or_after)
+from .data import (BaostockPriceSource, baostock_session, hk_closes_via_api_china,
+                   nth_trading_day_in_series, nth_trading_day_on_or_after)
 from .signals import Signal, load_signals
 
 
@@ -40,27 +40,36 @@ def build_panel(
     bench_closes: pd.Series,
     trade_dates: list[str],
     horizons: list[int],
+    own_calendar: set[str] | None = None,
 ) -> pd.DataFrame:
     """closes_by_ticker: {ticker: Series(index=YYYY-MM-DD, close)}。
-    bench_closes: 沪深300 收盘 Series。trade_dates: 排序好的交易日列表。"""
+    bench_closes: 沪深300 收盘 Series。trade_dates: 排序好的 A 股交易日列表。
+    own_calendar(EVAL_HK_PRICE_V1): 这些票(港股)的前瞻出场日按其自身价格索引
+    (=其自身交易日历)取第 h 个交易日; 基准腿仍按 A 股日历取同 h(跨市对齐惯例)。"""
     def close_on(series: pd.Series, date: str):
         return float(series[date]) if date in series.index else None
 
+    own_calendar = own_calendar or set()
     recs = []
     for sig in signals:
         px = closes_by_ticker.get(sig.ticker)
         if px is None or sig.date not in px.index:
-            continue  # 缺价（如港股/停牌），跳过，不臆造
+            continue  # 缺价（如停牌/信号日非该市交易日），跳过，不臆造
         entry = close_on(px, sig.date)
         bench_entry = close_on(bench_closes, sig.date)
         for h in horizons:
-            exit_date = nth_trading_day_on_or_after(sig.date, h, trade_dates)
+            bench_exit = nth_trading_day_on_or_after(sig.date, h, trade_dates)
+            if sig.ticker in own_calendar:
+                exit_date = nth_trading_day_in_series(px, sig.date, h)
+            else:
+                exit_date = bench_exit
             if exit_date is None:
                 fwd = float("nan")     # 日历不够长：向前累积后重跑
                 exc = float("nan")
             else:
                 fwd = metrics.forward_return(entry, close_on(px, exit_date))
-                bench_fwd = metrics.forward_return(bench_entry, close_on(bench_closes, exit_date))
+                bench_fwd = (metrics.forward_return(bench_entry, close_on(bench_closes, bench_exit))
+                             if bench_exit is not None else float("nan"))
                 exc = metrics.excess_return(fwd, bench_fwd)
             recs.append({
                 "date": sig.date, "ticker": sig.ticker, "score": sig.score,
@@ -84,6 +93,8 @@ def evaluate(panel: pd.DataFrame, horizons: list[int]) -> dict:
                 cls: metrics.summary(g)
                 for cls, g in sub.groupby("stock_class") if cls
             },
+            # EVAL_RANDOM_CONTROL_V1: 同宇宙随机重排零分布(确定性种子)
+            "random_control": metrics.random_ic_control(sub),
         }
     return report
 
@@ -107,11 +118,8 @@ def run(signals_path: str, horizons: list[int], out_dir: str) -> dict:
         signals.extend(load_signals(p))
     a_shares = [s for s in signals if not s.ticker.upper().endswith(".HK")]
     hk = [s for s in signals if s.ticker.upper().endswith(".HK")]
-    if hk:
-        print(f"⚠️ 跳过 {len(hk)} 只港股（baostock 取不到，需 Sina/腾讯 fallback）: "
-              f"{sorted({s.ticker for s in hk})}")
 
-    start, end = _date_span(a_shares, max(horizons))
+    start, end = _date_span(signals, max(horizons))
     tickers = sorted({s.ticker for s in a_shares})
 
     with baostock_session() as bs:
@@ -120,7 +128,26 @@ def run(signals_path: str, horizons: list[int], out_dir: str) -> dict:
         bench = src.get_benchmark_closes(start, end)
         trade_dates = src.get_trade_dates(start, end)
 
-    panel = build_panel(a_shares, closes, bench, trade_dates, horizons)
+    # marker: EVAL_HK_PRICE_V1 — 港股走 api_china 价格链(tushare_hk→东财→新浪)
+    hk_ok: list = []
+    hk_closes: dict = {}
+    if hk:
+        for t in sorted({s.ticker for s in hk}):
+            s_px = hk_closes_via_api_china(t, start, end)
+            if len(s_px):
+                hk_closes[t] = s_px
+        hk_ok = [s for s in hk if s.ticker in hk_closes]
+        hk_skip = sorted({s.ticker for s in hk} - set(hk_closes))
+        if hk_closes:
+            print(f"港股 {len(hk_closes)} 只走 api_china 价格链(EVAL_HK_PRICE_V1); "
+                  f"基准仍=沪深300(F34), 前瞻出场按其自身交易日历")
+        if hk_skip:
+            print(f"⚠️ 跳过 {len(hk_skip)} 只港股（价格链取不到, 不臆造）: {hk_skip}")
+        closes.update(hk_closes)
+
+    all_sigs = a_shares + hk_ok
+    panel = build_panel(all_sigs, closes, bench, trade_dates, horizons,
+                        own_calendar=set(hk_closes))
     report = evaluate(panel, horizons)
 
     out = Path(out_dir)
@@ -129,14 +156,15 @@ def run(signals_path: str, horizons: list[int], out_dir: str) -> dict:
     (out / "report.json").write_text(
         json.dumps(report, ensure_ascii=False, indent=2, default=str), encoding="utf-8")
 
-    _print_report(report, len(a_shares), len(trade_dates), horizons)
+    _print_report(report, f"{len(all_sigs)} 条(A股 {len(a_shares)} + 港股 {len(hk_ok)})",
+                  len(trade_dates), horizons)
     print(f"\n📄 明细: {out/'panel.csv'}  报告: {out/'report.json'}")
     return report
 
 
 def _print_report(report, n_sig, n_dates, horizons):
     print("\n" + "=" * 60)
-    print(f"outcome 评估  |  A股信号 {n_sig} 条  |  日历覆盖 {n_dates} 交易日")
+    print(f"outcome 评估  |  信号 {n_sig}  |  A股日历覆盖 {n_dates} 交易日")
     print("=" * 60)
     n_signal_dates = report["by_horizon"].get(horizons[0], {}).get("overall", {}).get("n_dates", "?")
     if n_signal_dates == 1:
@@ -147,6 +175,13 @@ def _print_report(report, n_sig, n_dates, horizons):
         print(f"[H={h}交易日] RankIC均 {o['rank_ic_mean']:.3f} | ICIR {o['rank_icir']} | "
               f"命中率 {o['hit_rate']} (方向样本 {o['directional_n']}) | "
               f"超额命中 {o.get('excess_hit_rate','-')}")
+        rc = blk.get("random_control")
+        if rc:
+            verdict = ("显著优于随机(p<0.05)" if rc["p_value_one_sided"] < 0.05
+                       else "未显著优于随机")
+            print(f"    随机对照: 实际RankIC {rc['actual_rank_ic_mean']:.3f} vs "
+                  f"随机P95 {rc['random_p95']:.3f} | p={rc['p_value_one_sided']:.3f} "
+                  f"(重排{rc['n_iter']}) → {verdict}")
         for cls, s in blk["by_class"].items():
             print(f"    {cls}类: 命中 {s['hit_rate']} (n={s['directional_n']}) "
                   f"RankIC {s['rank_ic_mean']:.3f}")

@@ -19,7 +19,7 @@ import statistics
 import uuid
 from dataclasses import dataclass, field, asdict
 
-__version__ = "18c-core-v1.1"
+__version__ = "18c-core-v1.2"   # v1.2: S3-B 未盈利强制营收口径(2026-07-15 Alex 批)
 
 # ---------------------------------------------------------------
 # 阈值常量表 — single source of truth(审批单 v1 §1/§2, 已批)
@@ -32,7 +32,7 @@ S2_RANK_DROP = 5          # AND 板块排名 5 日下滑 >5 位
 S2_RED_SIGMA = 2.0        # 红: 3日降幅合计 > 近20日日均变化 2σ
 S2_SIGMA_WINDOW = 20      # σ 计算窗口(日度变化数)
 S3_YOY_PROXY = 0.30       # N→T: 无一致预期时 净利YoY >30% 代理
-S3_REV_PROXY = 0.30       # 未盈利降级: 净利YoY不可得时 营收YoY >30%(2026-07-14 批)
+S3_REV_PROXY = 0.30       # S3-B: 未盈利强制营收YoY >30%(2026-07-15 批); 净利YoY缺失同口径降级
 S3_RET20_YELLOW = 0.10    # AND ret_20d >10% 黄
 S3_RET20_RED = 0.20       # ret_20d >20% 红
 COOLDOWN_DAYS = 5         # 熄灯/事件触发后 5 个运行日冷却
@@ -111,13 +111,23 @@ def _eval_s2(d: dict):
 
 
 def _eval_s3(d: dict):
+    """marker: S3B_FORCE_REV_V1 (2026-07-15 Alex 批, B 案)
+    未盈利公司(net_profit_is_loss=True)强制走营收口径, 即使净利YoY可得——
+    亏损收窄的净利YoY是负基数算术(亏1亿→亏0.6亿 = +40%), 不作叙事兑现证据;
+    未盈利的叙事兑现证据 = 收入放量。盈利性不可判(None)保守沿用净利口径(原A行为)。
+    未盈利且营收YoY缺失 → 业绩腿不可算 → 灰灯(I1.1)。"""
     missing = []
     yoy = d.get("net_profit_yoy")
-    rev = d.get("revenue_yoy")              # 未盈利降级代理(仅当 yoy 不可得时启用)
+    rev = d.get("revenue_yoy")
     ret20 = d.get("ret_20d")
     beat = d.get("consensus_beat")          # True/False/None(无一致预期)
-    if yoy is None and beat is None and rev is None:
-        missing.append("net_profit_yoy/consensus_beat/revenue_yoy")
+    is_loss = d.get("net_profit_is_loss")   # True/False/None(不可判)
+    if beat is None:
+        if is_loss:
+            if rev is None:
+                missing.append("revenue_yoy(未盈利强制口径S3-B)")
+        elif yoy is None and rev is None:
+            missing.append("net_profit_yoy/consensus_beat/revenue_yoy")
     if ret20 is None:
         missing.append("ret_20d")
     if missing:
@@ -125,16 +135,20 @@ def _eval_s3(d: dict):
     proxy = None
     if beat is not None:
         earnings_ok = bool(beat)
+    elif is_loss:
+        earnings_ok = rev > S3_REV_PROXY    # S3-B: 未盈利强制营收口径
+        proxy = "revenue_yoy(未盈利强制S3-B)"
     elif yoy is not None:
-        earnings_ok = yoy > S3_YOY_PROXY    # 有净利YoY就用它, 不降级(盈利但弱≠触发)
+        earnings_ok = yoy > S3_YOY_PROXY    # 盈利(或不可判): 净利口径, 弱不降级(T10c)
     else:
-        earnings_ok = rev > S3_REV_PROXY    # 未盈利降级: 营收YoY代理
-        proxy = "revenue_yoy(未盈利降级)"
+        earnings_ok = rev > S3_REV_PROXY    # 净利YoY缺失: 营收YoY降级
+        proxy = "revenue_yoy(净利YoY缺失降级)"
     ev = {"net_profit_yoy": None if yoy is None else round(yoy, 4),
           "revenue_yoy": None if rev is None else round(rev, 4),
+          "net_profit_is_loss": is_loss,
           "consensus_beat": beat, "ret_20d": round(ret20, 4), "score": ret20,
-          "rule": (f"业绩超预期(或净利YoY>{S3_YOY_PROXY:.0%}; 未盈利降级营收YoY>{S3_REV_PROXY:.0%}) "
-                   f"AND ret20 黄>{S3_RET20_YELLOW:.0%} 红>{S3_RET20_RED:.0%}; 事件型不迟滞")}
+          "rule": (f"业绩超预期(或净利YoY>{S3_YOY_PROXY:.0%}; 未盈利强制营收YoY>{S3_REV_PROXY:.0%}[S3-B], "
+                   f"净利YoY缺失同口径降级) AND ret20 黄>{S3_RET20_YELLOW:.0%} 红>{S3_RET20_RED:.0%}; 事件型不迟滞")}
     if proxy:
         ev["proxy"] = proxy
     level = None

@@ -157,3 +157,45 @@ def summary(panel: pd.DataFrame, min_n: int = 3) -> dict:
         ex = hit_rate(panel["score"], panel["excess_ret"])
         res["excess_hit_rate"] = ex["hit_rate"]
     return res
+
+
+# ----------------------------------------------------------------------
+# 6. 随机对照(marker: EVAL_RANDOM_CONTROL_V1, Vibe-Trading 借鉴#1)
+# ----------------------------------------------------------------------
+def random_ic_control(panel: pd.DataFrame, n_iter: int = 200,
+                      seed: int | None = None, min_n: int = 3) -> dict | None:
+    """同宇宙随机信号对照: 每次迭代把每个 date 截面内的 score 随机重排,
+    得到 rank_ic_mean 的零分布 → 实际值的单侧 p 值。
+    治"只是跟踪 beta"假阳性: 真信号 RankIC 应显著优于同宇宙随机排序。
+
+    种子默认由截面内容(date:ticker 集合)哈希派生 → 确定性可复现。
+    数据不足以算任何截面 IC → None(诚实, 不给伪显著)。
+    """
+    import hashlib
+    sub = panel.dropna(subset=["score", "fwd_ret"]).copy()
+    if sub.empty:
+        return None
+    actual = ic_series(sub, kind="rank", min_n=min_n).mean()
+    if pd.isna(actual):
+        return None
+    if seed is None:
+        key = "|".join(sorted(f"{r.date}:{r.ticker}" for r in sub.itertuples()))
+        seed = int(hashlib.sha256(key.encode("utf-8")).hexdigest()[:8], 16)
+    rng = np.random.default_rng(seed)
+    means = []
+    for _ in range(n_iter):
+        shuffled = sub.copy()
+        shuffled["score"] = shuffled.groupby("date")["score"].transform(
+            lambda s: rng.permutation(s.values))
+        m = ic_series(shuffled, kind="rank", min_n=min_n).mean()
+        if not pd.isna(m):
+            means.append(m)
+    if not means:
+        return None
+    arr = np.array(means)
+    return {"actual_rank_ic_mean": float(actual),
+            "n_iter": int(len(means)),
+            "random_mean": float(arr.mean()),
+            "random_p95": float(np.percentile(arr, 95)),
+            "p_value_one_sided": float((arr >= actual).mean()),
+            "seed": int(seed)}

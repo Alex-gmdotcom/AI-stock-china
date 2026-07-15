@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""test_migration_signals.py — 18c 核心引擎确定性单测(9 组, 零网络零 LLM)
+"""test_migration_signals.py — 18c 核心引擎确定性单测(零网络零 LLM; 含 S3-B 组)
 运行: poetry run python test_migration_signals.py  (仓库根目录)
 """
 import sys
@@ -109,6 +109,28 @@ check("T10a 未盈利+营收YoY35% ->黄(标proxy)", _a and _a.strength == "yell
       and _a.evidence.get("proxy", "").startswith("revenue_yoy"))
 check("T10b 未盈利+营收YoY20% ->不触发", sig_of(s, "RVB") is None)
 check("T10c 有净利YoY(10%)不降级营收 ->不触发", sig_of(s, "RVC") is None)
+
+# ---- T11: S3-B 未盈利强制营收口径(2026-07-15 批) ----
+pool11 = {"LSA": "N", "LSB": "N", "LSC": "N", "LSD": "N"}
+d11 = {"LSA": {"net_profit_yoy": 0.40, "revenue_yoy": 0.55, "ret_20d": 0.15,
+               "consensus_beat": None, "net_profit_is_loss": True},
+       "LSB": {"net_profit_yoy": 0.40, "revenue_yoy": 0.10, "ret_20d": 0.15,
+               "consensus_beat": None, "net_profit_is_loss": True},
+       "LSC": {"net_profit_yoy": 0.40, "revenue_yoy": None, "ret_20d": 0.15,
+               "consensus_beat": None, "net_profit_is_loss": True},
+       "LSD": {"net_profit_yoy": 0.35, "revenue_yoy": 0.10, "ret_20d": 0.15,
+               "consensus_beat": None, "net_profit_is_loss": None}}
+s, _ = evaluate_pool(pool11, d11, None, "2026-07-15")
+_a = sig_of(s, "LSA")
+check("T11a 未盈利+净利YoY40%(收窄)+营收55% ->触发且标强制", _a and _a.strength == "yellow"
+      and _a.evidence.get("proxy") == "revenue_yoy(未盈利强制S3-B)")
+check("T11b 未盈利+净利YoY40%(收窄)+营收10% ->不触发(漏洞关闭)", sig_of(s, "LSB") is None)
+_c = sig_of(s, "LSC")
+check("T11c 未盈利+营收缺失 ->灰灯", _c and _c.strength == "gray"
+      and any("revenue_yoy" in m for m in _c.evidence.get("missing", [])))
+_d = sig_of(s, "LSD")
+check("T11d 盈利性不可判+净利YoY35% ->触发(原口径保留)", _d and _d.strength == "yellow"
+      and "proxy" not in _d.evidence)
 
 n_pass = sum(1 for _, ok in PASS if ok)
 print(f"\n==== {n_pass}/{len(PASS)} PASS ====")

@@ -11,6 +11,25 @@ import numpy as np
 from src.tools.api import get_prices, prices_to_df
 from src.utils.progress import progress
 
+import logging
+_logger = logging.getLogger(__name__)
+
+# ── marker: TECH_FIX3_V1 — 修③ A股动量捕捉(2026-07-15 Alex 批) ──────────
+# 诊断(修②草案 §5/§10 靶子: 中际旭创+10倍读中性16%):
+#   C1 批跑3月窗口喂不饱 mom_6m(126根)→动量策略结构性中性(I1.1守卫诚实但瞎)
+#   C2 均值回归对延伸趋势股恒 bearish 高置信, 反向抵消 trend(美股均衡残留)
+#   C3 中性策略 w×conf 稀释分母 → |score| 永远卡在 0.2 阈值下
+#   C4 trend conf=ADX/100, 实战上限~0.5, 主升浪永远半信半疑
+#   C6 量能确认=单日点值, 噪声开关
+# 修法: FixA 扩窗(只向过去,PIT I10.4不破) FixB 相对强度(vs沪深300,原版stub落地)
+#       FixC regime路由(强趋势掐MR)+中性不入分母 FixD conf=min(ADX/25,1)
+TECH_LOOKBACK_CAL_DAYS = 460     # Fix A: mom_6m(126交易日)+暖机 对应自然日; end_date 锚定不动
+TECH_BENCHMARK = "000300.SH"     # Fix B: 相对强度基准=沪深300(行业指数版留二期); .HK 票不适用→绝对口径
+MR_ADX_GATE = 25.0               # Fix C: ADX>25 判强趋势态
+MR_TREND_RELIABILITY = 0.3       # Fix C: 强趋势态下 mean_reversion 权重折扣
+TREND_CONF_ADX_SCALE = 25.0      # Fix D: trend conf = min(ADX/25, 1)
+MOM_VOL_SMOOTH_DAYS = 5          # C6: 量能确认 5日均量/21日均量(单日点值→噪声开关)
+
 
 def safe_float(value, default=0.0):
     """
@@ -49,13 +68,20 @@ def technical_analyst_agent(state: AgentState, agent_id: str = "technical_analys
     # Initialize analysis for each ticker
     technical_analysis = {}
 
+    # Fix A: 指标回看窗口自给自足 —— 只向过去扩(end_date 锚定不动, PIT I10.4 不破)
+    lookback_start = (pd.to_datetime(end_date)
+                      - pd.Timedelta(days=TECH_LOOKBACK_CAL_DAYS)).strftime("%Y-%m-%d")
+    fetch_start = min(str(start_date), lookback_start)
+    # Fix B: 基准序列每 run 取一次, 全 ticker 复用; 取不到 → 绝对动量兜底(WARNING)
+    bench_mom = _bench_momentum(_fetch_benchmark_closes(fetch_start, end_date))
+
     for ticker in tickers:
         progress.update_status(agent_id, ticker, "Analyzing price data")
 
         # Get the historical price data
         prices = get_prices(
             ticker=ticker,
-            start_date=start_date,
+            start_date=fetch_start,
             end_date=end_date,
             api_key=api_key,
         )
@@ -74,7 +100,8 @@ def technical_analyst_agent(state: AgentState, agent_id: str = "technical_analys
         mean_reversion_signals = calculate_mean_reversion_signals(prices_df)
 
         progress.update_status(agent_id, ticker, "Calculating momentum")
-        momentum_signals = calculate_momentum_signals(prices_df)
+        _bm = None if ticker.upper().endswith(".HK") else bench_mom   # HK 不对沪深300
+        momentum_signals = calculate_momentum_signals(prices_df, bench_mom=_bm)
 
         progress.update_status(agent_id, ticker, "Analyzing volatility")
         volatility_signals = calculate_volatility_signals(prices_df)
@@ -92,6 +119,9 @@ def technical_analyst_agent(state: AgentState, agent_id: str = "technical_analys
         }
 
         progress.update_status(agent_id, ticker, "Combining signals")
+        # Fix C: regime 路由 —— 强趋势态(ADX>25)掐 mean_reversion 权重
+        effective_weights = apply_regime_gate(
+            strategy_weights, trend_signals["metrics"].get("adx"))
         combined_signal = weighted_signal_combination(
             {
                 "trend": trend_signals,
@@ -100,13 +130,18 @@ def technical_analyst_agent(state: AgentState, agent_id: str = "technical_analys
                 "volatility": volatility_signals,
                 "stat_arb": stat_arb_signals,
             },
-            strategy_weights,
+            effective_weights,
         )
 
         # Generate detailed analysis report for this ticker
         technical_analysis[ticker] = {
             "signal": combined_signal["signal"],
             "confidence": round(combined_signal["confidence"] * 100),
+            "regime": {"adx": safe_metric(trend_signals["metrics"].get("adx")),
+                       "mr_weight": round(effective_weights["mean_reversion"], 3),
+                       "score_raw": round(combined_signal.get("raw_score", 0.0), 3),
+                       "breadth": round(combined_signal.get("breadth", 0.0), 3),
+                       "momentum_basis": momentum_signals["metrics"].get("momentum_basis")},
             "reasoning": {
                 "trend_following": {
                     "signal": trend_signals["signal"],
@@ -173,8 +208,10 @@ def calculate_trend_signals(prices_df):
     short_trend = ema_8 > ema_21
     medium_trend = ema_21 > ema_55
 
-    # Combine signals with confidence weighting
-    trend_strength = adx["adx"].iloc[-1] / 100.0
+    # Fix D(TECH_FIX3_V1): conf=min(ADX/25,1) —— 旧 ADX/100 实战上限~0.5,
+    # 主升浪永远半信半疑; ADX>25 即成趋势, 以 25 为满刻度
+    adx_last = adx["adx"].iloc[-1]
+    trend_strength = min(safe_float(adx_last, 0.0) / TREND_CONF_ADX_SCALE, 1.0)
 
     if short_trend.iloc[-1] and medium_trend.iloc[-1]:
         signal = "bullish"
@@ -256,31 +293,24 @@ def safe_metric(value):
         return None
 
 
-def calculate_momentum_signals(prices_df):
-    """
-    Multi-factor momentum strategy
-    """
+def calculate_momentum_signals(prices_df, bench_mom: dict | None = None):
+    """Multi-factor momentum strategy — TECH_FIX3_V1
+    Fix B: bench_mom={21:r,63:r,126:r}(沪深300 同窗累计收益)时用超额动量;
+           None(基准不可得/HK票) → 绝对动量兜底, metrics 标 momentum_basis。
+    C6:    量能确认 = 5日均量/21日均量(单日点值是噪声开关)。
+    I1.1 守卫保留: 任一窗口不可算 → 低置信中性 + data_gaps。"""
     # Price momentum
     returns = prices_df["close"].pct_change()
     mom_1m = returns.rolling(21).sum()
     mom_3m = returns.rolling(63).sum()
     mom_6m = returns.rolling(126).sum()
 
-    # Volume momentum
+    # Volume momentum(5日均量平滑, C6)
     volume_ma = prices_df["volume"].rolling(21).mean()
-    volume_momentum = prices_df["volume"] / volume_ma
+    volume_5d = prices_df["volume"].rolling(MOM_VOL_SMOOTH_DAYS).mean()
+    volume_momentum = volume_5d / volume_ma
 
-    # Relative strength
-    # (would compare to market/sector in real implementation)
-
-    # Calculate momentum score
-    momentum_score = (0.4 * mom_1m + 0.3 * mom_3m + 0.3 * mom_6m).iloc[-1]
-
-    # Volume confirmation
-    volume_confirmation = volume_momentum.iloc[-1] > 1.0
-
-    # I1.1 守卫:任一动量窗口退化(NaN)→ 数据不足,低置信中性 + data_gaps。
-    # 禁止让 NaN 比较静默落入 else 分支产出"像真的"中性@0.5。
+    # I1.1 守卫: 任一动量窗口退化(NaN)→ 数据不足, 低置信中性 + data_gaps。
     _gaps = [name for name, series in (
         ("momentum_1m", mom_1m), ("momentum_3m", mom_3m), ("momentum_6m", mom_6m),
     ) if pd.isna(series.iloc[-1])]
@@ -295,9 +325,24 @@ def calculate_momentum_signals(prices_df):
                 "momentum_3m": safe_metric(mom_3m.iloc[-1]),
                 "momentum_6m": safe_metric(mom_6m.iloc[-1]),
                 "volume_momentum": safe_metric(volume_momentum.iloc[-1]),
+                "momentum_basis": None,
                 "data_gaps": _gaps,
             },
         }
+
+    # Fix B: 相对强度落地(原版 stub "would compare to market/sector")
+    if bench_mom:
+        ex_1m = mom_1m.iloc[-1] - bench_mom[21]
+        ex_3m = mom_3m.iloc[-1] - bench_mom[63]
+        ex_6m = mom_6m.iloc[-1] - bench_mom[126]
+        momentum_score = 0.4 * ex_1m + 0.3 * ex_3m + 0.3 * ex_6m
+        basis = "excess_vs_" + TECH_BENCHMARK
+    else:
+        momentum_score = (0.4 * mom_1m + 0.3 * mom_3m + 0.3 * mom_6m).iloc[-1]
+        basis = "absolute"
+
+    # Volume confirmation
+    volume_confirmation = volume_momentum.iloc[-1] > 1.0
 
     if momentum_score > 0.05 and volume_confirmation:
         signal = "bullish"
@@ -316,6 +361,8 @@ def calculate_momentum_signals(prices_df):
             "momentum_1m": safe_metric(mom_1m.iloc[-1]),
             "momentum_3m": safe_metric(mom_3m.iloc[-1]),
             "momentum_6m": safe_metric(mom_6m.iloc[-1]),
+            "momentum_score": safe_metric(momentum_score),
+            "momentum_basis": basis,
             "volume_momentum": safe_metric(volume_momentum.iloc[-1]),
         },
     }
@@ -423,39 +470,120 @@ def calculate_stat_arb_signals(prices_df):
     }
 
 
+def apply_regime_gate(weights: dict, adx) -> dict:
+    """Fix C(TECH_FIX3_V1): ADX>25 强趋势态 → mean_reversion 权重 ×0.3。
+    延伸趋势里 MR 的 bearish 是"涨得越猛越看空"的反向器, 降权不禁言(旁证保留)。"""
+    w = dict(weights)
+    try:
+        if adx is not None and not pd.isna(adx) and float(adx) > MR_ADX_GATE:
+            w["mean_reversion"] = w["mean_reversion"] * MR_TREND_RELIABILITY
+    except (TypeError, ValueError):
+        pass
+    return w
+
+
 def weighted_signal_combination(signals, weights):
-    """
-    Combines multiple trading signals using a weighted approach
-    """
-    # Convert signals to numeric values
+    """v2(TECH_FIX3_V1): 中性不入分母(C3) + breadth 防单策略满置信。
+    raw = Σ dir·w·conf / Σ w·conf(仅方向策略);
+    breadth = 方向策略权重占比; effective = raw × breadth;
+    signal 阈值 ±0.2 作用于 effective, confidence = |effective|。
+    全中性 → raw=0 → 中性@0(诚实: 无方向证据, 而非"半信半疑")。"""
     signal_values = {"bullish": 1, "neutral": 0, "bearish": -1}
 
-    weighted_sum = 0
-    total_confidence = 0
-
+    num = 0.0
+    den = 0.0
+    w_dir = 0.0
+    w_all = 0.0
     for strategy, signal in signals.items():
         numeric_signal = signal_values[signal["signal"]]
         weight = weights[strategy]
         confidence = signal["confidence"]
+        w_all += weight
+        if numeric_signal != 0:
+            num += numeric_signal * weight * confidence
+            den += weight * confidence
+            w_dir += weight
 
-        weighted_sum += numeric_signal * weight * confidence
-        total_confidence += weight * confidence
+    raw = (num / den) if den > 0 else 0.0
+    breadth = (w_dir / w_all) if w_all > 0 else 0.0
+    effective = raw * breadth
 
-    # Normalize the weighted sum
-    if total_confidence > 0:
-        final_score = weighted_sum / total_confidence
-    else:
-        final_score = 0
-
-    # Convert back to signal
-    if final_score > 0.2:
+    if effective > 0.2:
         signal = "bullish"
-    elif final_score < -0.2:
+    elif effective < -0.2:
         signal = "bearish"
     else:
         signal = "neutral"
 
-    return {"signal": signal, "confidence": abs(final_score)}
+    return {"signal": signal, "confidence": abs(effective),
+            "raw_score": raw, "breadth": breadth}
+
+
+def _fetch_benchmark_closes(start_iso: str, end_iso: str):
+    """Fix B 基准链: tushare index_daily(复用 peer_compare) → baostock sh.000300(共享会话)。
+    全失败 → None(动量降级绝对口径)。每条退出路径必留 WARNING 面包屑。"""
+    try:
+        try:
+            from src.analysis import peer_compare as pc
+        except ImportError:
+            import peer_compare as pc  # type: ignore
+        rows = pc._index_series("index_daily", TECH_BENCHMARK,
+                                start_iso.replace("-", ""), end_iso.replace("-", ""))
+        if rows:
+            s = pd.Series({d: float(c) for d, c in rows if c}).sort_index()
+            s = s[s > 0]
+            if len(s) >= 130:
+                return s
+            _logger.warning("technicals: tushare 基准序列过短(%d 根), 试 baostock", len(s))
+        else:
+            _logger.warning("technicals: tushare 基准序列为空, 试 baostock")
+    except Exception as exc:
+        _logger.warning("technicals: tushare 基准链失败: %s", str(exc)[:120])
+    try:
+        import sys as _sys
+        _bsd = (_sys.modules.get("tools.baostock_data")
+                or _sys.modules.get("src.tools.baostock_data"))
+        if _bsd is None:
+            try:
+                from tools import baostock_data as _bsd  # type: ignore
+            except ImportError:
+                from src.tools import baostock_data as _bsd  # type: ignore
+        import baostock as bs
+        with _bsd._BS_LOCK:
+            if not _bsd._ensure_login():
+                raise RuntimeError("baostock 登录失败(共享会话)")
+            rs = bs.query_history_k_data_plus(
+                "sh.000300", "date,close", start_date=start_iso, end_date=end_iso,
+                frequency="d", adjustflag="1")
+            rows = []
+            while rs.error_code == "0" and rs.next():
+                rows.append(rs.get_row_data())
+        if rows:
+            s = pd.Series({r[0]: float(r[1]) for r in rows if r[1]}).sort_index()
+            s = s[s > 0]
+            if len(s):
+                return s
+        _logger.warning("technicals: baostock 基准序列为空")
+    except Exception as exc:
+        _logger.warning("technicals: baostock 基准链失败: %s", str(exc)[:120])
+    _logger.warning("technicals: 基准 %s 不可得, 动量降级为绝对口径", TECH_BENCHMARK)
+    return None
+
+
+def _bench_momentum(bench_closes) -> dict | None:
+    """基准 21/63/126 交易日累计收益; 任一窗口不可算 → None(整体绝对兜底)。"""
+    if bench_closes is None or len(bench_closes) == 0:
+        return None
+    r = bench_closes.pct_change()
+    out = {}
+    for w in (21, 63, 126):
+        v = r.rolling(w).sum().iloc[-1] if len(r) > w else float("nan")
+        if pd.isna(v):
+            _logger.warning("technicals: 基准 %d 日窗口不可算(序列 %d 根), 动量降级为绝对口径",
+                            w, len(bench_closes))
+            return None
+        out[w] = float(v)
+    return out
 
 
 def normalize_pandas(obj):

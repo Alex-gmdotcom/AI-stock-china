@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-signal_inputs.py — Step 18c 数据接线层 v1.3(优先读 revenue_growth 字段)
+signal_inputs.py — Step 18c 数据接线层 v1.4(S3-B 盈利性判定 net_profit_is_loss)
 ================================================================
 职责: 为 migration_signals.evaluate_pool 采集每票输入。
 纪律:
@@ -246,7 +246,9 @@ def _same_period_rev_yoy(recs) -> float | None:
 
 
 def _default_fetch_fin_growth(ticker: str, asof_iso: str):
-    """返回 (net_profit_yoy, revenue_yoy); 单次取数两个口径都出。"""
+    """marker: S3B_FORCE_REV_V1 — 返回 (net_profit_yoy, revenue_yoy, is_loss)。
+    is_loss = 最新期净利为负(net_margin<0, 兜底 EPS<0); 不可判 -> None(引擎沿用净利口径)。
+    单次取数三个口径都出。"""
     try:
         try:
             from src.tools import api_china
@@ -267,15 +269,29 @@ def _default_fetch_fin_growth(ticker: str, asof_iso: str):
                 break
         if rev is None:
             rev = _same_period_rev_yoy(recs)   # 兜底: 同期revenue自算
+        is_loss = None                          # S3-B: 仅以最新期判定盈利性(不用陈旧期)
+        for rec in (recs or [])[:1]:
+            nm = _g(rec, "net_margin")
+            eps = _g(rec, "earnings_per_share")
+            if nm is not None:
+                is_loss = float(nm) < 0.0
+            elif eps is not None:
+                is_loss = float(eps) < 0.0
         if net is None and rev is None:
             _logger.warning("18c inputs: %s 净利/营收增速均缺失", ticker)
         elif net is None:
             _logger.warning("18c inputs: %s earnings_growth 缺失, 降级营收YoY=%.1f%%",
                             ticker, rev * 100)
-        return net, rev
+        if is_loss and net is not None:
+            _logger.warning("18c inputs: %s 未盈利(S3-B), 净利YoY=%+.1f%% 弃用, 强制营收口径(营收YoY=%s)",
+                            ticker, net * 100,
+                            f"{rev * 100:+.1f}%" if rev is not None else "缺失->灰灯")
+        elif is_loss is None and net is not None and recs:
+            _logger.warning("18c inputs: %s 盈利性不可判(net_margin/EPS 缺失), S3 沿用净利口径", ticker)
+        return net, rev, is_loss
     except Exception as exc:
         _logger.warning("18c inputs: %s 财务采集失败: %s", ticker, exc)
-        return None, None
+        return None, None, None
 
 
 DEFAULT_FETCHERS = {
@@ -314,9 +330,11 @@ def collect_signal_inputs(pool: dict, asof_iso: str, fetchers: dict | None = Non
             d["margin_balance"] = f["stock_margin"](ticker, asof_iso)
             d["sector_rank_change_5d"] = f["sector_rank_change"](ticker, asof_iso)
         elif cls == "N":
-            net, rev = f["fin_growth"](ticker, asof_iso)
+            res = f["fin_growth"](ticker, asof_iso)
+            net, rev, *rest = res               # 兼容旧 2 元组注入 fetcher(沙箱单测)
             d["net_profit_yoy"] = net
-            d["revenue_yoy"] = rev              # 未盈利降级代理(引擎仅在 net 缺失时用)
+            d["revenue_yoy"] = rev              # S3-B: 未盈利强制口径 / 净利YoY缺失降级
+            d["net_profit_is_loss"] = rest[0] if rest else None
             d["consensus_beat"] = None          # 无一致预期源, 走 YoY 代理(审批单 S3)
             d["ret_20d"] = _ret(f["closes"](ticker, asof_iso), 20)
         data[ticker] = d

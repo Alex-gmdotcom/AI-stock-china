@@ -349,7 +349,10 @@ def get_market_cap(
 
 
 def prices_to_df(prices: list[Price]) -> pd.DataFrame:
-    """Convert prices to a DataFrame."""
+    """Convert prices to a DataFrame.
+    marker: OHLC_SANITY_V1 (Vibe-Trading 借鉴#4) — 加载层边界体检:
+    high<low / 非正价 / NaN 价 / 坏 bracketing(open或close 出 [low,high] 超0.1%容差)
+    统一丢弃 + WARNING 计数("有壳无肉"值层判空的加载层升级版)。"""
     df = pd.DataFrame([p.model_dump() for p in prices])
     df["Date"] = pd.to_datetime(df["time"])
     df.set_index("Date", inplace=True)
@@ -357,6 +360,19 @@ def prices_to_df(prices: list[Price]) -> pd.DataFrame:
     for col in numeric_cols:
         df[col] = pd.to_numeric(df[col], errors="coerce")
     df.sort_index(inplace=True)
+    if len(df):
+        _tol = 1.001
+        ok = ((df["open"] > 0) & (df["high"] > 0) & (df["low"] > 0) & (df["close"] > 0)
+              & (df["high"] >= df["low"])
+              & (df["open"] <= df["high"] * _tol) & (df["open"] >= df["low"] / _tol)
+              & (df["close"] <= df["high"] * _tol) & (df["close"] >= df["low"] / _tol))
+        ok = ok.fillna(False)
+        dropped = int(len(df) - ok.sum())
+        if dropped:
+            import logging
+            logging.getLogger(__name__).warning(
+                "OHLC 体检: 丢弃 %d/%d 行(high<low/非正价/NaN/坏bracketing)", dropped, len(df))
+            df = df[ok]
     return df
 
 
