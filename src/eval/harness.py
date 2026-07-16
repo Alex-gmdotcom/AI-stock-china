@@ -19,6 +19,16 @@ CLI（国内机器）：
 """
 from __future__ import annotations
 
+# marker: ENTRYPOINT_DOTENV_V1 — 修类(2026-07-16): "每个入口点必须 load_dotenv"
+# (run_migration_signals v1.1 同类事故的复发面: harness 历史上只用 baostock 无 token,
+#  EVAL_HK_PRICE_V1 引入 tushare_hk 后, `python -m src.eval.harness` 不加载 .env
+#  → TUSHARE_TOKEN 缺失 → available()=False → 港股价格链断头。无 dotenv 不阻塞。)
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except Exception:
+    pass
+
 import argparse
 import json
 from pathlib import Path

@@ -304,6 +304,8 @@ def _analyze_stock_flow(data: list) -> tuple[str, int, dict]:
         "recent_3d_avg": round(recent_3d, 2),
         "consecutive_inflow_days": consecutive_in,
         "consecutive_outflow_days": consecutive_out,
+        # MAINFLOW_TUSHARE_V1: 口径来源(两源分单阈值不同, 幅度跨源不可比)
+        "source": getattr(data[0], "source", None),
     }
 
     if consecutive_in >= 5 and recent_3d > 0:

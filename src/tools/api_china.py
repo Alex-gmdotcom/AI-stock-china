@@ -856,6 +856,9 @@ def _to_int(v, default=0):
     f = _to_float(v, None)
     return int(f) if f is not None else default
 
+_SC_DEDUP: dict = {}   # SAFE_CONSTRUCT_DEDUP_V1: (cls, msg) -> 次数(进程级)
+
+
 def _safe_construct(cls, **kwargs):
     """Pydantic v2 / dataclass / mock 都能用的安全构造."""
     try:
@@ -874,7 +877,20 @@ def _safe_construct(cls, **kwargs):
                 _msg = str(exc).splitlines()[0] + " [" + _locs + "]"
             except Exception:
                 _msg = str(exc).splitlines()[0][:200] if str(exc) else repr(exc)
-            _logger.warning("_safe_construct(%s) 失败: %s", cls.__name__, _msg)
+            # marker: SAFE_CONSTRUCT_DEDUP_V1 — 同类失败进程内聚合(2026-07-16):
+            # 15 条稀疏历史期记录同缺同 6 字段会刷 15 行相同 WARNING, 貌似"错误卡死"。
+            # 首次全文, 第 2 次声明转入静默聚合, 之后仅在 10/50/200 次里程碑报计数。
+            _key = (cls.__name__, _msg)
+            _n = _SC_DEDUP.get(_key, 0) + 1
+            _SC_DEDUP[_key] = _n
+            if _n == 1:
+                _logger.warning("_safe_construct(%s) 失败: %s", cls.__name__, _msg)
+            elif _n == 2:
+                _logger.warning("_safe_construct(%s) 同类失败再现(后续静默聚合, 里程碑报数): %s",
+                                cls.__name__, _msg)
+            elif _n in (10, 50, 200):
+                _logger.warning("_safe_construct(%s) 同类失败累计 %d 次: %s",
+                                cls.__name__, _n, _msg[:80])
             return None
 
 
@@ -1873,6 +1889,7 @@ class MainCapitalFlow:
     large_net_inflow: Optional[float] = None       # 大单
     close: Optional[float] = None                  # 当日收盘
     change_pct: Optional[float] = None             # 当日涨跌幅
+    source: Optional[str] = None                   # MAINFLOW_TUSHARE_V1: 口径来源标注
     def model_dump(self, **_kw): return _v103_asdict(self)
 
 
@@ -2056,23 +2073,67 @@ def _retry_conn(fn, *, tries: int = 3, base_delay: float = 0.6):
 # 3. get_main_capital_flow — 个股主力资金
 # ---------------------------------------------------------------------------
 
-def get_main_capital_flow(ticker: str, limit: int = 20) -> list:
-    """个股主力资金日度净流入.
+def _moneyflow_df_to_records(df, norm: str, limit: int) -> list:
+    """marker: MAINFLOW_TUSHARE_V1 — tushare moneyflow → MainCapitalFlow。
+    口径: 主力 = 大单+特大单 净额(与东财"主力净流入-净额"定义对齐);
+    单位: tushare 万元 ×10000 → 元(本模型约定)。
+    close/change_pct 该接口不提供 → None(显式缺口, 不臆造)。"""
+    out: list = []
+    for _, row in df.iterrows():
+        d = str(_row_get(row, "trade_date", default="") or "")
+        if len(d) != 8:
+            continue
+        b_lg = _to_float(_row_get(row, "buy_lg_amount"))
+        s_lg = _to_float(_row_get(row, "sell_lg_amount"))
+        b_elg = _to_float(_row_get(row, "buy_elg_amount"))
+        s_elg = _to_float(_row_get(row, "sell_elg_amount"))
+        lg_net = None if (b_lg is None or s_lg is None) else (b_lg - s_lg) * 1e4
+        elg_net = None if (b_elg is None or s_elg is None) else (b_elg - s_elg) * 1e4
+        main = None if (lg_net is None or elg_net is None) else lg_net + elg_net
+        out.append(MainCapitalFlow(
+            date=f"{d[:4]}-{d[4:6]}-{d[6:8]}",
+            ticker=norm,
+            main_net_inflow=main,
+            super_large_net_inflow=elg_net,
+            large_net_inflow=lg_net,
+            close=None,
+            change_pct=None,
+            source="tushare.moneyflow(大单+特大单净额)",
+        ))
+    out.sort(key=lambda x: x.date)
+    return out[-limit:] if limit else out
 
-    AKShare: stock_individual_fund_flow(stock="600519", market="sh")
-    返回 DataFrame 列 (实测): 日期/收盘价/涨跌幅/主力净流入-净额/...
-    """
-    if not _HAVE_AK:
-        return []
+
+def _mainflow_via_tushare(norm: str, limit: int) -> list:
+    """链头: tushare moneyflow。取 limit 个交易日 → 按 2 倍+10 自然日回看。"""
     try:
-        norm, market = _normalize(ticker)
-    except TickerParseError:
+        try:
+            from src.tools import tushare_data as _tsd
+        except ImportError:
+            import tushare_data as _tsd  # type: ignore
+        from datetime import datetime as _dt, timedelta as _td
+        end = _dt.now()
+        start = end - _td(days=max(limit, 5) * 2 + 10)
+        df = _tsd.get_moneyflow(norm, start.strftime("%Y%m%d"), end.strftime("%Y%m%d"))
+        if df is None or len(df) == 0:
+            return []                       # get_moneyflow 内已打面包屑
+        recs = _moneyflow_df_to_records(df, norm, limit)
+        # I1.1 值层判空("有壳无肉"): 有行但主力净额全 None → 视为失败, 退回下一源
+        if not any(r.main_net_inflow is not None for r in recs):
+            _logger.warning("tushare moneyflow %s 有行无值(主力净额全空), 退回 akshare 链", norm)
+            return []
+        return recs
+    except Exception as exc:
+        _logger.warning("tushare moneyflow %s 异常: %s", norm, str(exc)[:120])
         return []
-    if market not in ("SH", "SZ", "BJ"):
-        return []  # 港股该 API 不适用
 
+
+def _mainflow_via_akshare(ticker: str, norm: str, market_arg: str, limit: int) -> list:
+    """兜底: 东财 stock_individual_fund_flow(2026-07-16 起端点级硬封, 保留待恢复)。"""
+    if not _HAVE_AK:
+        _logger.warning("stock_individual_fund_flow 跳过: akshare 未安装")
+        return []
     ensure_no_proxy()
-    market_arg = market.lower()  # 'sh' / 'sz' / 'bj'
     try:
         df = _retry_conn(lambda: _ak.stock_individual_fund_flow(
             stock=_ak_a_symbol(norm), market=market_arg,
@@ -2081,6 +2142,7 @@ def get_main_capital_flow(ticker: str, limit: int = 20) -> list:
         _logger.warning("stock_individual_fund_flow(%s) 失败: %s", ticker, exc)
         return []
     if df is None or len(df) == 0:
+        _logger.warning("stock_individual_fund_flow(%s) 返回空表", ticker)
         return []
 
     date_col = None
@@ -2089,6 +2151,7 @@ def get_main_capital_flow(ticker: str, limit: int = 20) -> list:
             date_col = cand
             break
     if date_col is None:
+        _logger.warning("stock_individual_fund_flow(%s) 无日期列, 字段变更?", ticker)
         return []
 
     try:
@@ -2115,9 +2178,42 @@ def get_main_capital_flow(ticker: str, limit: int = 20) -> list:
             )),
             close=_to_float(_row_get(row, "收盘价", "close")),
             change_pct=_to_float(_row_get(row, "涨跌幅")),
+            source="akshare.eastmoney(主力净流入-净额)",
         ))
     out.sort(key=lambda x: x.date)
+    if out and not any(r.main_net_inflow is not None for r in out):
+        _logger.warning("stock_individual_fund_flow(%s) 有行无值(主力净额全空)", ticker)
+        return []
     return out
+
+
+def get_main_capital_flow(ticker: str, limit: int = 20) -> list:
+    """个股主力资金日度净流入 (marker: MAINFLOW_TUSHARE_V1, 2026-07-16 双链)。
+
+    链: tushare moneyflow(链头, token 化 REST) → akshare 东财(兜底, 现被硬封)。
+    换链因: 2026-07-16 东财 fund_flow 13/13 全灭且 4s 间隔无效 → 端点级硬封,
+            非连发反爬; 该腿占裁决⑦后 capflow 55%, 盲眼即破坏信号可信度。
+    口径差: 两源分单阈值不同 → 记录带 source; 幅度跨源不可比, 符号/连续性可比
+            (下游 _analyze_stock_flow 只用符号与连续天数, 换链不改判据)。
+    两源皆失 → [](上游走 I10.3 coverage 降级, 不臆造)。
+    """
+    try:
+        norm, market = _normalize(ticker)
+    except TickerParseError:
+        _logger.warning("get_main_capital_flow: ticker 解析失败 %s", ticker)
+        return []
+    if market not in ("SH", "SZ", "BJ"):
+        return []  # 港股该口径不适用(既有行为不变)
+
+    recs = _mainflow_via_tushare(norm, limit)
+    if recs:
+        return recs
+    recs = _mainflow_via_akshare(ticker, norm, market.lower(), limit)
+    if recs:
+        return recs
+    _logger.warning("get_main_capital_flow(%s): tushare+东财 双链皆空 -> 主力资金腿【数据缺口】",
+                    ticker)
+    return []
 
 
 # ---------------------------------------------------------------------------

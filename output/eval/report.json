@@ -3,16 +3,27 @@
     "5": {
       "overall": {
         "n_dates": 1,
-        "n_obs": 13,
-        "rank_ic_mean": 0.44279613062223466,
-        "ic_mean": 0.5672153900795559,
+        "n_obs": 15,
+        "rank_ic_mean": 0.3581311299174109,
+        "ic_mean": 0.410684893799172,
         "rank_icir": NaN,
         "icir": NaN,
-        "hit_rate": 0.6923076923076923,
-        "directional_n": 13,
-        "excess_hit_rate": 0.6923076923076923
+        "hit_rate": 0.6,
+        "directional_n": 15,
+        "excess_hit_rate": 0.6
       },
       "by_class": {
+        "N": {
+          "n_dates": 1,
+          "n_obs": 2,
+          "rank_ic_mean": NaN,
+          "ic_mean": NaN,
+          "rank_icir": NaN,
+          "icir": NaN,
+          "hit_rate": 0.0,
+          "directional_n": 2,
+          "excess_hit_rate": 0.0
+        },
         "T": {
           "n_dates": 1,
           "n_obs": 3,
@@ -37,12 +48,12 @@
         }
       },
       "random_control": {
-        "actual_rank_ic_mean": 0.44279613062223466,
+        "actual_rank_ic_mean": 0.3581311299174109,
         "n_iter": 200,
-        "random_mean": -0.0075246401282209815,
-        "random_p95": 0.43121976119420236,
-        "p_value_one_sided": 0.045,
-        "seed": 65956775
+        "random_mean": 0.003572081115413346,
+        "random_p95": 0.4967684900039962,
+        "p_value_one_sided": 0.11,
+        "seed": 2707227124
       }
     },
     "10": {
@@ -58,6 +69,17 @@
         "excess_hit_rate": NaN
       },
       "by_class": {
+        "N": {
+          "n_dates": 1,
+          "n_obs": 0,
+          "rank_ic_mean": NaN,
+          "ic_mean": NaN,
+          "rank_icir": NaN,
+          "icir": NaN,
+          "hit_rate": NaN,
+          "directional_n": 0,
+          "excess_hit_rate": NaN
+        },
         "T": {
           "n_dates": 1,
           "n_obs": 0,
@@ -96,6 +118,17 @@
         "excess_hit_rate": NaN
       },
       "by_class": {
+        "N": {
+          "n_dates": 1,
+          "n_obs": 0,
+          "rank_ic_mean": NaN,
+          "ic_mean": NaN,
+          "rank_icir": NaN,
+          "icir": NaN,
+          "hit_rate": NaN,
+          "directional_n": 0,
+          "excess_hit_rate": NaN
+        },
         "T": {
           "n_dates": 1,
           "n_obs": 0,

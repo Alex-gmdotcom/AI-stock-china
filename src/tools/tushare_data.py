@@ -108,6 +108,36 @@ def _query(method: str, **kwargs):
             return None
 
 
+# ── marker: MAINFLOW_TUSHARE_V1 — 个股主力资金(东财 fund_flow 硬掐后的同源级冗余) ──
+# 2026-07-16 实锤: akshare stock_individual_fund_flow 13/13 全灭(RemoteDisconnected),
+# 4 秒间隔 3/3 仍全灭 → 非连发反爬, 是端点级硬封。该腿占裁决⑦后 capflow 55%,
+# 全灭 = capflow 盲眼, 满足"评估驱动修复"门槛。
+# 口径: tushare moneyflow 按固定金额档分单(小<5万/中5-20万/大20-100万/特大>100万),
+#       与东财动态档不完全同口径 → 记录标 source, 幅度值跨源不可比(符号/连续性可比)。
+# 单位: tushare amount 字段为万元, 上层 MainCapitalFlow 约定为元 → ×10000 在 api_china 侧做。
+_MONEYFLOW_FIELDS = ("ts_code,trade_date,buy_lg_amount,sell_lg_amount,"
+                     "buy_elg_amount,sell_elg_amount,net_mf_amount")
+
+
+def get_moneyflow(norm: str, start_yyyymmdd: str, end_yyyymmdd: str):
+    """个股资金流向(日度). 返回 DataFrame 或 None。
+    需 ≥2000 积分; 无 token/包/权限 → None(上层退回 akshare 链)。
+    每条退出路径留面包屑(I1.1)。"""
+    if not available():
+        logger.warning("tushare moneyflow 跳过: available()=False (token/tushare包缺失)")
+        return None
+    df = _query("moneyflow", ts_code=norm, start_date=start_yyyymmdd,
+                end_date=end_yyyymmdd, fields=_MONEYFLOW_FIELDS)
+    if df is None:
+        logger.warning("tushare moneyflow %s 返回 None(接口异常/积分不足)", norm)
+        return None
+    if len(df) == 0:
+        logger.warning("tushare moneyflow %s 返回空表 window=%s..%s",
+                       norm, start_yyyymmdd, end_yyyymmdd)
+        return None
+    return df
+
+
 # ── 字段映射 ─────────────────────────────────────────────────────────
 _CASHFLOW_FIELDS = ("ts_code,end_date,f_ann_date,n_cashflow_act,"
                     "c_pay_acq_const_fiolta,depr_fa_coga_dpba,amort_intang_assets,"
