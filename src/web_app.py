@@ -1080,6 +1080,8 @@ cursor:pointer;position:relative;transition:border-color .12s}
 .cell .why{font-size:11px;color:var(--dim);margin-top:4px;line-height:1.4;
 display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .lamp{position:absolute;top:6px;right:6px;width:12px;height:12px;border-radius:50%;z-index:6;cursor:help;box-shadow:0 0 0 2px rgba(255,255,255,.08)}/*STEP18C_LAMP_V2*/
+.full-warn{margin-top:6px;padding:8px 10px;font-size:13px;line-height:1.5;color:var(--warn);border:1px solid rgba(232,179,57,.4);border-radius:8px;background:rgba(232,179,57,.08)}/*POOL_FULL_GUARD_V1*/
+button.primary:disabled{opacity:.45;cursor:not-allowed}
 .lamp.red{background:var(--up)}.lamp.yellow{background:var(--warn)}
 .lamp.gray{background:var(--dim,#8a8f98);opacity:.55}
 .badge-sel{position:absolute;top:-7px;left:8px;font-size:9px;font-weight:800;padding:1px 6px;border-radius:4px}
@@ -1157,6 +1159,7 @@ function render(){
 const q=POOL.monthly_migrations_used,lim=POOL.monthly_migrations_limit;
 const full=q>=lim;
 const ps=POOL.pool_sizes||{};
+const CNT={V:(POOL.v_pool||[]).length,T:(POOL.t_pool||[]).length,N:(POOL.n_pool||[]).length};/*POOL_FULL_GUARD_V1*/
 const col=(k,arr)=>`<div class="col"><h2><span class="dot" style="background:${CAT[k].c}"></span>${CAT[k].t}
 <span class="n">${arr.length}/5</span></h2>${arr.map(cellHTML).join('')||'<div class="gap">空</div>'}</div>`;
 const perfReady=Object.keys(PERF).length>0;
@@ -1200,10 +1203,11 @@ ${['V','T','N'].filter(x=>x!==SEL.enter.category).map(x=>`<option value="${x}">$
 
 <div class="sec"><h3>单票操作(仅在目标类未满员时)</h3>
 <div class="single">
-<div><div class="hint">加池 —— 目标类 &lt;5 才允许。<b>满员时会被 400 拒绝</b>(I4.1)。</div>
+<div><div class="hint">加池 —— 目标类 &lt;5 才允许;满员类在前端直接禁用(后端 400 仍为兜底,I4.1)。</div><!--POOL_FULL_GUARD_V1-->
 <div style="display:grid;grid-template-columns:1fr 1fr 80px;gap:8px;margin-top:8px">
 <input id="add-tk" placeholder="ticker"><input id="add-nm" placeholder="名称">
-<select id="add-cat"><option>V</option><option>T</option><option>N</option></select></div>
+<select id="add-cat">${['V','T','N'].map(c=>`<option value="${c}" ${CNT[c]>=5?'disabled':''}>${c}（${CNT[c]}/5${CNT[c]>=5?' 满员':''}）</option>`).join('')}</select></div>
+<div id="add-full-hint"></div>
 <label class="f">理由(必填)</label><textarea id="add-why" style="min-height:52px"></textarea>
 <div class="act"><button class="primary" id="btn-add">加入池</button></div></div>
 <div><div class="hint">减池 —— 移出后该类将 &lt;5,需尽快补位(规模不变量在下次断言时检查)。</div>
@@ -1215,11 +1219,23 @@ ${['V','T','N'].filter(x=>x!==SEL.enter.category).map(x=>`<option value="${x}">$
 <div class="sec"><h3>自选池(弹性,不受 5+5+5 约束)</h3>
 <div class="watch">${(POOL.watchlist||[]).map(e=>`<span class="w">${esc(e.name)} <span class="tk">${esc(e.ticker)}</span></span>`).join('')||'<span class="gap">空</span>'}</div></div>
 
-<div class="foot">迁移信号红黄灯 = ${Object.keys(SIGNALS).length?Object.keys(SIGNALS).length+' 条':'<span style="color:var(--e8b339)">信号引擎待建(detect_migration_signals 未实现);T→V / N→T 依赖资金流数据,现为【数据缺口】</span>'}
+<div class="foot">迁移信号红黄灯 = ${Object.keys(SIGNALS).length?Object.keys(SIGNALS).length+' 条':'今日无红/黄触发(18c 引擎已上线;全池可算且无触发 = 最好结果。若今日未跑批,收盘后 run_migration_signals 再看)'}
 <br>所有操作人工触发(I4.3)· 月配额按 pair_id 去重(I4.2)· 池状态 .tmp+rename+7天backup(I4.4)</div>`;
 wire();
 }
 function wire(){
+/*POOL_FULL_GUARD_V1: 满员前端护栏 —— 稳态 5+5+5 下加池恒不可用, 引导走配对迁移(裁决⑥)*/
+const CNT={V:(POOL.v_pool||[]).length,T:(POOL.t_pool||[]).length,N:(POOL.n_pool||[]).length};
+const selCat=document.getElementById('add-cat'),bAdd=document.getElementById('btn-add'),
+      fullHint=document.getElementById('add-full-hint');
+function syncAdd(){
+ const c=selCat?selCat.value:null,full=c&&(CNT[c]||0)>=5;
+ if(bAdd){bAdd.disabled=!!full;
+  bAdd.title=full?(c+' 类已满员(5/5) —— 换票请走上方配对迁移面板(裁决⑥)'):'';}
+ if(fullHint)fullHint.innerHTML=full
+  ?`<div class="full-warn">⛔ ${c} 类满员(5/5) —— 换票请用上方 <b>配对迁移</b>(两腿原子,出入同类,I4.1)</div>`
+  :(c?`<div class="hint" style="margin-top:6px">${c} 类当前 ${CNT[c]}/5,可直接加入</div>`:'');}
+if(selCat){selCat.onchange=syncAdd;syncAdd();}
 document.querySelectorAll('.cell').forEach(c=>c.onclick=()=>{
 const e={ticker:c.dataset.tk,name:c.dataset.nm,category:c.dataset.cat};
 if(SEL.exit&&SEL.exit.ticker===e.ticker){SEL.exit=null;}
